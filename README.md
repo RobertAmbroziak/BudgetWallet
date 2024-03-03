@@ -25,13 +25,16 @@ W ramach kontroli wydatków i zarządzania domowym budżetem próbowałem kilku 
 
 ## Encje
 
-Tu będzie wizja tabel bazy danych. Wiem, trochę nie od tej strony patrząc na nowoczesne podejścia DDD, ale nie wszystkie nawyki da się zmienić od razu.
+taki projekt mi wyszedł wstępnie:
+
+<div style="text-align:center"><img src='./Description/Images/database_diagram.PNG' width='500'/></div>
 
 
 ## Makiety Front-end 
 
-Coś w głowie mam jak to wizualnie powinno wyglądać. Zanim zacznę walkę z Reactem, postaram się wrzucić jakieś wstępne makiety.
+na razie pierwsza ogólna makieta, pokazująca listę splitów, czyli wydatków w ramach danego budżetu. 
 
+<div style="text-align:center"><img src='./Description/Images/viewStats.PNG' width='400'/></div>
 
 [Dziennik](/Description/DiaryReadme.md)
 
