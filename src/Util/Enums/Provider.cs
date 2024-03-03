@@ -3,6 +3,6 @@
     public enum Provider
     {
         Application,
-        Google /* TODO */
+        Google
     }
 }

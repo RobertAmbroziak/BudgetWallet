@@ -25,16 +25,60 @@ W ramach kontroli wydatków i zarządzania domowym budżetem próbowałem kilku 
 
 ## Encje
 
-taki projekt mi wyszedł wstępnie:
+taki schemat bazy danych wyszedł mi po pierwszej analizie:
 
 <div style="text-align:center"><img src='./Description/Images/database_diagram.PNG' width='500'/></div>
+
+do tego 3 enumy:
+```csharp
+public enum Provider
+{
+	Application,
+	Google
+}
+
+public enum TransferType
+{
+	Deposit,
+	Withdrawal,
+	InternalTransfer
+}
+
+public enum UserRole
+{
+	User,
+	Admin
+}
+```
+
+* Users - tabela userów z rolą
+* RegisterConfirmations - pomocnicza tabela do procesu rejestracji i potwierdzeniu konta za pomocą maila
+* Accounts - rozumiane jako np: konto prywatne, konto firmowe, konto oszczędnościowe, karta kretydota 1, portfel z gotówką, mPay, Revolut ...
+* Categories - zdefiniowane kategorie wydatków np: opłaty, spożywcze, odzież, rozrywka, paliwo ...
+* Transfers - głównie  wydatki ale również trasnfery z wpłatami na konto i transfery wewnętrzne pomiędzy kontami
+* Splits - wyodrębniona część pojedynczego transferu np Biedronka-21-07 rozdzielona na kategorie : np spożywcze, chemia, alkohol
+* Budgets - zdefiniowany pojedynczy okres budżetowy  np. miesiąc  Marzec -2024
+* BudgetPeriods - ewentualne dodatkowe rozbicie budżetu na mniejsze okresy np tygodniowe, pomocny gdy pewne kategorie w ramach jednego budżetu Marrzec-2024 będą miały niesymetryczne obciążenie w tym okresie. np Opłaty to 90% pierwszy tydzień i 10% drugi, tydzień 3 i 4 nie zakłada wydatków.
+* BudgetCategories - służy do definiowania limitów wydatków dla danej kategorii w ramach danego budżetu
+* BudgetPeriodCategories - j.w. tylko można całomiesięczne wydatki na np. opłaty rozdzielić niesymetrycznie między periodami
+* TransferTemplates - dodatkowy helper ułatwiający wprowadzanie wydatków przez usera
+ 
 
 
 ## Makiety Front-end 
 
-na razie pierwsza ogólna makieta, pokazująca listę splitów, czyli wydatków w ramach danego budżetu. 
+1. Widok 1
 
 <div style="text-align:center"><img src='./Description/Images/viewStats.PNG' width='400'/></div>
+
+to podstawowy widok aplikacji. domyślnie ustawiony na Stats (2 pozostałe widoki w tym obszarze będą służyć do dodawania płatnośic i zarządzania ustawieniami)
+Filtr Budget, Period, Account, Category zostanie wypełniony domyślnie ale można go zmieniać dropdownami
+Pokazać ma się tu lista wydatków z uwzględnieniem ustawionego flitru, graficzna reprezentacja tych wydatków vs zakładany budżet oraz jakieś sumowanie tej tabeli
+Monit filtrowanie po kontach dotyczy sytuacji kiedy w filtrze Account zamiast ALL wybierzemy jakieś konkretne konto. Wtedy to sumowanie nie do końca będzie miało sens. Trzeba to jakoś rozwiązać
+Przyciski kolorowe obok CATEGORY to taki helper ułatwiający wybór jednej z 5 najbardziej popularnych kategorii bez dropDowna.
+
+
+
 
 [Dziennik](/Description/DiaryReadme.md)
 
