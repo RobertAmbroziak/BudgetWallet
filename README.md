@@ -1,3 +1,4 @@
+# BudgetWallet
 ### Web application for managing household budget
 
 <div style="text-align:center"><img src='./Description/Images/budget_wallet_icon_big.jpg' width='300'/></div>
