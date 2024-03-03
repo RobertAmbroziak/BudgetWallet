@@ -1,20 +1,21 @@
 [README](../README.md)
 
-## Dziennik
+## Diary
 
-### Dzień 1
-* licencja, gitignore, wstępne README
+### Day 1
+* License, gitignore, initial README
 
-### Dzień 2
-* szkielet aplikacji BE, WebApi, BL, DAL, Model
-* swagger
-* jwt token, tabela User, Mock bazy userów
-* pierwszy zarys metody do logowania i rejestracji
+### Day 2
+* Backend application skeleton: BE, WebApi, BL, DAL, Model
+* Swagger
+* JWT token implementation, User table, Mock user database
+* Initial outline of login and registration methods
 
-### Dzień 3
-* projekt bazy danych i dodanie diagramu do README
-* DbContext, generyczne repo, migracja
-* pierwsza makieta widoku front
+### Day 3
+* Database design and addition of diagram to README
+* DbContext setup, generic repositories, migration
+* First draft of front-end view mockup
+
 
 
 

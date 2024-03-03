@@ -1,35 +1,32 @@
-[English](/Description/English/EnglishReadme.md)
-
-# BudgetWallet
-### webowa aplikacja do zarządzania budżetem domowym
+### Web application for managing household budget
 
 <div style="text-align:center"><img src='./Description/Images/budget_wallet_icon_big.jpg' width='300'/></div>
 
-## Pomysł / Idea
+## Idea
 
-W ramach kontroli wydatków i zarządzania domowym budżetem próbowałem kilku z wielu dostępnych aplikacji, zarówno mobilnych, jak i webowych. Do tego również własnych i publicznych rozwiązań opartych na Excelu. Wszystkie one miały jednak jakieś wady: albo nie dostarczały oczekiwanych funkcjonalności, albo były zbyt rozdmuchane i skomplikowane. Rozwiązania oparte na arkuszach Excela, które najprościej i najszybciej można dostosować pod własne potrzeby, sprawdzają się raczej na dużych urządzeniach. Chcę spróbować stworzyć prostą, ale funkcjonalnością dopasowaną pod własną wizję tematu aplikację. Będzie to aplikacja webowa, ale mocno zorientowana na urządzenia mobilne. Ma być przede wszystkim prosta i przyjazna użytkownikowi.
+In my efforts to control expenses and manage the household budget, I have tried several of the many available applications, both mobile and web-based. I have also experimented with my own and public solutions based on Excel. However, all of them had some drawbacks: either they did not provide the expected functionality or were too bloated and complicated. Excel-based solutions, which can be easily and quickly customized to suit individual needs, are more suitable for larger devices. I want to try creating a simple but functional application tailored to my own vision of the subject. It will be a web application but heavily focused on mobile devices. It should be simple and user-friendly above all.
 
-## Wyzwania
+## Challenges
 
-* cały Front-End. Obecnie pracuję głównie z backendem. W swoim czasie sporo doświadczenia z MVC + jQuery, leciwym webforms, a ostatnio odrobinę z Blazor. W Reakcie raczkuję.
-* kompleksowa autoryzacja. Jakoś nigdy nie musiałem się tym przejmować. Temat najczęściej z pudełka dostarczany w korporacyjnym nugecie lub innym rozwiązaniu architektów.
+* Entire Front-End. Currently, I mainly work with backend. I have experience with MVC + jQuery, legacy webforms, and recently a bit of Blazor. I'm still learning React.
+* Comprehensive authorization. I have never had to worry about this somehow. This topic is usually provided out-of-the-box in corporate nuggets or other architect solutions.
 
-## Przewidywana technologia
+## Expected Technology
 
-* Web Api  - raczej w .Net 6 - chwilowo moje IDE nie bardzo jest gotowe na kolejną wersję LTS
-* Entity Framework  - CodeFirst, Migracje
-* czysta architektura (warstwowa) z wydzieleniem warstw do osobnych projektów
-* aplikacja front raczej stworzona za pomocą create-react-app
-* gotowe kontrolki od Material Design for Bootstrap 5 & React 18
-* odrobinę react-router, ale głównie SPA oparte na prostych hookach useState/useEffect
+* Web Api - probably in .Net 6 - currently, my IDE is not quite ready for another LTS version
+* Entity Framework - CodeFirst, Migrations
+* Clean architecture (onion) with separation of layers into separate projects
+* Front-end application mostly created using create-react-app
+* Ready-made controls from Material Design for Bootstrap 5 & React 18
+* A bit of react-router, but mainly SPA based on simple hooks useState/useEffect
 
-## Encje
+## Entities
 
-taki schemat bazy danych wyszedł mi po pierwszej analizie:
+This database schema emerged after the initial analysis:
 
 <div style="text-align:center"><img src='./Description/Images/database_diagram.PNG' width='500'/></div>
 
-do tego 3 enumy:
+In addition, there are 3 enums:
 ```csharp
 public enum Provider
 {
@@ -51,35 +48,32 @@ public enum UserRole
 }
 ```
 
-* Users - tabela userów z rolą
-* RegisterConfirmations - pomocnicza tabela do procesu rejestracji i potwierdzeniu konta za pomocą maila
-* Accounts - rozumiane jako np: konto prywatne, konto firmowe, konto oszczędnościowe, karta kretydota 1, portfel z gotówką, mPay, Revolut ...
-* Categories - zdefiniowane kategorie wydatków np: opłaty, spożywcze, odzież, rozrywka, paliwo ...
-* Transfers - głównie  wydatki ale również trasnfery z wpłatami na konto i transfery wewnętrzne pomiędzy kontami
-* Splits - wyodrębniona część pojedynczego transferu np Biedronka-21-07 rozdzielona na kategorie : np spożywcze, chemia, alkohol
-* Budgets - zdefiniowany pojedynczy okres budżetowy  np. miesiąc  Marzec -2024
-* BudgetPeriods - ewentualne dodatkowe rozbicie budżetu na mniejsze okresy np tygodniowe, pomocny gdy pewne kategorie w ramach jednego budżetu Marrzec-2024 będą miały niesymetryczne obciążenie w tym okresie. np Opłaty to 90% pierwszy tydzień i 10% drugi, tydzień 3 i 4 nie zakłada wydatków.
-* BudgetCategories - służy do definiowania limitów wydatków dla danej kategorii w ramach danego budżetu
-* BudgetPeriodCategories - j.w. tylko można całomiesięczne wydatki na np. opłaty rozdzielić niesymetrycznie między periodami
-* TransferTemplates - dodatkowy helper ułatwiający wprowadzanie wydatków przez usera
- 
+* Users - table of users with roles
+* RegisterConfirmations - auxiliary table for the registration process and account confirmation via email
+* Accounts - understood as e.g., private bank account, business bank account, savings account, credit card, cash in wallet, mPay, Revolut ...
+* Categories - defined expenditure categories e.g., utilities, groceries, clothing, entertainment, fuel ...
+* Transfers - mainly expenses but also transfers with deposits to the account and internal transfers between accounts
+* Splits - an isolated part of a single transfer e.g., Store-21-07 split into categories: e.g., groceries, chemicals, alcohol
+* Budgets - defined single budget period e.g., month March - 2024
+* BudgetPeriods - possible further breakdown of the budget into smaller periods e.g., weekly, helpful when certain categories within one budget March-2024 will have asymmetric expenses in this period. e.g., Utilities are 90% in the first week and 10% in the second, weeks 3 and 4 have no expenses.
+* BudgetCategories - used to define expenditure limits for a given category within a budget
+* BudgetPeriodCategories - as above, but monthly expenses for e.g., utilities can be split asymmetrically between periods
+* TransferTemplates - additional helper facilitating expense entry by the user
 
 
-## Makiety Front-end 
+## Front-end Mockups
 
-1. Widok 1
+1. View 1
 
 <div style="text-align:center"><img src='./Description/Images/viewStats.PNG' width='400'/></div>
 
-to podstawowy widok aplikacji. domyślnie ustawiony na Stats (2 pozostałe widoki w tym obszarze będą służyć do dodawania płatnośic i zarządzania ustawieniami)
-Filtr Budget, Period, Account, Category zostanie wypełniony domyślnie ale można go zmieniać dropdownami
-Pokazać ma się tu lista wydatków z uwzględnieniem ustawionego flitru, graficzna reprezentacja tych wydatków vs zakładany budżet oraz jakieś sumowanie tej tabeli
-Monit filtrowanie po kontach dotyczy sytuacji kiedy w filtrze Account zamiast ALL wybierzemy jakieś konkretne konto. Wtedy to sumowanie nie do końca będzie miało sens. Trzeba to jakoś rozwiązać
-Przyciski kolorowe obok CATEGORY to taki helper ułatwiający wybór jednej z 5 najbardziej popularnych kategorii bez dropDowna.
+* This is the basic view of the application, defaulting to Stats (the other two views in this area will be used for adding payments and managing settings).
+* The Budget, Period, Account, and Category filters will be pre-filled but can be changed via dropdowns.
+* It should display a list of expenses considering the set filter, graphical representation of these expenses vs. the budgeted amount, and some summarization of this table.
+* Note: Filtering by accounts applies when selecting a specific account instead of ALL in the Account filter. In that case, the summarization may not make complete sense. This needs to be addressed somehow. 
+* The colorful buttons next to CATEGORY are a helper to facilitate selecting one of the 5 most popular categories without a dropdown.
 
 
-
-
-[Dziennik](/Description/DiaryReadme.md)
+[Diary](/Description/DiaryReadme.md)
 
 
