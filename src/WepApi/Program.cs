@@ -1,10 +1,13 @@
 using BusinessLogic.Abstractions;
 using BusinessLogic.Services;
 using DataAccessLayer;
-using DataAccessLayer.Mocks;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Model.Identity;
 using System.Text;
+using WepApi.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("appsettings.json");
@@ -38,9 +41,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<UserMockRepository, UserMockRepository>();
+builder.Services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
+
+builder.Services.AddScoped<IValidator<UserRegisterRequest>, UserRegisterRequestValidator>();
 
 var app = builder.Build();
 

@@ -16,6 +16,16 @@
 * DbContext setup, generic repositories, migration
 * First draft of front-end view mockup
 
+### Day 4
+* React App: create-react-app
+* login by App Account, login by Google, Register new Account (almost ready, without validator information and account confirmation)
+* translations ( Browser-dependent language )
+* React Router
+* token saved in storage
+* Material Design for Bootstrap 5 & React 18
+* ApplicationRepository instead of MockRepository
+
+
 
 
 
