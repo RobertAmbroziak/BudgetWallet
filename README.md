@@ -21,6 +21,23 @@ In my efforts to control expenses and manage the household budget, I have tried 
 * Ready-made controls from Material Design for Bootstrap 5 & React 18
 * A bit of react-router, but mainly SPA based on simple hooks useState/useEffect
 
+## Functionality (from the user's point of view)
+
+- :heavy_check_mark: Application Page Template
+  -  :heavy_check_mark: Footer, Header, Body
+  -  :heavy_check_mark: test data for User Panel, Admin Panel, Home
+  -  :heavy_check_mark: routing
+  -  :heavy_check_mark: authentication and authorization , permissions
+- :white_square_button: Login/Register Modal
+  - :heavy_check_mark: login by Application User
+  - :heavy_check_mark: go to Register
+  - :heavy_check_mark: login by Google
+  - :x: login by FB, Microsoft, GitHub etc.
+  - :x: register
+  - :x: remember me
+  - :x: forgot password
+- :black_square_button: More...
+
 ## Entities
 
 This database schema emerged after the initial analysis:

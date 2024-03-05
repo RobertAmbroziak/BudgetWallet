@@ -25,6 +25,9 @@
 * Material Design for Bootstrap 5 & React 18
 * ApplicationRepository instead of MockRepository
 
+### Day 5
+* first deploy on Azure
+
 
 
 
