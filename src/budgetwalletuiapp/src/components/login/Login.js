@@ -4,7 +4,8 @@ import {
   MDBContainer,
   MDBInput,
   MDBBtn,
-  MDBIcon
+  MDBIcon,
+  MDBBadge
 }
 from 'mdb-react-ui-kit';
 import config from '../../config';
@@ -23,7 +24,7 @@ import translations from '../../translations';
     });
   }
 
-  function Login({onClose, onSetToken, showRegister, setShowRegister}) {
+  function Login({onClose, onSetToken, showRegister, setShowRegister, setRegisterAlerts, registerAlerts}) {
     
     const [emailOrUserName, setEmailOrUserName] = useState('');
     const [password, setPassword] = useState('');
@@ -33,7 +34,6 @@ import translations from '../../translations';
     const [registerEmail, setRegisterEmail] = useState('');
     const [registerPassword, setRegisterPassword] = useState('');
     const [registerRepeatPassword, setRegisterRepeatPassword] = useState('');
-
     
     const handleEmailOrUserNameChange = (event) => {
       setEmailOrUserName(event.target.value);
@@ -90,7 +90,7 @@ import translations from '../../translations';
     };
 
     const register = (() =>{
-      return axios.post(`${config.API_BASE_URL}${config.API_ENDPOINTS.REGISTER}`, {userName: registerUserName, email: registerEmail, password: registerPassword })
+      return axios.post(`${config.API_BASE_URL}${config.API_ENDPOINTS.REGISTER}`, { userName: registerUserName, email: registerEmail, password: registerPassword })
       .then(response => {
         onSetToken(response.data);
         onClose();
@@ -99,20 +99,23 @@ import translations from '../../translations';
         navigate('/user');
       })
       .catch(error => {
-        // TODO: tutaj powinno się pojawić info z błędu BadRequest Validatora
         if (error.response) {
-          // Błąd odpowiedzi serwera z kodem statusu 4xx lub 5xx
-          console.log('Kod statusu:', error.response.status);
-          console.log('Treść błędu:', error.response.data);
+          const errors = error.response.data;
+          setRegisterAlerts(errors.map((item) => (
+            <div className="p-2 mb-2 bg-danger bg-gradient text-white rounded-5" style={{fontSize: "smaller"}}>{item}</div>
+          )));
         } else if (error.request) {
-          // Brak odpowiedzi od serwera
-          console.log('Brak odpowiedzi od serwera:', error.request);
+          const errors = translations[language].err_noServerResponse;
+          setRegisterAlerts(
+            <div className="p-2 mb-2 bg-danger bg-gradient text-white rounded-5" style={{fontSize: "smaller"}}>{errors}</div>
+          );
         } else {
-          // Inny rodzaj błędu
-          console.log('Wystąpił inny rodzaj błędu:', error.message);
+          const errors = translations[language].err_error + error.message;
+          setRegisterAlerts(
+            <div className="p-2 mb-2 bg-danger bg-gradient text-white rounded-5" style={{fontSize: "smaller"}}>{errors}</div>
+          );
         }
-        console.log('Konfiguracja błędu:', error.config);
-        navigate('/');
+        //navigate('/');
       });
     });
 
@@ -159,6 +162,7 @@ import translations from '../../translations';
           <MDBInput wrapperClass='mb-4' label={translations[language].lbl_password} size='lg' id='form5' type='password'value={registerPassword} onChange={handleRegisterPasswordChange}/>
           <MDBInput wrapperClass='mb-4' label={translations[language].lbl_repeatPassword} size='lg' id='form6' type='password' value={registerRepeatPassword} onChange={handleRegisterRepeatPasswordChange}/>
           <MDBBtn className="mb-4" onClick={() => register()}>{translations[language].lbl_register}</MDBBtn>
+          <div id='registerAlerts'>{registerAlerts}</div>
         </>
       )}
       </MDBContainer>

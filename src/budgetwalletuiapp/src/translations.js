@@ -17,6 +17,8 @@ const translations = {
       lbl_userName: "User Name:",
       lbl_email: "Email:",
       lbl_repeatPassword: "Repeat Password:",
+      err_noServerResponse: 'No response from the server',
+      err_error: 'Error: ',
     },
     pl: {
       btn_logout: "Wyloguj",
@@ -36,6 +38,8 @@ const translations = {
       lbl_userName: "UserName:",
       lbl_email: "Email:",
       lbl_repeatPassword: "Powtórz Hasło:",
+      err_noServerResponse: 'Brak odpowiedzi z serwera',
+      err_error: 'Błąd: ',
     }
   };
   
