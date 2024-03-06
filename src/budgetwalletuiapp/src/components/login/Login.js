@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext } from 'react';
 import { useGoogleLogin } from "@react-oauth/google";
 import {
   MDBContainer,
@@ -13,6 +13,7 @@ import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import { useLanguage } from '../../LanguageContext';
 import translations from '../../translations';
+import context from '../../context';
 
   function authenticate(token, onSetToken) {
     return axios.post(`${config.API_BASE_URL}${config.API_ENDPOINTS.GOOGLE_LOGIN}`, {token: token})
@@ -93,10 +94,11 @@ import translations from '../../translations';
       return axios.post(`${config.API_BASE_URL}${config.API_ENDPOINTS.REGISTER}`, { userName: registerUserName, email: registerEmail, password: registerPassword })
       .then(response => {
         onSetToken(response.data);
+        clearRegisterForm();
         onClose();
         setShowRegister(false);
-        // TODO: wyczyść formularz, wyświetl jakiś tooltip że poszedł mail
-        navigate('/user');
+        navigate('/');
+        notifyRegisterSuccess();
       })
       .catch(error => {
         if (error.response) {
@@ -118,6 +120,19 @@ import translations from '../../translations';
         //navigate('/');
       });
     });
+
+    const clearRegisterForm = () => {
+      setRegisterUserName('');
+      setRegisterEmail('');
+      setRegisterPassword('');
+      setRegisterRepeatPassword('');
+    };
+
+    const { registerSuccessToast } = useContext(context);
+
+    const notifyRegisterSuccess = () => {
+        registerSuccessToast();
+    };
 
     return (
       

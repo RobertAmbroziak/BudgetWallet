@@ -6,7 +6,6 @@ import { useLanguage } from '../../LanguageContext';
 import translations from '../../translations';
 
 function User({ jwtToken }) {
-  console.log('render funkcji user');
   const [userData, setData] = useState(null);
   const navigate = useNavigate();
   const { language } = useLanguage();

@@ -7,6 +7,7 @@ import Home from './components/home/Home';
 import Admin from './components/admin/Admin';
 import User from './components/user/User';
 import { LanguageProvider } from './LanguageContext';
+import { MyProvider } from './context';
 
 function App() {
   const [jwtToken, setJwtToken] = useState(null);
@@ -38,6 +39,7 @@ function App() {
   };
 
   return (
+    <MyProvider>
     <LanguageProvider value={{ language, handleLanguageChange }}>
     <Router>
       <div>
@@ -53,6 +55,7 @@ function App() {
       </div>
     </Router>
     </LanguageProvider>
+    </MyProvider>
   );
 }
 

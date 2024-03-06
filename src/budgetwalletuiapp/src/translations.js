@@ -19,6 +19,7 @@ const translations = {
       lbl_repeatPassword: "Repeat Password:",
       err_noServerResponse: 'No response from the server',
       err_error: 'Error: ',
+      toast_registerSuccess: 'Registration successful.',
     },
     pl: {
       btn_logout: "Wyloguj",
@@ -40,6 +41,7 @@ const translations = {
       lbl_repeatPassword: "Powtórz Hasło:",
       err_noServerResponse: 'Brak odpowiedzi z serwera',
       err_error: 'Błąd: ',
+      toast_registerSuccess: 'Rejestracja zakończona.',
     }
   };
   
