@@ -28,6 +28,9 @@
 ### Day 5
 * first deploy on Azure
 
+### Day 6
+* register user
+
 
 
 
