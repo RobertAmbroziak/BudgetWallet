@@ -3,7 +3,7 @@
     public enum TransferType
     {
         Deposit,
-        Withdrawal,
+        Expense,
         InternalTransfer
     }
 }

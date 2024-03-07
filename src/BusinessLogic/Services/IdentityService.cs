@@ -116,12 +116,11 @@ namespace BusinessLogic.Services
 
             var claims = new[]
             {
+                new Claim(ClaimTypes.Sid, user.Id.ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.UserName),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, user.UserRole.ToString())
             };
-
-            var expDate = DateTime.Now.AddMinutes(2);
 
             var token = new JwtSecurityToken(
                 _config["Jwt:Issuer"],
@@ -144,6 +143,7 @@ namespace BusinessLogic.Services
 
                 var result = new UserDto
                 {
+                    Id = Convert.ToInt32(userClaims.FirstOrDefault(u => u.Type == ClaimTypes.Sid)?.Value),
                     UserName = userClaims.FirstOrDefault(u => u.Type == ClaimTypes.NameIdentifier)?.Value,
                     Email = userClaims.FirstOrDefault(u => u.Type == ClaimTypes.Email)?.Value,
                     UserRole = Enum.Parse<UserRole>(userClaims.FirstOrDefault(u => u.Type == ClaimTypes.Role)?.Value)

@@ -33,7 +33,12 @@ In my efforts to control expenses and manage the household budget, I have tried 
   - :heavy_check_mark: go to Register
   - :heavy_check_mark: login by Google
   - :x: login by FB, Microsoft, GitHub etc.
-  - :x: register
+  - :white_square_button: register
+	- :heavy_check_mark: register user form
+	- :heavy_check_mark: success toast
+	- :heavy_check_mark: bad request informations
+	- :heavy_check_mark: clearing form
+	- :x: sending email confirmation
   - :x: remember me
   - :x: forgot password
 - :black_square_button: More...

@@ -30,6 +30,12 @@
 
 ### Day 6
 * register user
+* react-tostify for success register
+* clearing register form and info from register bad request
+
+### Day 7
+* first steps to return splits of transfer by filter
+
 
 
 
