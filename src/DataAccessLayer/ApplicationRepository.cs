@@ -23,8 +23,8 @@ namespace DataAccessLayer
         {
             var conditions = new Dictionary<string, object>();
 
-            conditions.Add(nameof(SplitDto.Transfer.TransferType), TransferType.Expense);
-            conditions.Add(nameof(SplitDto.Transfer.BudgetId), splitsRequest.BudgetId);
+            conditions.Add($"{nameof(SplitDto.Transfer)}.{nameof(TransferDto.TransferType)}", TransferType.Expense);
+            conditions.Add($"{nameof(SplitDto.Transfer)}.{nameof(TransferDto.BudgetId)}", splitsRequest.BudgetId);
 
             if (splitsRequest.BudgetPeriodId != null)
             {
@@ -43,7 +43,7 @@ namespace DataAccessLayer
 
             if (splitsRequest.AccountId != null)
             {
-                conditions.Add(nameof(SplitDto.Transfer.SourceAccountId), splitsRequest.AccountId);
+                conditions.Add($"{nameof(SplitDto.Transfer)}.{nameof(TransferDto.SourceAccountId)}", splitsRequest.AccountId);
             }
 
             if (splitsRequest.CategoryId != null)

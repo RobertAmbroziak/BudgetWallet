@@ -103,7 +103,7 @@ namespace DataAccessLayer.Generic
 
             foreach (var kvp in conditions)
             {
-                PropertyInfo property = typeof(TEntity).GetProperty(kvp.Key);
+                PropertyInfo property = GetNestedProperty(typeof(TEntity), kvp.Key);
                 if (property == null)
                 {
                     throw new ArgumentException($"Pole {kvp.Key} nie istnieje w klasie {typeof(TEntity).Name}.");
@@ -124,6 +124,21 @@ namespace DataAccessLayer.Generic
             }
 
             return Expression.Lambda<Func<TEntity, bool>>(condition, param);
+        }
+
+        private PropertyInfo GetNestedProperty(Type sourceType, string propertyName)
+        {
+            PropertyInfo property = null;
+            foreach (string part in propertyName.Split('.'))
+            {
+                if (sourceType == null) return null;
+
+                property = sourceType.GetProperty(part);
+                if (property == null) return null;
+
+                sourceType = property.PropertyType;
+            }
+            return property;
         }
     }
 }

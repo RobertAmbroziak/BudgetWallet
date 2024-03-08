@@ -36,6 +36,9 @@
 ### Day 7
 * first steps to return splits of transfer by filter
 
+### Day 8
+* generic repository tests and fixes
+
 
 
 
