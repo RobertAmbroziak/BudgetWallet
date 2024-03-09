@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.Generic;
+using Microsoft.EntityFrameworkCore;
 using Model.Application;
 using Model.Tables;
 using System.Linq.Expressions;
@@ -53,7 +54,10 @@ namespace DataAccessLayer
 
             Expression<Func<SplitDto, bool>> filter = BuildDynamicCondition<SplitDto>(conditions);
 
-            return await FilterAsync(filter);
+            return await _context.Set<SplitDto>()
+                .Include(e => e.Transfer).ThenInclude(t => t.SourceAccount)
+                .Include(e => e.Category)
+                .Where(filter).ToListAsync();
         }
     }
 }

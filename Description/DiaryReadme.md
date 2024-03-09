@@ -39,6 +39,12 @@
 ### Day 8
 * generic repository tests and fixes
 
+### Day 9
+* password hashed , register validator extension
+
+### Day 10
+* GetSplits run by swagger with success
+
 
 
 

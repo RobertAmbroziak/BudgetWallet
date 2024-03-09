@@ -30,13 +30,13 @@ namespace BusinessLogic.Services
                reszta parametrów nie ma znaczenia, najwyżej nie zwrócimy danych jeśli konto, period czy kategoria będą nienależały do niego 
              */
 
-            var budget = await _applicationRepository.GetByIdAsync<BudgetDto>(splitsRequest.BudgetId);
-            var user = await _identityService.GetCurrentUser();
+            //var budget = await _applicationRepository.GetByIdAsync<BudgetDto>(splitsRequest.BudgetId);
+            //var user = await _identityService.GetCurrentUser();
 
-            if (budget.UserId != user.Id)
-            {
-                new BadHttpRequestException("Selected budget does not belong to the user.");
-            }
+            //if (budget.UserId != user.Id)
+            //{
+            //    new BadHttpRequestException("Selected budget does not belong to the user.");
+            //}
 
             var spiltDtos = await _applicationRepository.GetSplits(splitsRequest);
 

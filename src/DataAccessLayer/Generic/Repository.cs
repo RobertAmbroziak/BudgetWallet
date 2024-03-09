@@ -103,42 +103,55 @@ namespace DataAccessLayer.Generic
 
             foreach (var kvp in conditions)
             {
-                PropertyInfo property = GetNestedProperty(typeof(TEntity), kvp.Key);
-                if (property == null)
+                if (kvp.Key.Contains("."))
                 {
-                    throw new ArgumentException($"Pole {kvp.Key} nie istnieje w klasie {typeof(TEntity).Name}.");
-                }
+                    string[] parts = kvp.Key.Split('.');
+                    string nestedPropertyName = parts[0];
+                    string nestedPropertyNestedName = parts[1];
 
-                MemberExpression propertyAccess = Expression.Property(param, property);
-                ConstantExpression value = Expression.Constant(kvp.Value);
-                BinaryExpression binaryExpression = Expression.Equal(propertyAccess, value);
+                    PropertyInfo nestedProperty = typeof(TEntity).GetProperty(nestedPropertyName);
+                    PropertyInfo nestedPropertyNested = nestedProperty.PropertyType.GetProperty(nestedPropertyNestedName);
 
-                if (condition == null)
-                {
-                    condition = binaryExpression;
+                    Expression nestedPropertyAccess = Expression.Property(param, nestedProperty);
+                    Expression nestedPropertyNestedAccess = Expression.Property(nestedPropertyAccess, nestedPropertyNested);
+
+                    ConstantExpression value = Expression.Constant(kvp.Value);
+
+                    BinaryExpression binaryExpression = Expression.Equal(nestedPropertyNestedAccess, value);
+
+                    if (condition == null)
+                    {
+                        condition = binaryExpression;
+                    }
+                    else
+                    {
+                        condition = Expression.AndAlso(condition, binaryExpression);
+                    }
                 }
                 else
                 {
-                    condition = Expression.AndAlso(condition, binaryExpression);
+                    PropertyInfo property = typeof(TEntity).GetProperty(kvp.Key);
+                    if (property == null)
+                    {
+                        throw new ArgumentException($"Pole {kvp.Key} nie istnieje w klasie {typeof(TEntity)}.");
+                    }
+
+                    MemberExpression propertyAccess = Expression.Property(param, property);
+                    ConstantExpression value = Expression.Constant(kvp.Value);
+                    BinaryExpression binaryExpression = Expression.Equal(propertyAccess, value);
+
+                    if (condition == null)
+                    {
+                        condition = binaryExpression;
+                    }
+                    else
+                    {
+                        condition = Expression.AndAlso(condition, binaryExpression);
+                    }
                 }
             }
 
             return Expression.Lambda<Func<TEntity, bool>>(condition, param);
-        }
-
-        private PropertyInfo GetNestedProperty(Type sourceType, string propertyName)
-        {
-            PropertyInfo property = null;
-            foreach (string part in propertyName.Split('.'))
-            {
-                if (sourceType == null) return null;
-
-                property = sourceType.GetProperty(part);
-                if (property == null) return null;
-
-                sourceType = property.PropertyType;
-            }
-            return property;
         }
     }
 }
