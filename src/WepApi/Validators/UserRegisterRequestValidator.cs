@@ -15,10 +15,14 @@ namespace WepApi.Validators
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("Email jest wymagany.")
                 .EmailAddress().WithMessage("Nieprawidłowy format adresu email.")
+                .MinimumLength(6).WithMessage("Email musi mieć co najmniej 6 znaków.")
+                .MaximumLength(200).WithMessage("Email nie może być dłuższy niż 200 znaków.")
                 .MustAsync(async (email, cancellationToken) => await BeUniqueEmail(email)).WithMessage("Adres email jest już zajęty.");
 
             RuleFor(x => x.UserName)
                 .NotEmpty().WithMessage("Nazwa użytkownika jest wymagana.")
+                .MinimumLength(3).WithMessage("Nazwa użytkownika musi mieć co najmniej 3 znaki")
+                .MaximumLength(50).WithMessage("Nazwa użytkownika nie może być dłuższa niż 50 znaków.")
                 .MustAsync(async (userName, cancellationToken) => await BeUniqueUserName(userName)).WithMessage("Nazwa użytkownika jest już zajęta.");
 
             RuleFor(x => x.Password)
