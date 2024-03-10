@@ -23,7 +23,7 @@ namespace WepApi.Controllers
         public async Task<IActionResult> UsersPanel()
         {
             var currentUser = await _identityService.GetCurrentUser();
-            return Ok($"Cześc {currentUser.UserName}, jesteś w panelu USER , posiadasz rolę {currentUser.UserRole}");
+            return Ok($"Cześć {currentUser.UserName}, jesteś w panelu USER , posiadasz rolę {currentUser.UserRole}");
         }
 
         [HttpGet("Splits")]

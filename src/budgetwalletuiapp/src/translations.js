@@ -20,6 +20,7 @@ const translations = {
       err_noServerResponse: 'No response from the server',
       err_error: 'Error: ',
       toast_registerSuccess: 'Registration successful.',
+      err_passwordMismatch: 'Password Mismatch',
     },
     pl: {
       btn_logout: "Wyloguj",
@@ -29,19 +30,20 @@ const translations = {
       lbl_applicationPanel: "APLIKACJA",
       lbl_userAccount: "KONTO UŻYTKOWNIKA",
       btn_close: "ZAMKNIJ",
-      lbl_emailOrUserName: "Email lub UserName",
+      lbl_emailOrUserName: "Email lub Nazwa Użytkownika",
       lbl_password: "Hasło",
       lbl_forgotPassword: "Nie pamiętasz hasła ?",
       lbl_signIn: "Zaloguj",
       lbl_notMember: "Nie posiadasz konta ?",
       lbl_register: "Zarejestruj się",
       lbl_signUpWith: "lub zaloguj za pomocą:",
-      lbl_userName: "UserName:",
+      lbl_userName: "Nazwa Użytkownika:",
       lbl_email: "Email:",
       lbl_repeatPassword: "Powtórz Hasło:",
       err_noServerResponse: 'Brak odpowiedzi z serwera',
       err_error: 'Błąd: ',
       toast_registerSuccess: 'Rejestracja zakończona.',
+      err_passwordMismatch: 'Podano różne hasła',
     }
   };
   

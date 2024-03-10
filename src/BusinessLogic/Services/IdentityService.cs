@@ -32,7 +32,11 @@ namespace BusinessLogic.Services
                     (x.UserName == userLogin.EmailOrUserName || x.Email == userLogin.EmailOrUserName)
                     && x.HashedPassword == GetHashedPassword(userLogin.Password) && x.Provider == Provider.Application)).SingleOrDefault();
 
-            // dodatkowo sprawdź czy active jeśli nie to specjalny błąd
+            if (user != null && user.IsActive == false)
+            {
+                throw new InvalidCastException();
+            }
+
             return user;
         }
 

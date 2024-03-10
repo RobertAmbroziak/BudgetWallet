@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using BusinessLogic.Abstractions;
 using Model.Identity;
 using FluentValidation;
+using Model.CustomExceptions;
 
 namespace WepApi.Controllers
 {
@@ -23,13 +24,20 @@ namespace WepApi.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] UserLoginRequest userLogin)
         {
-            var user = await _identityService.Authenticate(userLogin);
-            if (user != null)
+            try
             {
-                var token = await _identityService.GenerateToken(user);
-                return Ok(token);
+                var user = await _identityService.Authenticate(userLogin);
+                if (user != null)
+                {
+                    var token = await _identityService.GenerateToken(user);
+                    return Ok(token);
+                }
+                return NotFound("Błędna nazwa użytkownika lub hasło");
             }
-            return NotFound("User not found");
+            catch(InactiveUserException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 		
 		[AllowAnonymous]

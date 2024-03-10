@@ -17,10 +17,11 @@ export default function LoginModal({ isOpen, handleClose, onSetToken }) {
     const { language } = useLanguage();
     const [showRegister, setShowRegister] = useState(false);
     const [registerAlerts, setRegisterAlerts] = useState([]);
+    const [loginAlerts, setLoginAlerts] = useState([]);
 
     const toggleOpen = () => {
         setShowRegister(false);
-        clearRegisterAlerts();
+        clearRegisterAndLoginAlerts();
         handleClose();
         };
     
@@ -28,8 +29,9 @@ export default function LoginModal({ isOpen, handleClose, onSetToken }) {
       onSetToken(token);
     };
     
-    const clearRegisterAlerts = () => {
+    const clearRegisterAndLoginAlerts = () => {
       setRegisterAlerts([]);
+      setLoginAlerts([]);
     };
 
   return (
@@ -49,6 +51,8 @@ export default function LoginModal({ isOpen, handleClose, onSetToken }) {
                   setShowRegister={setShowRegister}
                   setRegisterAlerts = {setRegisterAlerts}
                   registerAlerts = {registerAlerts}
+                  setLoginAlerts = {setLoginAlerts}
+                  loginAlerts = {loginAlerts}
                 />
             </MDBModalBody>
             <MDBModalFooter>

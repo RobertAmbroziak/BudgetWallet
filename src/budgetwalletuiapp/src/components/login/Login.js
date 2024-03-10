@@ -25,7 +25,7 @@ import context from '../../context';
     });
   }
 
-  function Login({onClose, onSetToken, showRegister, setShowRegister, setRegisterAlerts, registerAlerts}) {
+  function Login({onClose, onSetToken, showRegister, setShowRegister, setRegisterAlerts, registerAlerts, setLoginAlerts, loginAlerts}) {
     
     const [emailOrUserName, setEmailOrUserName] = useState('');
     const [password, setPassword] = useState('');
@@ -74,37 +74,64 @@ import context from '../../context';
       },
     });
 
-    const standardLogin = (() =>{
-      return axios.post(`${config.API_BASE_URL}${config.API_ENDPOINTS.LOGIN}`, {emailOrUserName: emailOrUserName, password: password })
-      .then(response => {
+    const standardLogin = (async () =>{
+      try{
+        const response = await axios.post(`${config.API_BASE_URL}${config.API_ENDPOINTS.LOGIN}`, {emailOrUserName: emailOrUserName, password: password })
+        
         onSetToken(response.data);
         onClose();
         navigate('/user');
-      })
-      .catch(error => {
-        navigate('/');
-      });
+      }
+      catch (error){
+        if (error.response) {
+          const errorMsg = error.response.data;
+          setLoginAlerts(
+            <div className="p-2 mb-2 bg-danger bg-gradient text-white rounded-5" style={{fontSize: "smaller"}}>{errorMsg}</div>
+          );
+        } else if (error.request) {
+          const errorMsg = translations[language].err_noServerResponse;
+          setLoginAlerts(
+            <div className="p-2 mb-2 bg-danger bg-gradient text-white rounded-5" style={{fontSize: "smaller"}}>{errorMsg}</div>
+          );
+        } else {
+          const errorMsg = translations[language].err_error + error.message;
+          setLoginAlerts(
+            <div className="p-2 mb-2 bg-danger bg-gradient text-white rounded-5" style={{fontSize: "smaller"}}>{errorMsg}</div>
+          );
+        }
+      }
     });
 
     const handleRegisterClick = () => {
       setShowRegister(true);
     };
 
-    const register = (() =>{
-      return axios.post(`${config.API_BASE_URL}${config.API_ENDPOINTS.REGISTER}`, { userName: registerUserName, email: registerEmail, password: registerPassword })
-      .then(response => {
+    const register = (async () =>{
+      try
+      {
+        if (registerPassword !== registerRepeatPassword) {
+          const passwordMismatchError = translations[language].err_passwordMismatch;
+          setRegisterAlerts(
+            <div className="p-2 mb-2 bg-danger bg-gradient text-white rounded-5" style={{fontSize: "smaller"}}>{passwordMismatchError}</div>
+          );
+          return;
+        }
+
+        const response = await axios.post(`${config.API_BASE_URL}${config.API_ENDPOINTS.REGISTER}`, { userName: registerUserName, email: registerEmail, password: registerPassword });
+    
         onSetToken(response.data);
         clearRegisterForm();
         onClose();
         setShowRegister(false);
         navigate('/');
         notifyRegisterSuccess();
-      })
-      .catch(error => {
+      } 
+      catch (error)
+      {
         if (error.response) {
           const errors = error.response.data;
-          setRegisterAlerts(errors.map((item) => (
-            <div className="p-2 mb-2 bg-danger bg-gradient text-white rounded-5" style={{fontSize: "smaller"}}>{item}</div>
+          setRegisterAlerts(errors.map((item, index) => (
+            <div key={index} className="p-2 mb-2 bg-danger bg-gradient text-white rounded-5" style={{fontSize: "smaller"}}>{item}</div>
           )));
         } else if (error.request) {
           const errors = translations[language].err_noServerResponse;
@@ -117,8 +144,7 @@ import context from '../../context';
             <div className="p-2 mb-2 bg-danger bg-gradient text-white rounded-5" style={{fontSize: "smaller"}}>{errors}</div>
           );
         }
-        //navigate('/');
-      });
+      }
     });
 
     const clearRegisterForm = () => {
@@ -169,6 +195,7 @@ import context from '../../context';
               </MDBBtn>
             </div>
           </div>
+          <div id='loginAlerts'>{loginAlerts}</div>
         </>
       ) :(
         <>
