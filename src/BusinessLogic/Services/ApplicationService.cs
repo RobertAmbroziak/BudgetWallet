@@ -24,19 +24,13 @@ namespace BusinessLogic.Services
 
         public async Task<SplitsResponse> GetSplitsResponse(SplitsRequest splitsRequest)
         {
-            /* 
-               TODO:  nawet jeśli user jest uwierzytelniony to nie mamy pewności że pyta o swoje dane
-               BudgetID to parametr który musi być podany, więc chyba wystarczy sprawdzić czy to ID należy do tego Usera
-               reszta parametrów nie ma znaczenia, najwyżej nie zwrócimy danych jeśli konto, period czy kategoria będą nienależały do niego 
-             */
+            var budget = await _applicationRepository.GetByIdAsync<BudgetDto>(splitsRequest.BudgetId);
+            var user = await _identityService.GetCurrentUser();
 
-            //var budget = await _applicationRepository.GetByIdAsync<BudgetDto>(splitsRequest.BudgetId);
-            //var user = await _identityService.GetCurrentUser();
-
-            //if (budget.UserId != user.Id)
-            //{
-            //    new BadHttpRequestException("Selected budget does not belong to the user.");
-            //}
+            if (budget.UserId != user.Id)
+            {
+                throw new BadHttpRequestException("Selected budget does not belong to the user.");
+            }
 
             var spiltDtos = await _applicationRepository.GetSplits(splitsRequest);
 

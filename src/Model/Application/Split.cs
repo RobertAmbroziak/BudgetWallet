@@ -19,5 +19,8 @@
 
         public int OrderId { get; set; }
         public decimal Percentage { get; set; }
+
+        public string TransferDateFormated => TransferDate.ToString("yyyy-MM-dd HH:mm");
+        public string SplitValueFormated => SplitValue.ToString("N2");
     }
 }

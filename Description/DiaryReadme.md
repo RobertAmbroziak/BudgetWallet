@@ -45,6 +45,11 @@
 ### Day 10
 * GetSplits run by swagger with success
 
+### Day 11
+* GetSplits on Front
+* GoogleLogin problems
+* Added react-super-responsive-table
+
 
 
 

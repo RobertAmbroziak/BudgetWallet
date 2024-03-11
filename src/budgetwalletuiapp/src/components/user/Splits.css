@@ -1,0 +1,13 @@
+.bwtable {
+    border: 2px solid black;
+    max-width: 90%;
+    margin: 0 auto;
+}
+.bwtable th {
+    border: 1px solid black;
+    padding: 8px;
+}
+.bwtable td {
+  border: 1px solid black;
+  padding: 8px;
+}

@@ -15,12 +15,14 @@ import { useLanguage } from '../../LanguageContext';
 import translations from '../../translations';
 import context from '../../context';
 
-  function authenticate(token, onSetToken) {
+  async function authenticate(token, onSetToken) {
     return axios.post(`${config.API_BASE_URL}${config.API_ENDPOINTS.GOOGLE_LOGIN}`, {token: token})
     .then(response => {
+      console.log('test5');
       onSetToken(response.data);
     })
     .catch(error => {
+      console.log('test6');
       throw error;
     });
   }
@@ -64,8 +66,11 @@ import context from '../../context';
     const googleLogin = useGoogleLogin({
       onSuccess: async (tokenResponse) => 
       {
+        console.log('test1');
         try{
+            console.log('test2');
             await authenticate(tokenResponse.access_token, onSetToken);
+            console.log('test3');
             onClose();
             navigate('/user');
         } catch (error) {

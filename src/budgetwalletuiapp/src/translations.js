@@ -21,6 +21,15 @@ const translations = {
       err_error: 'Error: ',
       toast_registerSuccess: 'Registration successful.',
       err_passwordMismatch: 'Password Mismatch',
+      hdr_Split: 'Split',
+      hdr_Transfer: 'Transfer',
+      hdr_Category: 'Category',
+      hdr_Account: 'Account',
+      hdr_Date: 'Date',
+      hdr_Value: 'Value',
+      btn_Expenses: 'Expenses',
+      btn_Edit: 'Edit',
+      btn_Config: 'Configure',
     },
     pl: {
       btn_logout: "Wyloguj",
@@ -44,6 +53,15 @@ const translations = {
       err_error: 'Błąd: ',
       toast_registerSuccess: 'Rejestracja zakończona.',
       err_passwordMismatch: 'Podano różne hasła',
+      hdr_Split: 'Podział',
+      hdr_Transfer: 'Transfer',
+      hdr_Category: 'Kategoria',
+      hdr_Account: 'Konto',
+      hdr_Date: 'Data',
+      hdr_Value: 'Wartość',
+      btn_Expenses: 'Wydatki',
+      btn_Edit: 'Edycja',
+      btn_Config: 'Konfiguracja',
     }
   };
   
