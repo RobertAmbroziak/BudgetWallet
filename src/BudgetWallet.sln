@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessLogic", "BusinessLo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessLayer", "DataAccessLayer\DataAccessLayer.csproj", "{8F69B821-5E5E-455E-8BA9-BB79B810CC29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Util", "Util\Util.csproj", "{AD0DDD55-C2F2-43A3-A695-93E292AB0F6A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Util", "Util\Util.csproj", "{AD0DDD55-C2F2-43A3-A695-93E292AB0F6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mocks", "Mocks\Mocks.csproj", "{D15F445B-A07D-470E-9AB2-83E7AEAAF383}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{AD0DDD55-C2F2-43A3-A695-93E292AB0F6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD0DDD55-C2F2-43A3-A695-93E292AB0F6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD0DDD55-C2F2-43A3-A695-93E292AB0F6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D15F445B-A07D-470E-9AB2-83E7AEAAF383}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D15F445B-A07D-470E-9AB2-83E7AEAAF383}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D15F445B-A07D-470E-9AB2-83E7AEAAF383}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D15F445B-A07D-470E-9AB2-83E7AEAAF383}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
