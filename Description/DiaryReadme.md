@@ -50,6 +50,10 @@
 * GoogleLogin problems
 * Added react-super-responsive-table
 
+### Day 12
+* MockDataCreator - helper for create test data
+
+
 
 
 
