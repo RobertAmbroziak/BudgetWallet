@@ -56,6 +56,8 @@
 ### Day 13
 * Work review and planning
 
+### Day 14
+* Added backend for filter for GetSplits
 
 
 

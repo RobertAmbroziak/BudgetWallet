@@ -22,6 +22,13 @@ namespace Mocks.MockData
                 budgetCategories.Add(budgetCategory);
             }
 
+            var sumOfBudgetCategories = budgetCategories.Sum(x => x.MaxValue);
+            if(budgetValue != sumOfBudgetCategories)
+            {
+                var firstBudgetCategory = budgetCategories.First();
+                firstBudgetCategory.MaxValue += (budgetValue - sumOfBudgetCategories);
+            }
+
             return budgetCategories;
         }
     }

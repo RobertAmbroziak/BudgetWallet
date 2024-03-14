@@ -8,5 +8,6 @@ namespace DataAccessLayer
     {
         Task<IEnumerable<SplitDto>> GetSplits(SplitsRequest splitsRequest);
         Task AddTransferWithSplits(TransferDto transfer);
+        Task AddMockData(IEnumerable<BudgetDto> budgets, IEnumerable<AccountDto> accounts);
     }
 }

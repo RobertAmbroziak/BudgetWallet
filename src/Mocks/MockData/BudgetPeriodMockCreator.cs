@@ -11,7 +11,7 @@ namespace Mocks.MockData
             DateTime periodStart = budgetValidFrom;
             DateTime periodEnd = periodStart.AddDays(7);
 
-            while (periodStart <= budgetValidTo)
+            while (periodStart < budgetValidTo)
             {
                 if (periodEnd > budgetValidTo)
                     periodEnd = budgetValidTo;

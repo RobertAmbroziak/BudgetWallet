@@ -32,5 +32,25 @@ namespace WepApi.Controllers
             var splitsResponse = await _applicationService.GetSplitsResponse(splitsRequest);
             return Ok(splitsResponse);
         }
+
+        [HttpGet("MockDataCreate")]
+        public async Task<ActionResult> CreateMockData()
+        {
+            try 
+            {
+                await _applicationService.AddMockData();
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("filter")]
+        public async Task<ActionResult<Filter>> GetFilter()
+        {
+            return await _applicationService.GetFilter();
+        }
     }
 }

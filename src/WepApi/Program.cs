@@ -1,11 +1,14 @@
 using BusinessLogic.Abstractions;
 using BusinessLogic.Services;
+using BusinessLogic.Services.Mappers;
 using DataAccessLayer;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Model.Application;
 using Model.Identity;
+using Model.Tables;
 using System.Text;
 using WepApi.Validators;
 
@@ -19,7 +22,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin", builder =>
     {
-        builder.WithOrigins(new string[] { "http://localhost:3000", "https://budgetwallet.azurewebsites.net" })
+        builder.WithOrigins(new string[] { "https://budgetwallet.azurewebsites.net", "http://localhost:3000" })
                .AllowAnyHeader()
                .AllowAnyMethod();
     });
@@ -52,6 +55,11 @@ builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
 builder.Services.AddScoped<IValidator<UserRegisterRequest>, UserRegisterRequestValidator>();
+
+builder.Services.AddSingleton<IMapperService<BudgetDto, Budget>, BudgetMapper>();
+builder.Services.AddSingleton<IMapperService<BudgetPeriodDto, BudgetPeriod>, BudgetPeriodMapper>();
+builder.Services.AddSingleton<IMapperService<CategoryDto, Category>, CategoryMapper>();
+builder.Services.AddSingleton<IMapperService<AccountDto, Account>, AccountMapper>();
 
 var app = builder.Build();
 

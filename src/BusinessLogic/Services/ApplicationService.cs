@@ -4,22 +4,38 @@ using Microsoft.AspNetCore.Http;
 using DataAccessLayer;
 using Model.Application;
 using Model.Tables;
+using Mocks.MockData;
 
 namespace BusinessLogic.Services
 {
     public class ApplicationService : IApplicationService
     {
-        private readonly IConfiguration _config;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IApplicationRepository _applicationRepository;
         private readonly IIdentityService _identityService;
 
-        public ApplicationService(IHttpContextAccessor httpContextAccessor, IConfiguration config, IApplicationRepository applicationRepository, IIdentityService identityService)
+        private readonly IMapperService<BudgetDto, Budget> _budgetMapper;
+        private readonly IMapperService<BudgetPeriodDto, BudgetPeriod> _budgetPeriodMapper;
+        private readonly IMapperService<CategoryDto, Category> _categoryMapper;
+        private readonly IMapperService<AccountDto, Account> _accountMapper;
+
+        public ApplicationService
+        (
+            IApplicationRepository applicationRepository,
+            IIdentityService identityService,
+
+            IMapperService<BudgetDto, Budget> budgetMapper,
+            IMapperService<BudgetPeriodDto, BudgetPeriod> budgetPeriodMapper,
+            IMapperService<CategoryDto, Category> categoryMapper,
+            IMapperService<AccountDto, Account> accountMapper
+        )
         {
-            _httpContextAccessor = httpContextAccessor;
-            _config = config;
             _applicationRepository = applicationRepository;
             _identityService = identityService;
+
+            _budgetMapper = budgetMapper;
+            _budgetPeriodMapper = budgetPeriodMapper;
+            _categoryMapper = categoryMapper;
+            _accountMapper = accountMapper;
         }
 
         public async Task<SplitsResponse> GetSplitsResponse(SplitsRequest splitsRequest)
@@ -79,6 +95,55 @@ namespace BusinessLogic.Services
             };
 
             return splitsResponse;
+        }
+
+        public async Task AddMockData()
+        {
+            var user = await _identityService.GetCurrentUser();
+
+            var isUserAccountsExist = await _applicationRepository.Any<AccountDto>(x => x.UserId == user.Id);
+            var isUserBudgetsExist = await _applicationRepository.Any<BudgetDto>(x => x.UserId == user.Id);
+
+            if (isUserAccountsExist && isUserBudgetsExist)
+            {
+                throw new Exception("Istnieją już konta i budżety dla tego użytkownika");
+            }
+
+            IEnumerable<AccountDto> accountMock = null;
+            IEnumerable<BudgetDto> budgetMock = null;
+
+            if (!isUserAccountsExist)
+            {
+                accountMock = AccountMockCreator.CreateAccounts(user.Id);
+            }
+
+            if (!isUserBudgetsExist)
+            {
+                var budgetMockCreator = new BudgetMockCreator(DateTime.Now);
+                budgetMock = budgetMockCreator.CreateBudgets(user.Id);
+            }
+
+            await _applicationRepository.AddMockData(budgetMock, accountMock);
+        }
+
+        public async Task<Filter> GetFilter()
+        {
+            var user = await _identityService.GetCurrentUser();
+
+            var budgets = await _applicationRepository.FilterAsync<BudgetDto>(x => x.UserId == user.Id);
+            var currentBudget = budgets.FirstOrDefault(x => x.ValidFrom <= DateTime.Now && x.ValidTo > DateTime.Now);
+            var budgetPeriods = await _applicationRepository.FilterAsync<BudgetPeriodDto>(x => x.BudgetId == currentBudget.Id);
+            var categories = await _applicationRepository.FilterAsync<CategoryDto>(x => x.UserId == user.Id);
+            var accounts = await _applicationRepository.FilterAsync<AccountDto>(x => x.UserId == user.Id);
+
+            return new Filter
+            {
+                CurrentBudgetId = currentBudget.Id,
+                Budgets = _budgetMapper.Map(budgets),
+                BudgetPeriods = _budgetPeriodMapper.Map(budgetPeriods),
+                Categories = _categoryMapper.Map(categories),
+                Accounts = _accountMapper.Map(accounts)
+            };
         }
     }
 }

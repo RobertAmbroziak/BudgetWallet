@@ -33,6 +33,7 @@ namespace Mocks.MockData
                 
                 var budget = new BudgetDto
                 {
+                    UserId = userId,
                     Name = name,
                     Description = name,
                     ValidFrom = new DateTime(currentYear, currentMonth, 1, 0, 0, 0),
@@ -48,7 +49,7 @@ namespace Mocks.MockData
         }
 
         private int IncrementYear(int index) => (_month + index) > 12 ? _year + 1 : _year;
-        private int IncrementMonth(int index) => (_month + index) > 12 ? _month + index - 12 : _month;
+        private int IncrementMonth(int index) => (_month + index) > 12 ? _month + index - 12 : _month + index;
         private string StringifyMonth(int month) => month < 10 ? "0" + month : month.ToString();
     }
 }

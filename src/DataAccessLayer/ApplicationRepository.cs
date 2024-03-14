@@ -59,5 +59,33 @@ namespace DataAccessLayer
                 .Include(e => e.Category)
                 .Where(filter).ToListAsync();
         }
+
+        public async Task AddMockData(IEnumerable<BudgetDto> budgets, IEnumerable<AccountDto> accounts)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    foreach(var account in accounts)
+                    {
+                        await InsertAsync(account);
+                    }
+
+                    foreach (var budget in budgets)
+                    {
+                        await InsertAsync(budget);
+                    }
+
+                    await SaveChangesAsync();
+
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
     }
 }
