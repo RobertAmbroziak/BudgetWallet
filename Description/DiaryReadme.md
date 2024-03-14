@@ -58,6 +58,7 @@
 
 ### Day 14
 * Added backend for filter for GetSplits
+* Fix and run mockCreator to fill database
 
 
 
