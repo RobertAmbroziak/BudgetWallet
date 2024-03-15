@@ -61,6 +61,13 @@
 * Fix and run mockCreator to fill database
 * First screens of application in readme
 
+### Day 15
+* First steps with Stats, GetSplitsFilter and Splits (FE)
+* Added Material UI and used instead of MDB
+* No final success
+
+
+
 
 
 
