@@ -52,5 +52,12 @@ namespace WepApi.Controllers
         {
             return await _applicationService.GetFilter();
         }
+
+        [HttpGet("filterBudgetPeriods/{budgetId}")]
+        public async Task<ActionResult<IEnumerable<BudgetPeriod>>> GetFilterBudgetPeriods([FromRoute] int budgetId)
+        {
+            var result = await _applicationService.GetBudgetPeriodsByBudgetId(budgetId);
+            return Ok(result);
+        }
     }
 }

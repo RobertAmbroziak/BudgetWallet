@@ -7,5 +7,6 @@ namespace BusinessLogic.Abstractions
         Task<SplitsResponse> GetSplitsResponse(SplitsRequest splitsRequest);
         Task AddMockData();
         Task<Filter> GetFilter();
+        Task<IEnumerable<BudgetPeriod>> GetBudgetPeriodsByBudgetId(int budgetId);
     }
 }

@@ -46,7 +46,7 @@ In my efforts to control expenses and manage the household budget, I have tried 
  - :heavy_check_mark: buttons - expenses, add, administration
  - :white_square_button: expenses
    - :heavy_check_mark: get expenses(splits)
-   - :x: filter for get expenses -> data for filter and filter manipulation
+   - :heavy_check_mark: filter for get expenses -> data for filter and filter manipulation
    - :x: data for summary and presentation summary
    - :x: data for chart and chart
    - :x: more details of data row

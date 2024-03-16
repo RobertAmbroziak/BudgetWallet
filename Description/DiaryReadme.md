@@ -64,7 +64,12 @@
 ### Day 15
 * First steps with Stats, GetSplitsFilter and Splits (FE)
 * Added Material UI and used instead of MDB
-* No final success
+* No final success :(
+
+### Day 16
+* Not beautiful, but it works :)
+
+<img src="Description/Images/sc8.PNG" alt="Image 8" height="300px" style="width:auto;">
 
 
 

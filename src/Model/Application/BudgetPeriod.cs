@@ -7,6 +7,18 @@
         public DateTime ValidFrom { get; set; }
         public DateTime ValidTo { get; set; }
 
-        public string Name => $"{ValidFrom.ToString("yyMMdd")}-{ValidFrom.ToString("yyMMdd")}"; 
+        public string Name => GetName();
+
+        private string GetName()
+        {
+            if (ValidFrom.Year == ValidTo.Year)
+            {
+                return $"({ValidFrom.Year}) {ValidFrom.ToString("MM-dd")} {ValidTo.ToString("MM-dd")}";
+            }
+            else
+            {
+                return $"{ValidFrom.ToString("yy-MM-dd")} {ValidTo.ToString("yy-MM-dd")}";
+            }
+        }
     }
 }

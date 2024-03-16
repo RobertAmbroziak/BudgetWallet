@@ -1,5 +1,4 @@
 ﻿using BusinessLogic.Abstractions;
-using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
 using DataAccessLayer;
 using Model.Application;
@@ -132,6 +131,10 @@ namespace BusinessLogic.Services
 
             var budgets = await _applicationRepository.FilterAsync<BudgetDto>(x => x.UserId == user.Id);
             var currentBudget = budgets.FirstOrDefault(x => x.ValidFrom <= DateTime.Now && x.ValidTo > DateTime.Now);
+            if (currentBudget == null)
+            {
+                budgets.FirstOrDefault();
+            }
             var budgetPeriods = await _applicationRepository.FilterAsync<BudgetPeriodDto>(x => x.BudgetId == currentBudget.Id);
             var categories = await _applicationRepository.FilterAsync<CategoryDto>(x => x.UserId == user.Id);
             var accounts = await _applicationRepository.FilterAsync<AccountDto>(x => x.UserId == user.Id);
@@ -144,6 +147,24 @@ namespace BusinessLogic.Services
                 Categories = _categoryMapper.Map(categories),
                 Accounts = _accountMapper.Map(accounts)
             };
+        }
+
+        public async Task<IEnumerable<BudgetPeriod>> GetBudgetPeriodsByBudgetId(int budgetId)
+        {
+            var user = await _identityService.GetCurrentUser();
+
+            var budget = await _applicationRepository.GetByIdAsync<BudgetDto>(budgetId);
+            if (budget == null)
+            {
+                throw new BadHttpRequestException($"Parameter BudgetId: {budgetId} is wrong.");
+            }
+            if (budget.UserId != user.Id)
+            {
+                throw new BadHttpRequestException("Selected budget does not belong to the user.");
+            }
+
+            var budgetPeriods = await _applicationRepository.FilterAsync<BudgetPeriodDto>(x => x.BudgetId == budgetId);
+            return _budgetPeriodMapper.Map(budgetPeriods);
         }
     }
 }

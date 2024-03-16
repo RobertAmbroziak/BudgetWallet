@@ -96,6 +96,7 @@ namespace DataAccessLayer.Generic
             return _context.SaveChangesAsync();
         }
 
+        /* TODO:  WTF ??? It works for now in my cases, but it's quite messy */
         protected Expression<Func<TEntity, bool>> BuildDynamicCondition<TEntity>(Dictionary<string, object> conditions) where TEntity : BaseDto
         {
             ParameterExpression param = Expression.Parameter(typeof(TEntity), "x");
@@ -109,23 +110,86 @@ namespace DataAccessLayer.Generic
                     string nestedPropertyName = parts[0];
                     string nestedPropertyNestedName = parts[1];
 
-                    PropertyInfo nestedProperty = typeof(TEntity).GetProperty(nestedPropertyName);
-                    PropertyInfo nestedPropertyNested = nestedProperty.PropertyType.GetProperty(nestedPropertyNestedName);
-
-                    Expression nestedPropertyAccess = Expression.Property(param, nestedProperty);
-                    Expression nestedPropertyNestedAccess = Expression.Property(nestedPropertyAccess, nestedPropertyNested);
-
-                    ConstantExpression value = Expression.Constant(kvp.Value);
-
-                    BinaryExpression binaryExpression = Expression.Equal(nestedPropertyNestedAccess, value);
-
-                    if (condition == null)
+                    if (kvp.Key.EndsWith(">= @0"))
                     {
-                        condition = binaryExpression;
+                        PropertyInfo nestedProperty = typeof(TEntity).GetProperty(nestedPropertyName);
+                        if (nestedProperty == null)
+                        {
+                            throw new ArgumentException($"Property {nestedPropertyName} does not exist in the class {typeof(TEntity)}.");
+                        }
+                        PropertyInfo nestedPropertyNested = nestedProperty.PropertyType.GetProperty(nestedPropertyNestedName.Replace(" >= @0", string.Empty));
+                        if (nestedPropertyNested == null)
+                        {
+                            throw new ArgumentException($"Property {nestedPropertyNested} does not exist in the class {nestedProperty}.");
+                        }
+
+                        Expression nestedPropertyAccess = Expression.Property(param, nestedProperty);
+                        Expression nestedPropertyNestedAccess = Expression.Property(nestedPropertyAccess, nestedPropertyNested);
+
+                        ConstantExpression value = Expression.Constant(kvp.Value);
+
+                        BinaryExpression binaryExpression = Expression.GreaterThanOrEqual(nestedPropertyNestedAccess, value);
+                        condition = condition == null ? binaryExpression : Expression.AndAlso(condition, binaryExpression);
+                    }
+                    else if (kvp.Key.EndsWith("< @1"))
+                    {
+                        PropertyInfo nestedProperty = typeof(TEntity).GetProperty(nestedPropertyName);
+                        if (nestedProperty == null)
+                        {
+                            throw new ArgumentException($"Property {nestedPropertyName} does not exist in the class {typeof(TEntity)}.");
+                        }
+                        PropertyInfo nestedPropertyNested = nestedProperty.PropertyType.GetProperty(nestedPropertyNestedName.Replace(" < @1", string.Empty));
+                        if (nestedPropertyNested == null)
+                        {
+                            throw new ArgumentException($"Property {nestedPropertyNested} does not exist in the class {nestedProperty}.");
+                        }
+
+                        Expression nestedPropertyAccess = Expression.Property(param, nestedProperty);
+                        Expression nestedPropertyNestedAccess = Expression.Property(nestedPropertyAccess, nestedPropertyNested);
+
+                        ConstantExpression value = Expression.Constant(kvp.Value);
+
+                        BinaryExpression binaryExpression = Expression.LessThan(nestedPropertyNestedAccess, value);
+                        condition = condition == null ? binaryExpression : Expression.AndAlso(condition, binaryExpression);
                     }
                     else
                     {
-                        condition = Expression.AndAlso(condition, binaryExpression);
+                        PropertyInfo nestedProperty = typeof(TEntity).GetProperty(nestedPropertyName);
+                        if (nestedProperty == null)
+                        {
+                            throw new ArgumentException($"Property {nestedPropertyName} does not exist in the class {typeof(TEntity)}.");
+                        }
+                        PropertyInfo nestedPropertyNested = nestedProperty.PropertyType.GetProperty(nestedPropertyNestedName);
+                        if (nestedPropertyNested == null)
+                        {
+                            throw new ArgumentException($"Property {nestedPropertyNested} does not exist in the class {nestedProperty}.");
+                        }
+
+                        Expression nestedPropertyAccess = Expression.Property(param, nestedProperty);
+                        Expression nestedPropertyNestedAccess = Expression.Property(nestedPropertyAccess, nestedPropertyNested);
+
+                        ConstantExpression value = Expression.Constant(kvp.Value);
+
+                        if (nestedPropertyNested.PropertyType.IsGenericType && nestedPropertyNested.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                        {
+                            Type underlyingType = Nullable.GetUnderlyingType(nestedPropertyNested.PropertyType);
+
+                            if (kvp.Value != null && kvp.Value.GetType() == underlyingType)
+                            {
+                                value = Expression.Constant(kvp.Value, nestedPropertyNested.PropertyType);
+                            }
+                        }
+
+                        BinaryExpression binaryExpression = Expression.Equal(nestedPropertyNestedAccess, value);
+
+                        if (condition == null)
+                        {
+                            condition = binaryExpression;
+                        }
+                        else
+                        {
+                            condition = Expression.AndAlso(condition, binaryExpression);
+                        }
                     }
                 }
                 else
@@ -133,11 +197,26 @@ namespace DataAccessLayer.Generic
                     PropertyInfo property = typeof(TEntity).GetProperty(kvp.Key);
                     if (property == null)
                     {
-                        throw new ArgumentException($"Pole {kvp.Key} nie istnieje w klasie {typeof(TEntity)}.");
+                        throw new ArgumentException($"Property {kvp.Key} does not exist in the class {typeof(TEntity)}.");
                     }
 
                     MemberExpression propertyAccess = Expression.Property(param, property);
                     ConstantExpression value = Expression.Constant(kvp.Value);
+
+                    if (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                    {
+                        Type underlyingType = Nullable.GetUnderlyingType(property.PropertyType);
+
+                        if (kvp.Value != null && kvp.Value.GetType() == underlyingType)
+                        {
+                            value = Expression.Constant(kvp.Value, property.PropertyType);
+                        }
+                        else if (kvp.Value == null)
+                        {
+                            value = Expression.Constant(null, property.PropertyType);
+                        }
+                    }
+
                     BinaryExpression binaryExpression = Expression.Equal(propertyAccess, value);
 
                     if (condition == null)
