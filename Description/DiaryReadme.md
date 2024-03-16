@@ -69,7 +69,7 @@
 ### Day 16
 * Not beautiful, but it works :)
 
-<img src="Description/Images/sc8.PNG" alt="Image 8" height="300px" style="width:auto;">
+<img src="Images/sc8.PNG" alt="Image 8" height="300px" style="width:auto;">
 
 
 
