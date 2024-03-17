@@ -110,6 +110,10 @@ public enum UserRole
 * The colorful buttons next to CATEGORY are a helper to facilitate selecting one of the 5 most popular categories without a dropdown.
 
 
+Plans regarding the direction of application development, which emerged after 17 days of coding. Unfortunately, it's a complicated jumble of loose thoughts, so I'm leaving it in Polish.
+[Project Plans](/Description/ProjectPlan.md)
+
+
 [Diary](/Description/DiaryReadme.md)
 
 
