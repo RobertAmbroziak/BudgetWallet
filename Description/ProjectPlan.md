@@ -88,5 +88,5 @@ Mechanizm logowania i rejestracji użytkownika. Generalnie jest  już działają
  - ustalenie jednego templatu React. Obecnie używam React MUI , MDB i 2 dodatkowe rozwiązania pod Toast i responsywną tabelę
  - context Api dla jwtToken. Obecnie przekazuje go pomiędzy komponentami, aby nie pobieraż ze Storage przeglądarki
 
-## Refaktoryzacja
+## Panel administracyjny
 Obecnie nie mam pomysłu co może się tu znaleźć. Jest na to osobna karta w React Router i rola Admin w Claims.  Na początek jedyna funkcjonalność to możliwość nadania userowi roli Admin.
