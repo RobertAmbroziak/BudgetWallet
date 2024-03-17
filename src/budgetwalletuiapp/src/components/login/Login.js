@@ -4,8 +4,7 @@ import {
   MDBContainer,
   MDBInput,
   MDBBtn,
-  MDBIcon,
-  MDBBadge
+  MDBIcon
 }
 from 'mdb-react-ui-kit';
 import config from '../../config';

@@ -71,6 +71,11 @@
 
 <img src="Images/sc8.PNG" alt="Image 8" height="300px" style="width:auto;">
 
+### Day 17
+* First steps with the  add transaction and splits module.
+
+<img src="Images/sc9.PNG" alt="Image 8" height="300px" style="width:auto;">
+
 
 
 
