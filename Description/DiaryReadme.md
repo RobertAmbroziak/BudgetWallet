@@ -76,6 +76,12 @@
 
 <img src="Images/sc9.PNG" alt="Image 8" height="300px" style="width:auto;">
 
+### Day 18
+* Swageer extension - use token for authorize
+* IsActive - column for each Table
+* Unit tests init
+
+
 
 
 
