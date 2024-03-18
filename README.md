@@ -140,7 +140,8 @@ I know, the design is very basic, but for now, I prioritize functionality. Most 
 
 <div align="center">
 
-<img src="Description/Images/sc7.PNG" alt="Image 7" height="300px" style="width:auto;">
+<img src="Description/Images/sc8.PNG" alt="Image 8" height="300px" style="width:auto;">
+ <img src="Description/Images/sc9.PNG" alt="Image 9" height="300px" style="width:auto;">	
 
 </div>
 
