@@ -8,5 +8,8 @@ namespace BusinessLogic.Abstractions
         Task AddMockData();
         Task<Filter> GetFilter();
         Task<IEnumerable<BudgetPeriod>> GetBudgetPeriodsByBudgetId(int budgetId);
+        Task<UserBudgetsInfo> GetUserBudgetsInfo();
+        Task<IEnumerable<Category>> GetBudgetCategories(int budgetId);
+        Task<IEnumerable<Account>> GetBudgetAccounts(int budgetId);
     }
 }

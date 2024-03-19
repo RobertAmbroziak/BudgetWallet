@@ -10,7 +10,6 @@ import Select from "@mui/material/Select";
 import Button from "@mui/material/Button";
 
 function SplitsFilter({ jwtToken, onGetSplitsButtonClick }) {
-  //const [splitsResponse, setSplitsResponse] = useState(null);
   const { language } = useLanguage();
 
   const [filters, setFilters] = useState({
@@ -21,7 +20,7 @@ function SplitsFilter({ jwtToken, onGetSplitsButtonClick }) {
   });
 
   const [selectedValues, setSelectedValues] = useState({
-    budgetId: 0,
+    budgetId: '',
     budgetPeriodId: null,
     accountId: null,
     categoryId: null,
@@ -110,7 +109,7 @@ function SplitsFilter({ jwtToken, onGetSplitsButtonClick }) {
         <Select
           labelId="budgetSelect"
           id="budgetSelect"
-          value={selectedValues.budgetId}
+          value={selectedValues.budgetId ?? ''}
           label="Budget"
           name="budgetId"
           onChange={handleDropdownChange}
@@ -127,7 +126,7 @@ function SplitsFilter({ jwtToken, onGetSplitsButtonClick }) {
         <Select
           labelId="budgetPeriodSelect"
           id="budgetPeriodSelect"
-          value={selectedValues.budgetPeriodId}
+          value={selectedValues.budgetPeriodId ?? ''}
           label="BudgetPeriod"
           name="budgetPeriodId"
           onChange={handleDropdownChange}
@@ -147,7 +146,7 @@ function SplitsFilter({ jwtToken, onGetSplitsButtonClick }) {
         <Select
           labelId="categorySelect"
           id="categorySelect"
-          value={selectedValues.categoryId}
+          value={selectedValues.categoryId ?? ''}
           label="Category"
           name="categoryId"
           onChange={handleDropdownChange}
@@ -167,7 +166,7 @@ function SplitsFilter({ jwtToken, onGetSplitsButtonClick }) {
         <Select
           labelId="accountSelect"
           id="accountSelect"
-          value={selectedValues.accountId}
+          value={selectedValues.accountId ?? ''}
           label="Account"
           name="accountId"
           onChange={handleDropdownChange}

@@ -59,5 +59,26 @@ namespace WepApi.Controllers
             var result = await _applicationService.GetBudgetPeriodsByBudgetId(budgetId);
             return Ok(result);
         }
+
+        [HttpGet("budget")]
+        public async Task<ActionResult<UserBudgetsInfo>> GetBudgets()
+        {
+            var result = await _applicationService.GetUserBudgetsInfo();
+            return Ok(result);
+        }
+
+        [HttpGet("budget/{budgetId}/categories")]
+        public async Task<ActionResult<IEnumerable<Category>>> GetBudgetCategories([FromRoute] int budgetId)
+        {
+            var result = await _applicationService.GetBudgetCategories(budgetId);
+            return Ok(result);
+        }
+
+        [HttpGet("budget/{budgetId}/accounts")]
+        public async Task<ActionResult<IEnumerable<Account>>> GetBudgetAccounts([FromRoute] int budgetId)
+        {
+            var result = await _applicationService.GetBudgetAccounts(budgetId);
+            return Ok(result);
+        }
     }
 }

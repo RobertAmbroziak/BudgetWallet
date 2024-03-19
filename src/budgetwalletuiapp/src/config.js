@@ -10,6 +10,9 @@ const config = {
       SPLITS: '/api/application/splits',
       FILTER: '/api/application/filter',
       FILTER_BUDGET_PERIODS: '/api/application/filterBudgetPeriods',
+      BUDGETS: '/api/application/budget',
+      BUDGET_CATEGORIES: '/api/application/budget/{budgetId}/categories',
+      BUDGET_ACCOUNTS: '/api/application/budget/{budgetId}/accounts',
     },
     GOOGLE_CLIENT_ID: 'ADD_HERE_YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com'
   };

@@ -166,5 +166,58 @@ namespace BusinessLogic.Services
             var budgetPeriods = await _applicationRepository.FilterAsync<BudgetPeriodDto>(x => x.BudgetId == budgetId);
             return _budgetPeriodMapper.Map(budgetPeriods);
         }
+
+        public async Task<UserBudgetsInfo> GetUserBudgetsInfo()
+        {
+            var user = await _identityService.GetCurrentUser();
+
+            var budgets = await _applicationRepository.FilterAsync<BudgetDto>(x => x.UserId == user.Id);
+            var currentBudget = budgets.FirstOrDefault(x => x.ValidFrom <= DateTime.Now && x.ValidTo > DateTime.Now);
+            if (currentBudget == null)
+            {
+                budgets.FirstOrDefault();
+            }
+
+            // TODO: docelowo powinienem chyba pobierać Categories na podstawie BudgetCategories
+            var categories = await _applicationRepository.FilterAsync<CategoryDto>(x => x.UserId == user.Id);
+            var accounts = await _applicationRepository.FilterAsync<AccountDto>(x => x.UserId == user.Id && x.IsActive);
+
+            var userBudgetsInfo = new UserBudgetsInfo
+            {
+                Budgets = _budgetMapper.Map(budgets),
+                CurrentBudgetAccounts = _accountMapper.Map(accounts),
+                CurrentBudgetCategories = _categoryMapper.Map(categories),
+                CurrentBudgetId = currentBudget.Id
+            };
+
+            return userBudgetsInfo;
+        }
+        public async Task<IEnumerable<Category>> GetBudgetCategories(int budgetId)
+        {
+            var budget = await _applicationRepository.GetByIdAsync<BudgetDto>(budgetId);
+            var user = await _identityService.GetCurrentUser();
+
+            if (budget.UserId != user.Id)
+            {
+                throw new BadHttpRequestException("Selected budget does not belong to the user.");
+            }
+
+            // TODO: docelowo powinienem chyba pobierać Categories na podstawie BudgetCategories
+            var categories = await _applicationRepository.FilterAsync<CategoryDto>(x => x.UserId == user.Id);
+            return _categoryMapper.Map(categories);
+        }
+        public async Task<IEnumerable<Account>> GetBudgetAccounts(int budgetId)
+        {
+            var budget = await _applicationRepository.GetByIdAsync<BudgetDto>(budgetId);
+            var user = await _identityService.GetCurrentUser();
+
+            if (budget.UserId != user.Id)
+            {
+                throw new BadHttpRequestException("Selected budget does not belong to the user.");
+            }
+
+            var accounts = await _applicationRepository.FilterAsync<AccountDto>(x => x.UserId == user.Id && x.IsActive);
+            return _accountMapper.Map(accounts);
+        }
     }
 }

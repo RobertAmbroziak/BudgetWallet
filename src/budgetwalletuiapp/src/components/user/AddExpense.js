@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import config from "../../config";
+import axios from "axios";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -8,17 +10,27 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Paper from "@mui/material/Paper";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
 
 function AddExpense({ jwtToken }) {
   const [transferDate, setTransferDate] = useState(null);
+  const [budgets, setBudgets] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [accounts, setAccounts] = useState([]);
   const [splitRecords, setSplitRecords] = useState([
-    { name: "", description: "", value: "" },
+    { name: "", description: "", value: "", categoryId: "" },
   ]);
+  const [budgetId, setBudgetId] = useState();
+  const [accountId, setAccountId] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState([]);
 
   const handleAddSplitRecord = () => {
     setSplitRecords([
       ...splitRecords,
-      { name: "", description: "", value: "" },
+      { name: "", description: "", value: "", categoryId: "" },
     ]);
   };
 
@@ -35,9 +47,67 @@ function AddExpense({ jwtToken }) {
     updatedRecords[index][field] = value;
     setSplitRecords(updatedRecords);
   };
+
   const handleAddTransferButtonClick = () => {
     console.log("Here will be save of new transfer with splits");
   };
+
+  const handleDropdownBudgetChange = async (event) => {
+    const { value } = event.target;
+    setBudgetId(value);
+    try {
+      const url = config.API_ENDPOINTS.BUDGET_CATEGORIES.replace(
+        "{budgetId}",
+        value
+      );
+      const response = await axios.get(`${config.API_BASE_URL}${url}`, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      });
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Error fetching budgetCategories:", error);
+    }
+  };
+
+  const handleCategoryChange = (index, value) => {
+    const updatedCategories = [...selectedCategories];
+    updatedCategories[index] = value;
+    setSelectedCategories(updatedCategories);
+  };
+
+  const handleDropdownAccountChange = (event) => {
+    const { value } = event.target;
+    setAccountId(value);
+  };
+
+  useEffect(() => {
+    const fetchBudgets = async () => {
+      try {
+        const response = await axios.get(
+          `${config.API_BASE_URL}${config.API_ENDPOINTS.BUDGETS}`,
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
+
+        const defaultBudget = response.data.budgets.find(
+          (budget) => budget.id === response.data.currentBudgetId
+        );
+
+        setBudgets(response.data.budgets);
+        setCategories(response.data.currentBudgetCategories);
+        setAccounts(response.data.currentBudgetAccounts);
+        setBudgetId(defaultBudget ? defaultBudget.id : "");
+      } catch (error) {
+        console.error("Error fetching filters:", error);
+      }
+    };
+    fetchBudgets();
+  }, [jwtToken]);
 
   return (
     <>
@@ -50,13 +120,47 @@ function AddExpense({ jwtToken }) {
           noValidate
           autoComplete="off"
         >
-          <TextField id="outlined-basic" label="Nazwa" variant="outlined" />
-          <TextField id="outlined-basic" label="Opis" variant="outlined" />
-          <TextField id="outlined-basic" label="Wartość" variant="outlined" />
+          <FormControl sx={{ m: 1, minWidth: 120 }}>
+            <InputLabel id="budgetSelect">Budżet</InputLabel>
+            <Select
+              labelId="budgetSelect"
+              id="budgetSelect"
+              value={budgetId ?? ""}
+              label="Budget"
+              name="budgetId"
+              onChange={handleDropdownBudgetChange}
+            >
+              {budgets.map((budget) => (
+                <MenuItem key={budget.id} value={budget.id}>
+                  {budget.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl sx={{ m: 1, minWidth: 120 }}>
+            <InputLabel id="accountSelect">Konto</InputLabel>
+            <Select
+              labelId="accountSelect"
+              id="accountSelect"
+              value={accountId ?? ""}
+              label="Account"
+              name="accountId"
+              onChange={handleDropdownAccountChange}
+            >
+              {accounts.map((account) => (
+                <MenuItem key={account.id} value={account.id}>
+                  {account.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <TextField id="transferName" label="Nazwa" variant="outlined" />
+          <TextField id="transferDescription" label="Opis" variant="outlined" />
+          <TextField id="transferValue" label="Wartość" variant="outlined" />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               label="Data Transferu"
-              value={transferDate}
+              value={transferDate ?? ""}
               onChange={(newDate) => setTransferDate(newDate)}
             />
           </LocalizationProvider>
@@ -71,6 +175,7 @@ function AddExpense({ jwtToken }) {
         </Button>
         {splitRecords.map((record, index) => (
           <Box
+            key={"key_splitBox_" + index}
             sx={{
               display: "flex",
               whiteSpace: "nowrap",
@@ -85,8 +190,25 @@ function AddExpense({ jwtToken }) {
             >
               <DeleteIcon />
             </IconButton>
+            <FormControl sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="categorySelect">Kategoria</InputLabel>
+              <Select
+                labelId={`categorySelect_${index}`}
+                id={`categorySelect_${index}`}
+                value={selectedCategories[index] ?? ""}
+                label="Category"
+                name={`categoryId_${index}`}
+                onChange={(e) => handleCategoryChange(index, e.target.value)}
+              >
+                {categories.map((category) => (
+                  <MenuItem key={category.id} value={category.id}>
+                    {category.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <TextField
-              id="outlined-basic"
+              id={"splitName_" + index}
               variant="outlined"
               label="Nazwa"
               value={record.name}
@@ -95,7 +217,7 @@ function AddExpense({ jwtToken }) {
               }
             />
             <TextField
-              id="outlined-basic"
+              id={"splitDescription" + index}
               variant="outlined"
               label="Opis"
               value={record.description}
@@ -104,7 +226,7 @@ function AddExpense({ jwtToken }) {
               }
             />
             <TextField
-              id="outlined-basic"
+              id={"splitValue_" + index}
               variant="outlined"
               label="Wartość"
               value={record.value}

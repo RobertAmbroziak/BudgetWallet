@@ -81,6 +81,12 @@
 * IsActive - column for each Table
 * Unit tests init
 
+### Day 19
+* Add Expense Extension
+* It's almost ready , without validation and final save
+
+<img src="Images/sc10.PNG" alt="Image 10" height="300px" style="width:auto;">
+
 
 
 
