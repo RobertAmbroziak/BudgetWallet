@@ -4,9 +4,9 @@ using Model.Tables;
 
 namespace BusinessLogic.Services.Mappers
 {
-    public class CategoryMapper : IMapperService<CategoryDto, Category>
+    public class CategoryMapper : MapperServiceBase<CategoryDto, Category>
     {
-        public Category Map(CategoryDto source)
+        public override Category Map(CategoryDto source)
         {
             return new Category
             {

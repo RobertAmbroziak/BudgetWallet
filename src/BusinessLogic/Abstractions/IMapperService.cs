@@ -3,9 +3,6 @@
     public interface IMapperService<TSource, TDestination>
     {
         TDestination Map(TSource source);
-        IEnumerable<TDestination> Map(IEnumerable<TSource> sources)
-        {
-            return sources.Select(Map);
-        }
+        IEnumerable<TDestination> Map(IEnumerable<TSource> sources);
     }
 }

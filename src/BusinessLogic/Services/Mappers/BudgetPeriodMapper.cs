@@ -4,9 +4,9 @@ using Model.Tables;
 
 namespace BusinessLogic.Services.Mappers
 {
-    public class BudgetPeriodMapper : IMapperService<BudgetPeriodDto, BudgetPeriod>
+    public class BudgetPeriodMapper : MapperServiceBase<BudgetPeriodDto, BudgetPeriod>
     {
-        public BudgetPeriod Map(BudgetPeriodDto source)
+        public override BudgetPeriod Map(BudgetPeriodDto source)
         {
             return new BudgetPeriod
             {

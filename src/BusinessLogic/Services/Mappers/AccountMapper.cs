@@ -4,9 +4,9 @@ using Model.Tables;
 
 namespace BusinessLogic.Services.Mappers
 {
-    public class AccountMapper : IMapperService<AccountDto, Account>
+    public class AccountMapper : MapperServiceBase<AccountDto, Account>
     {
-        public Account Map(AccountDto source)
+        public override Account Map(AccountDto source)
         {
             return new Account
             {

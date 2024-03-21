@@ -87,7 +87,13 @@
 
 <img src="Images/sc10.PNG" alt="Image 10" height="300px" style="width:auto;">
 
+### Day 20
+* uTests - first test for IdentityService
 
+### Day 21
+* Default Date in Add Expense DatePicker
+* First Steps to save new Transfer (FE site)
+* Refactoring IMapperService (Interface to Abstract class)
 
 
 

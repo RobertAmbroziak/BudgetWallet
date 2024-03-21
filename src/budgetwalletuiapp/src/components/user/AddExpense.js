@@ -14,23 +14,24 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
+import dayjs from "dayjs";
 
 function AddExpense({ jwtToken }) {
-  const [transferDate, setTransferDate] = useState(null);
   const [budgets, setBudgets] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [accounts, setAccounts] = useState([]);
-  const [splitRecords, setSplitRecords] = useState([
-    { name: "", description: "", value: "", categoryId: "" },
-  ]);
+  const [transferDate, setTransferDate] = useState(dayjs());
+  const [categories, setCategories] = useState([]);
   const [budgetId, setBudgetId] = useState();
   const [accountId, setAccountId] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [splitRecords, setSplitRecords] = useState([
+    {},
+  ]);
 
   const handleAddSplitRecord = () => {
     setSplitRecords([
       ...splitRecords,
-      { name: "", description: "", value: "", categoryId: "" },
+      {},
     ]);
   };
 
@@ -49,7 +50,14 @@ function AddExpense({ jwtToken }) {
   };
 
   const handleAddTransferButtonClick = () => {
-    console.log("Here will be save of new transfer with splits");
+
+    console.log(transferDate);
+    console.log(splitRecords);
+    console.log(selectedCategories);
+    // walidacja czy pola są uzupełnione czy się zgadza suma split i transfer
+    //utworzenie requestu i Post do Api
+    // błąd lub sukces na toastr
+    // jesli sukces to czyszczenie wszystkiego na formie i usunięcie splitów
   };
 
   const handleDropdownBudgetChange = async (event) => {
@@ -160,7 +168,7 @@ function AddExpense({ jwtToken }) {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               label="Data Transferu"
-              value={transferDate ?? ""}
+              value={transferDate ?? AdapterDayjs.date()}
               onChange={(newDate) => setTransferDate(newDate)}
             />
           </LocalizationProvider>

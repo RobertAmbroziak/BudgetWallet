@@ -4,7 +4,6 @@ using Model.Tables;
 using NUnit.Framework;
 using Tests.Util;
 using FluentAssertions;
-using BusinessLogic.Abstractions;
 using AutoFixture;
 
 namespace Tests.BusinessLogic
@@ -40,7 +39,7 @@ namespace Tests.BusinessLogic
             var accountDtoList = Fixture.CreateMany<AccountDto>();
 
             // Act
-            var mappedAccounts = ((IMapperService<AccountDto, Account>)mapper).Map(accountDtoList);
+            var mappedAccounts = mapper.Map(accountDtoList);
 
             // Assert
             mappedAccounts.Should().NotBeNull();
