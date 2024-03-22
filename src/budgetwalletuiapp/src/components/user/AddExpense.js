@@ -23,15 +23,15 @@ function AddExpense({ jwtToken }) {
   const [categories, setCategories] = useState([]);
   const [budgetId, setBudgetId] = useState();
   const [accountId, setAccountId] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [isValid, setIsValid] = useState({ isValid: true, errors: [] });
   const [splitRecords, setSplitRecords] = useState([
-    {},
+    { categoryId: "", name: "", description: "", value: "" },
   ]);
 
   const handleAddSplitRecord = () => {
     setSplitRecords([
       ...splitRecords,
-      {},
+      { categoryId: "", name: "", description: "", value: "" },
     ]);
   };
 
@@ -50,14 +50,95 @@ function AddExpense({ jwtToken }) {
   };
 
   const handleAddTransferButtonClick = () => {
+    const transfer = {
+      budgetId: budgetId,
+      accountId: accountId,
+      transferName: document.getElementById("transferName").value,
+      transferDescription: document.getElementById("transferDescription").value,
+      transferValue: document.getElementById("transferValue").value,
+      transferDate: transferDate,
+      splits: splitRecords.map((record) => ({
+        categoryId: record.categoryId,
+        name: document.getElementById(
+          `splitName_${splitRecords.indexOf(record)}`
+        ).value,
+        description: document.getElementById(
+          `splitDescription${splitRecords.indexOf(record)}`
+        ).value,
+        value: document.getElementById(
+          `splitValue_${splitRecords.indexOf(record)}`
+        ).value,
+      })),
+    };
 
-    console.log(transferDate);
-    console.log(splitRecords);
-    console.log(selectedCategories);
-    // walidacja czy pola są uzupełnione czy się zgadza suma split i transfer
-    //utworzenie requestu i Post do Api
-    // błąd lub sukces na toastr
-    // jesli sukces to czyszczenie wszystkiego na formie i usunięcie splitów
+    const validateNumber = (value) => {
+      const regex = /^\d+(\.\d{1,2})?$/;
+      return regex.test(value);
+    };
+
+    const validateNotEmpty = (value) => {
+      if (typeof value === "string") {
+        return value.trim() !== "";
+      } else {
+        return value !== undefined && value !== null;
+      }
+    };
+
+    const validateGreaterThanZero = (value) => {
+      return parseFloat(value) > 0;
+    };
+
+    const validateTransferFields = (transfer) => {
+      const { transferName, transferValue, splits } = transfer;
+      const errors = [];
+
+      if (!validateNotEmpty(budgetId)) {
+        errors.push("Nieprawidłowy identyfikator budżetu.");
+      }
+
+      if (!validateNotEmpty(accountId)) {
+        errors.push("Nieprawidłowy identyfikator konta.");
+      }
+
+      if (!validateNotEmpty(transferName)) {
+        errors.push("Nazwa transferu nie może być pusta.");
+      }
+
+      if (!validateNumber(transferValue)) {
+        errors.push(
+          "Wartość transferu musi być liczbą dodatnią z maksymalnie dwoma miejscami po przecinku."
+        );
+      }
+
+      let splitsValueSum = 0;
+      for (let i = 0; i < splits.length; i++) {
+        const { categoryId, name, value } = splits[i];
+        if (!validateGreaterThanZero(categoryId)) {
+          errors.push(`Nieprawidłowy categoryId w split ${i + 1}.`);
+        }
+        if (!validateNotEmpty(name)) {
+          errors.push(`Nazwa split ${i + 1} nie może być pusta.`);
+        }
+        if (!validateNumber(value)) {
+          errors.push(
+            `Wartość split ${
+              i + 1
+            } musi być liczbą dodatnią z maksymalnie dwoma miejscami po przecinku.`
+          );
+        } else {
+          splitsValueSum += parseFloat(value);
+        }
+      }
+
+      if (splitsValueSum.toFixed(2) !== parseFloat(transferValue).toFixed(2)) {
+        errors.push("Suma wartości splitów musi być równa wartości transferu.");
+      }
+
+      return { isValid: errors.length === 0, errors };
+    };
+    const validateResult = validateTransferFields(transfer);
+    setIsValid(validateResult);
+    console.log(validateResult);
   };
 
   const handleDropdownBudgetChange = async (event) => {
@@ -80,9 +161,9 @@ function AddExpense({ jwtToken }) {
   };
 
   const handleCategoryChange = (index, value) => {
-    const updatedCategories = [...selectedCategories];
-    updatedCategories[index] = value;
-    setSelectedCategories(updatedCategories);
+    const updatedRecords = [...splitRecords];
+    updatedRecords[index].categoryId = value;
+    setSplitRecords(updatedRecords);
   };
 
   const handleDropdownAccountChange = (event) => {
@@ -119,6 +200,15 @@ function AddExpense({ jwtToken }) {
 
   return (
     <>
+      {!isValid.isValid && (
+        <Paper elevation={3} sx={{ margin: "20px", color: "red" }}>
+          <ul>
+            {isValid.errors.map((error, index) => (
+              <li key={index}>{error}</li>
+            ))}
+          </ul>
+        </Paper>
+      )}
       <Paper elevation={3} sx={{ margin: "20px" }}>
         <Box
           component="form"
@@ -203,7 +293,7 @@ function AddExpense({ jwtToken }) {
               <Select
                 labelId={`categorySelect_${index}`}
                 id={`categorySelect_${index}`}
-                value={selectedCategories[index] ?? ""}
+                value={splitRecords[index]?.categoryId ?? ""}
                 label="Category"
                 name={`categoryId_${index}`}
                 onChange={(e) => handleCategoryChange(index, e.target.value)}

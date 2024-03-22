@@ -95,6 +95,11 @@
 * First Steps to save new Transfer (FE site)
 * Refactoring IMapperService (Interface to Abstract class)
 
+### Day 22
+* Validate new expense(transfer)before saving and display errors instead of saving
+
+<img src="Images/sc11.PNG" alt="Image 11" height="300px" style="width:auto;">
+
 
 
 
