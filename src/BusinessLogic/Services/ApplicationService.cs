@@ -233,6 +233,8 @@ namespace BusinessLogic.Services
                 throw new BadHttpRequestException("Selected budget does not belong to the user.");
             }
 
+            //todo: sprawdzanie budgetId to za mało, trzeba sprawdzić accountId i każde CategoryId
+
             var transfer = _postTransferMapper.Map(postTransfer);
 
             await _applicationRepository.InsertAsync(transfer);

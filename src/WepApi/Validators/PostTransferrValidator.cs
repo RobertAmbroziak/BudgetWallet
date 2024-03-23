@@ -7,7 +7,11 @@ namespace WepApi.Validators
     {
         public PostTransferValidator()
         {
-            throw new NotImplementedException();
+            RuleFor(x => x.Name)
+                .NotEmpty().WithMessage("Nazwa transferu jest wymagana.")
+                .MaximumLength(50).WithMessage("Nazwa transferu nie może być dłuższa niż 50 znaków.");
+                
+            //Todo: reszta zasad
         }
     }
 }

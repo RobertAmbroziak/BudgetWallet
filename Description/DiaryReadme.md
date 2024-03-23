@@ -103,6 +103,9 @@
 ### Day 23
 * Add new Expense saving with success toast and display backend errors
 
+### Day 24
+* playing with unit tests and validators
+
 
 
 

@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Moq;
 using Microsoft.Extensions.Configuration;
 using DataAccessLayer;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Tests.BusinessLogic
 {
@@ -41,7 +43,16 @@ namespace Tests.BusinessLogic
             // Assert
             token.Should().NotBeNull();
 
-            // TODO: More asserts
+            var tokenHandler = new JwtSecurityTokenHandler();
+            tokenHandler.CanReadToken(token).Should().BeTrue("Generated token is not in valid JWT format");
+
+            var validatedToken = tokenHandler.ReadJwtToken(token);
+            validatedToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid)?.Value.Should().Be(user.Id.ToString());
+            validatedToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value.Should().Be(user.UserName);
+            validatedToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value.Should().Be(user.Email);
+            validatedToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value.Should().Be(user.UserRole.ToString());
+
+            validatedToken.ValidTo.Should().BeAfter(DateTime.UtcNow, "Token has expired");
         }
     }
 }

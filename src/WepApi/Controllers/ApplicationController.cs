@@ -1,4 +1,5 @@
 ﻿using BusinessLogic.Abstractions;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model.Application;
@@ -12,11 +13,13 @@ namespace WepApi.Controllers
     {
         private readonly IIdentityService _identityService;
         private readonly IApplicationService _applicationService;
+        private readonly IValidator<PostTransfer> _validator;
 
-        public ApplicationController(IIdentityService identityService, IApplicationService applicationService)
+        public ApplicationController(IIdentityService identityService, IApplicationService applicationService, IValidator<PostTransfer> validator)
         {
             _identityService = identityService;
             _applicationService = applicationService;
+            _validator = validator;
         }
 
         [HttpGet("UserPanel")]
@@ -84,6 +87,13 @@ namespace WepApi.Controllers
         [HttpPost("transfers")]
         public async Task<ActionResult> AddTransfer([FromBody] PostTransfer postTransfer)
         {
+            var validationResult = await _validator.ValidateAsync(postTransfer);
+
+            if (!validationResult.IsValid)
+            {
+                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                return BadRequest(errors);
+            }
             await _applicationService.AddTransfer(postTransfer);
             return Accepted();
         }
