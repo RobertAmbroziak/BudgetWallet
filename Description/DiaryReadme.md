@@ -100,7 +100,8 @@
 
 <img src="Images/sc11.PNG" alt="Image 11" height="300px" style="width:auto;">
 
-
+### Day 23
+* Add new Expense saving with success toast and display backend errors
 
 
 

@@ -11,5 +11,6 @@ namespace BusinessLogic.Abstractions
         Task<UserBudgetsInfo> GetUserBudgetsInfo();
         Task<IEnumerable<Category>> GetBudgetCategories(int budgetId);
         Task<IEnumerable<Account>> GetBudgetAccounts(int budgetId);
+        Task AddTransfer(PostTransfer postTransfer);
     }
 }

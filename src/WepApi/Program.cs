@@ -80,11 +80,13 @@ builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
 builder.Services.AddScoped<IValidator<UserRegisterRequest>, UserRegisterRequestValidator>();
+builder.Services.AddScoped<IValidator<PostTransfer>, PostTransferValidator>();
 
 builder.Services.AddSingleton<IMapperService<BudgetDto, Budget>, BudgetMapper>();
 builder.Services.AddSingleton<IMapperService<BudgetPeriodDto, BudgetPeriod>, BudgetPeriodMapper>();
 builder.Services.AddSingleton<IMapperService<CategoryDto, Category>, CategoryMapper>();
 builder.Services.AddSingleton<IMapperService<AccountDto, Account>, AccountMapper>();
+builder.Services.AddSingleton<IMapperService<PostTransfer, TransferDto>, PostTransferMapper>();
 
 var app = builder.Build();
 

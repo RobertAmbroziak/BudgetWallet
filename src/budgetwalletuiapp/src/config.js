@@ -13,8 +13,9 @@ const config = {
       BUDGETS: '/api/application/budget',
       BUDGET_CATEGORIES: '/api/application/budget/{budgetId}/categories',
       BUDGET_ACCOUNTS: '/api/application/budget/{budgetId}/accounts',
+      TRANSFERS: '/api/application/transfers',
     },
-    GOOGLE_CLIENT_ID: 'ADD_HERE_YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com'
+    GOOGLE_CLIENT_ID: 'ADD_YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com'
   };
   
   export default config;

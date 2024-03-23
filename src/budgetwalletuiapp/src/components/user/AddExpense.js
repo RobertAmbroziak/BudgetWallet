@@ -15,6 +15,10 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import dayjs from "dayjs";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useLanguage } from "../../LanguageContext";
+import translations from "../../translations";
 
 function AddExpense({ jwtToken }) {
   const [budgets, setBudgets] = useState([]);
@@ -27,6 +31,8 @@ function AddExpense({ jwtToken }) {
   const [splitRecords, setSplitRecords] = useState([
     { categoryId: "", name: "", description: "", value: "" },
   ]);
+
+  const { language } = useLanguage();
 
   const handleAddSplitRecord = () => {
     setSplitRecords([
@@ -49,14 +55,15 @@ function AddExpense({ jwtToken }) {
     setSplitRecords(updatedRecords);
   };
 
-  const handleAddTransferButtonClick = () => {
+  const handleAddTransferButtonClick = async () => {
     const transfer = {
       budgetId: budgetId,
-      accountId: accountId,
-      transferName: document.getElementById("transferName").value,
-      transferDescription: document.getElementById("transferDescription").value,
-      transferValue: document.getElementById("transferValue").value,
+      sourceAccountId: accountId,
+      name: document.getElementById("transferName").value,
+      description: document.getElementById("transferDescription").value,
+      value: document.getElementById("transferValue").value,
       transferDate: transferDate,
+      transferType: "Expense",
       splits: splitRecords.map((record) => ({
         categoryId: record.categoryId,
         name: document.getElementById(
@@ -89,7 +96,7 @@ function AddExpense({ jwtToken }) {
     };
 
     const validateTransferFields = (transfer) => {
-      const { transferName, transferValue, splits } = transfer;
+      const { name, value, splits } = transfer;
       const errors = [];
 
       if (!validateNotEmpty(budgetId)) {
@@ -100,11 +107,11 @@ function AddExpense({ jwtToken }) {
         errors.push("Nieprawidłowy identyfikator konta.");
       }
 
-      if (!validateNotEmpty(transferName)) {
+      if (!validateNotEmpty(name)) {
         errors.push("Nazwa transferu nie może być pusta.");
       }
 
-      if (!validateNumber(transferValue)) {
+      if (!validateNumber(value)) {
         errors.push(
           "Wartość transferu musi być liczbą dodatnią z maksymalnie dwoma miejscami po przecinku."
         );
@@ -130,7 +137,7 @@ function AddExpense({ jwtToken }) {
         }
       }
 
-      if (splitsValueSum.toFixed(2) !== parseFloat(transferValue).toFixed(2)) {
+      if (splitsValueSum.toFixed(2) !== parseFloat(value).toFixed(2)) {
         errors.push("Suma wartości splitów musi być równa wartości transferu.");
       }
 
@@ -138,7 +145,46 @@ function AddExpense({ jwtToken }) {
     };
     const validateResult = validateTransferFields(transfer);
     setIsValid(validateResult);
-    console.log(validateResult);
+
+    if (validateResult.isValid) {
+      try {
+        const response = await axios.post(
+          `${config.API_BASE_URL}${config.API_ENDPOINTS.TRANSFERS}`,
+          transfer,
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
+
+        document.getElementById("transferName").value = "";
+        document.getElementById("transferDescription").value = "";
+        document.getElementById("transferValue").value = "";
+        setAccountId();
+        setIsValid({ isValid: true, errors: [] });
+        setSplitRecords([
+          { categoryId: "", name: "", description: "", value: "" },
+        ]);
+
+        const addTransferSuccessToast = () => {
+          toast.success(translations[language].toast_addTransferSuccess, {
+            position: "top-right",
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            //transition: Bounce,
+          });
+        };
+        addTransferSuccessToast();
+      } catch (error) {
+        setIsValid({ isValid: false, errors: [error.message] });
+      }
+    }
   };
 
   const handleDropdownBudgetChange = async (event) => {
@@ -200,6 +246,7 @@ function AddExpense({ jwtToken }) {
 
   return (
     <>
+      <ToastContainer />
       {!isValid.isValid && (
         <Paper elevation={3} sx={{ margin: "20px", color: "red" }}>
           <ul>

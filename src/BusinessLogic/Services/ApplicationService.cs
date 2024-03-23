@@ -16,6 +16,7 @@ namespace BusinessLogic.Services
         private readonly IMapperService<BudgetPeriodDto, BudgetPeriod> _budgetPeriodMapper;
         private readonly IMapperService<CategoryDto, Category> _categoryMapper;
         private readonly IMapperService<AccountDto, Account> _accountMapper;
+        private readonly IMapperService<PostTransfer, TransferDto> _postTransferMapper;
 
         public ApplicationService
         (
@@ -25,7 +26,8 @@ namespace BusinessLogic.Services
             IMapperService<BudgetDto, Budget> budgetMapper,
             IMapperService<BudgetPeriodDto, BudgetPeriod> budgetPeriodMapper,
             IMapperService<CategoryDto, Category> categoryMapper,
-            IMapperService<AccountDto, Account> accountMapper
+            IMapperService<AccountDto, Account> accountMapper,
+            IMapperService<PostTransfer, TransferDto> postTransferMapper
         )
         {
             _applicationRepository = applicationRepository;
@@ -35,6 +37,7 @@ namespace BusinessLogic.Services
             _budgetPeriodMapper = budgetPeriodMapper;
             _categoryMapper = categoryMapper;
             _accountMapper = accountMapper;
+            _postTransferMapper = postTransferMapper;
         }
 
         public async Task<SplitsResponse> GetSplitsResponse(SplitsRequest splitsRequest)
@@ -218,6 +221,22 @@ namespace BusinessLogic.Services
 
             var accounts = await _applicationRepository.FilterAsync<AccountDto>(x => x.UserId == user.Id && x.IsActive);
             return _accountMapper.Map(accounts);
+        }
+
+        public async Task AddTransfer(PostTransfer postTransfer)
+        {
+            var budget = await _applicationRepository.GetByIdAsync<BudgetDto>(postTransfer.BudgetId);
+            var user = await _identityService.GetCurrentUser();
+
+            if (budget.UserId != user.Id)
+            {
+                throw new BadHttpRequestException("Selected budget does not belong to the user.");
+            }
+
+            var transfer = _postTransferMapper.Map(postTransfer);
+
+            await _applicationRepository.InsertAsync(transfer);
+            await _applicationRepository.SaveChangesAsync();
         }
     }
 }

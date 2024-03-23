@@ -80,5 +80,12 @@ namespace WepApi.Controllers
             var result = await _applicationService.GetBudgetAccounts(budgetId);
             return Ok(result);
         }
+
+        [HttpPost("transfers")]
+        public async Task<ActionResult> AddTransfer([FromBody] PostTransfer postTransfer)
+        {
+            await _applicationService.AddTransfer(postTransfer);
+            return Accepted();
+        }
     }
 }
