@@ -4,6 +4,8 @@ using BusinessLogic.Abstractions;
 using Model.Identity;
 using FluentValidation;
 using Model.CustomExceptions;
+using Microsoft.Extensions.Localization;
+using Util.Resources;
 
 namespace WepApi.Controllers
 {
@@ -13,11 +15,13 @@ namespace WepApi.Controllers
     {
         private readonly IIdentityService _identityService;
         private readonly IValidator<UserRegisterRequest> _validator;
+        private readonly IStringLocalizer<AppResource> _localizer;
 
-        public IdentityController(IIdentityService identityService, IValidator<UserRegisterRequest> validator)
+        public IdentityController(IIdentityService identityService, IValidator<UserRegisterRequest> validator, IStringLocalizer<AppResource> localizer)
         {
             _identityService = identityService;
             _validator = validator;
+            _localizer = localizer;
         }
 
         [AllowAnonymous]
@@ -32,7 +36,7 @@ namespace WepApi.Controllers
                     var token = await _identityService.GenerateToken(user);
                     return Ok(token);
                 }
-                return NotFound("Błędna nazwa użytkownika lub hasło");
+                return NotFound(_localizer["err_wrongUserNameOrPassword"].Value);
             }
             catch(InactiveUserException ex)
             {
@@ -58,7 +62,7 @@ namespace WepApi.Controllers
                 return Ok();
             }
 
-            return StatusCode(500, $"Error at {nameof(Register)}");
+            return StatusCode(500, $"{_localizer["err_errorAt"].Value} {nameof(Register)}");
         }
 
         [AllowAnonymous]
@@ -71,7 +75,7 @@ namespace WepApi.Controllers
                 return Ok();
             }
 
-            return BadRequest("Code doesn't exists or expired");
+            return BadRequest(_localizer["err_codeDoesnottExistsOrExpired"].Value);
         }
 
         [AllowAnonymous]
@@ -86,7 +90,7 @@ namespace WepApi.Controllers
                 return Ok(token);
             }
 
-            return NotFound("User not found");
+            return BadRequest(_localizer["err_userNotFound"].Value);
         }
     }
 }

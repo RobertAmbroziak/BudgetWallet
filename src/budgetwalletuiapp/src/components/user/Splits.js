@@ -26,10 +26,10 @@ function Splits({ jwtToken, splitsRequest }) {
           );
           setSplitsResponse(response.data);
         } else {
-          console.log("brak tokena");
+          console.error("Token not found");
         }
       } catch (error) {
-        console.log("fetchData Eroor");
+        console.error("Error fetching splits");
       }
     };
     fetchData();

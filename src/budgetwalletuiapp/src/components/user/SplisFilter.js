@@ -20,7 +20,7 @@ function SplitsFilter({ jwtToken, onGetSplitsButtonClick }) {
   });
 
   const [selectedValues, setSelectedValues] = useState({
-    budgetId: '',
+    budgetId: "",
     budgetPeriodId: null,
     accountId: null,
     categoryId: null,
@@ -105,11 +105,13 @@ function SplitsFilter({ jwtToken, onGetSplitsButtonClick }) {
   return (
     <div>
       <FormControl sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="budgetSelect">Budżet</InputLabel>
+        <InputLabel id="budgetSelect">
+          {translations[language].lbl_budget}
+        </InputLabel>
         <Select
           labelId="budgetSelect"
           id="budgetSelect"
-          value={selectedValues.budgetId ?? ''}
+          value={selectedValues.budgetId ?? ""}
           label="Budget"
           name="budgetId"
           onChange={handleDropdownChange}
@@ -122,17 +124,19 @@ function SplitsFilter({ jwtToken, onGetSplitsButtonClick }) {
         </Select>
       </FormControl>
       <FormControl sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="budgetPeriodSelect">Okres</InputLabel>
+        <InputLabel id="budgetPeriodSelect">
+          {translations[language].lbl_period}
+        </InputLabel>
         <Select
           labelId="budgetPeriodSelect"
           id="budgetPeriodSelect"
-          value={selectedValues.budgetPeriodId ?? ''}
+          value={selectedValues.budgetPeriodId ?? ""}
           label="BudgetPeriod"
           name="budgetPeriodId"
           onChange={handleDropdownChange}
         >
           <MenuItem key={0} value={null}>
-            Wszystkie
+            {translations[language].itm_all}
           </MenuItem>
           {filters.budgetPeriods.map((budgetPeriod) => (
             <MenuItem key={budgetPeriod.id} value={budgetPeriod.id}>
@@ -142,17 +146,19 @@ function SplitsFilter({ jwtToken, onGetSplitsButtonClick }) {
         </Select>
       </FormControl>
       <FormControl sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="categorySelect">Kategoria</InputLabel>
+        <InputLabel id="categorySelect">
+          {translations[language].lbl_category}
+        </InputLabel>
         <Select
           labelId="categorySelect"
           id="categorySelect"
-          value={selectedValues.categoryId ?? ''}
+          value={selectedValues.categoryId ?? ""}
           label="Category"
           name="categoryId"
           onChange={handleDropdownChange}
         >
           <MenuItem key={0} value={null}>
-            Wszystkie
+            {translations[language].itm_all}
           </MenuItem>
           {filters.categories.map((category) => (
             <MenuItem key={category.id} value={category.id}>
@@ -162,17 +168,19 @@ function SplitsFilter({ jwtToken, onGetSplitsButtonClick }) {
         </Select>
       </FormControl>
       <FormControl sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="accountSelect">Konto</InputLabel>
+        <InputLabel id="accountSelect">
+          {translations[language].lbl_account}
+        </InputLabel>
         <Select
           labelId="accountSelect"
           id="accountSelect"
-          value={selectedValues.accountId ?? ''}
+          value={selectedValues.accountId ?? ""}
           label="Account"
           name="accountId"
           onChange={handleDropdownChange}
         >
           <MenuItem key={0} value={null}>
-            Wszystkie
+            {translations[language].itm_all}
           </MenuItem>
           {filters.accounts.map((account) => (
             <MenuItem key={account.id} value={account.id}>
@@ -181,7 +189,9 @@ function SplitsFilter({ jwtToken, onGetSplitsButtonClick }) {
           ))}
         </Select>
       </FormControl>
-      <Button variant="outlined" onClick={handleGetSplitsButtonClick}>Wyszukaj</Button>
+      <Button variant="outlined" onClick={handleGetSplitsButtonClick}>
+        {translations[language].btn_search}
+      </Button>
     </div>
   );
 }

@@ -15,6 +15,7 @@ import translations from '../../translations';
 import context from '../../context';
 
   async function authenticate(token, onSetToken) {
+    //axios.defaults.headers.common['Accept-Language'] = language;
     return axios.post(`${config.API_BASE_URL}${config.API_ENDPOINTS.GOOGLE_LOGIN}`, {token: token})
     .then(response => {
       onSetToken(response.data);

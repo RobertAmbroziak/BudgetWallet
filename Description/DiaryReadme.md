@@ -106,6 +106,10 @@
 ### Day 24
 * playing with unit tests and validators
 
+### Day 25
+* Translations added (FE + BE partially)
+* Language handling in Web API and other backend projects
+
 
 
 

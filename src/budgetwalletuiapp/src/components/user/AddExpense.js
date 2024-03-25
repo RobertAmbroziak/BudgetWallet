@@ -100,37 +100,35 @@ function AddExpense({ jwtToken }) {
       const errors = [];
 
       if (!validateNotEmpty(budgetId)) {
-        errors.push("Nieprawidłowy identyfikator budżetu.");
+        errors.push(translations[language].errValid_invalidBudgeId);
       }
 
       if (!validateNotEmpty(accountId)) {
-        errors.push("Nieprawidłowy identyfikator konta.");
+        errors.push(translations[language].errValid_invalidAccountId);
       }
 
       if (!validateNotEmpty(name)) {
-        errors.push("Nazwa transferu nie może być pusta.");
+        errors.push(translations[language].errValid_transferName);
       }
 
       if (!validateNumber(value)) {
-        errors.push(
-          "Wartość transferu musi być liczbą dodatnią z maksymalnie dwoma miejscami po przecinku."
-        );
+        errors.push(translations[language].errValid_transfeValue);
       }
 
       let splitsValueSum = 0;
       for (let i = 0; i < splits.length; i++) {
         const { categoryId, name, value } = splits[i];
         if (!validateGreaterThanZero(categoryId)) {
-          errors.push(`Nieprawidłowy categoryId w split ${i + 1}.`);
+          errors.push(`${translations[language].errValid_invalidCategoryId} ${i + 1}.`);
         }
         if (!validateNotEmpty(name)) {
-          errors.push(`Nazwa split ${i + 1} nie może być pusta.`);
+          errors.push(`${translations[language].errValid_nameOfSplit} ${i + 1} ${translations[language].errValid_cannotBeEmpty}`);
         }
         if (!validateNumber(value)) {
           errors.push(
-            `Wartość split ${
+            `${translations[language].errValid_valueOfSplit1} ${
               i + 1
-            } musi być liczbą dodatnią z maksymalnie dwoma miejscami po przecinku.`
+            } ${translations[language].errValid_valueOfSplit2}}`
           );
         } else {
           splitsValueSum += parseFloat(value);
@@ -138,7 +136,7 @@ function AddExpense({ jwtToken }) {
       }
 
       if (splitsValueSum.toFixed(2) !== parseFloat(value).toFixed(2)) {
-        errors.push("Suma wartości splitów musi być równa wartości transferu.");
+        errors.push(translations[language].errValid_sumOfSplit);
       }
 
       return { isValid: errors.length === 0, errors };
@@ -266,12 +264,14 @@ function AddExpense({ jwtToken }) {
           autoComplete="off"
         >
           <FormControl sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="budgetSelect">Budżet</InputLabel>
+            <InputLabel id="budgetSelect">
+              {translations[language].lbl_budget}
+            </InputLabel>
             <Select
               labelId="budgetSelect"
               id="budgetSelect"
               value={budgetId ?? ""}
-              label="Budget"
+              label={translations[language].lbl_budget}
               name="budgetId"
               onChange={handleDropdownBudgetChange}
             >
@@ -283,12 +283,14 @@ function AddExpense({ jwtToken }) {
             </Select>
           </FormControl>
           <FormControl sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="accountSelect">Konto</InputLabel>
+            <InputLabel id="accountSelect">
+              {translations[language].lbl_account}
+            </InputLabel>
             <Select
               labelId="accountSelect"
               id="accountSelect"
               value={accountId ?? ""}
-              label="Account"
+              label={translations[language].lbl_account}
               name="accountId"
               onChange={handleDropdownAccountChange}
             >
@@ -299,24 +301,36 @@ function AddExpense({ jwtToken }) {
               ))}
             </Select>
           </FormControl>
-          <TextField id="transferName" label="Nazwa" variant="outlined" />
-          <TextField id="transferDescription" label="Opis" variant="outlined" />
-          <TextField id="transferValue" label="Wartość" variant="outlined" />
+          <TextField
+            id="transferName"
+            label={translations[language].txt_name}
+            variant="outlined"
+          />
+          <TextField
+            id="transferDescription"
+            label={translations[language].txt_description}
+            variant="outlined"
+          />
+          <TextField
+            id="transferValue"
+            label={translations[language].txt_value}
+            variant="outlined"
+          />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
-              label="Data Transferu"
+              label={translations[language].lbl_transferDate}
               value={transferDate ?? AdapterDayjs.date()}
               onChange={(newDate) => setTransferDate(newDate)}
             />
           </LocalizationProvider>
           <Button variant="outlined" onClick={handleAddTransferButtonClick}>
-            Zapisz
+            {translations[language].btn_save}
           </Button>
         </Box>
       </Paper>
       <Paper elevation={3} sx={{ margin: "20px" }}>
         <Button variant="outlined" onClick={handleAddSplitRecord}>
-          Dodaj Split
+          {translations[language].btn_addSplit}
         </Button>
         {splitRecords.map((record, index) => (
           <Box
@@ -336,12 +350,14 @@ function AddExpense({ jwtToken }) {
               <DeleteIcon />
             </IconButton>
             <FormControl sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel id="categorySelect">Kategoria</InputLabel>
+              <InputLabel id="categorySelect">
+                {translations[language].lbl_category}
+              </InputLabel>
               <Select
                 labelId={`categorySelect_${index}`}
                 id={`categorySelect_${index}`}
                 value={splitRecords[index]?.categoryId ?? ""}
-                label="Category"
+                label={translations[language].lbl_category}
                 name={`categoryId_${index}`}
                 onChange={(e) => handleCategoryChange(index, e.target.value)}
               >
@@ -355,7 +371,7 @@ function AddExpense({ jwtToken }) {
             <TextField
               id={"splitName_" + index}
               variant="outlined"
-              label="Nazwa"
+              label={translations[language].txt_name}
               value={record.name}
               onChange={(e) =>
                 handleSplitRecordChange(index, "name", e.target.value)
@@ -364,7 +380,7 @@ function AddExpense({ jwtToken }) {
             <TextField
               id={"splitDescription" + index}
               variant="outlined"
-              label="Opis"
+              label={translations[language].txt_description}
               value={record.description}
               onChange={(e) =>
                 handleSplitRecordChange(index, "description", e.target.value)
@@ -373,7 +389,7 @@ function AddExpense({ jwtToken }) {
             <TextField
               id={"splitValue_" + index}
               variant="outlined"
-              label="Wartość"
+              label={translations[language].txt_value}
               value={record.value}
               onChange={(e) =>
                 handleSplitRecordChange(index, "value", e.target.value)

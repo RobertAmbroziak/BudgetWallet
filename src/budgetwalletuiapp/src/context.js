@@ -6,7 +6,11 @@ export const MyProvider = ({ children }) => {
   const [registerSuccessToast, setRegisterSuccessToast ] = useState(() => () => {});
 
   return (
-    <context.Provider value={{ registerSuccessToast, setRegisterSuccessToast }}>
+    <context.Provider value={
+      { 
+        registerSuccessToast,
+        setRegisterSuccessToast
+      }}>
       {children}
     </context.Provider>
   );

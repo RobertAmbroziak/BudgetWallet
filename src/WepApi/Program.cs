@@ -4,13 +4,16 @@ using BusinessLogic.Services.Mappers;
 using DataAccessLayer;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Model.Application;
 using Model.Identity;
 using Model.Tables;
+using System.Globalization;
 using System.Text;
+using WepApi.Middlewares;
 using WepApi.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,6 +54,21 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader()
                .AllowAnyMethod();
     });
+});
+
+
+builder.Services.AddLocalization();
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[]
+    {
+        new CultureInfo("en-US"),
+        new CultureInfo("pl-PL")
+    };
+
+    options.DefaultRequestCulture = new RequestCulture("en-US");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
 });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -100,6 +118,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors("AllowSpecificOrigin");
 app.UseHttpsRedirection();
+app.UseMiddleware<LanguageMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

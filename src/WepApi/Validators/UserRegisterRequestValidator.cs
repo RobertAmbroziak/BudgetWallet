@@ -1,19 +1,23 @@
 ﻿using BusinessLogic.Abstractions;
 using FluentValidation;
+using Microsoft.Extensions.Localization;
 using Model.Identity;
+using Util.Resources;
 
 namespace WepApi.Validators
 {
     public class UserRegisterRequestValidator : AbstractValidator<UserRegisterRequest>
     {
         private readonly IIdentityService _identityService;
+        private readonly IStringLocalizer<AppResource> _localizer;
 
-        public UserRegisterRequestValidator(IIdentityService identityService)
+        public UserRegisterRequestValidator(IIdentityService identityService, IStringLocalizer<AppResource> localizer)
         {
             _identityService = identityService;
+            _localizer = localizer;
 
             RuleFor(x => x.Email)
-                .NotEmpty().WithMessage("Email jest wymagany.")
+                .NotEmpty().WithMessage(_localizer["rule_emailIsRequired"].Value)
                 .EmailAddress().WithMessage("Nieprawidłowy format adresu email.")
                 .MinimumLength(6).WithMessage("Email musi mieć co najmniej 6 znaków.")
                 .MaximumLength(200).WithMessage("Email nie może być dłuższy niż 200 znaków.")
