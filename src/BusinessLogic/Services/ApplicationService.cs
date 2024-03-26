@@ -4,6 +4,8 @@ using DataAccessLayer;
 using Model.Application;
 using Model.Tables;
 using Mocks.MockData;
+using Microsoft.Extensions.Localization;
+using Util.Resources;
 
 namespace BusinessLogic.Services
 {
@@ -11,7 +13,7 @@ namespace BusinessLogic.Services
     {
         private readonly IApplicationRepository _applicationRepository;
         private readonly IIdentityService _identityService;
-
+        private readonly IStringLocalizer<AppResource> _localizer;
         private readonly IMapperService<BudgetDto, Budget> _budgetMapper;
         private readonly IMapperService<BudgetPeriodDto, BudgetPeriod> _budgetPeriodMapper;
         private readonly IMapperService<CategoryDto, Category> _categoryMapper;
@@ -22,7 +24,7 @@ namespace BusinessLogic.Services
         (
             IApplicationRepository applicationRepository,
             IIdentityService identityService,
-
+            IStringLocalizer<AppResource> localizer,
             IMapperService<BudgetDto, Budget> budgetMapper,
             IMapperService<BudgetPeriodDto, BudgetPeriod> budgetPeriodMapper,
             IMapperService<CategoryDto, Category> categoryMapper,
@@ -32,7 +34,7 @@ namespace BusinessLogic.Services
         {
             _applicationRepository = applicationRepository;
             _identityService = identityService;
-
+            _localizer = localizer;
             _budgetMapper = budgetMapper;
             _budgetPeriodMapper = budgetPeriodMapper;
             _categoryMapper = categoryMapper;
@@ -47,7 +49,7 @@ namespace BusinessLogic.Services
 
             if (budget.UserId != user.Id)
             {
-                throw new BadHttpRequestException("Selected budget does not belong to the user.");
+                throw new BadHttpRequestException(_localizer["rule_budgetIdBelongsToUser"].Value);
             }
 
             var spiltDtos = await _applicationRepository.GetSplits(splitsRequest);
@@ -159,11 +161,11 @@ namespace BusinessLogic.Services
             var budget = await _applicationRepository.GetByIdAsync<BudgetDto>(budgetId);
             if (budget == null)
             {
-                throw new BadHttpRequestException($"Parameter BudgetId: {budgetId} is wrong.");
+                throw new BadHttpRequestException(_localizer["rule_budgetIdBelongsToUser"].Value);
             }
             if (budget.UserId != user.Id)
             {
-                throw new BadHttpRequestException("Selected budget does not belong to the user.");
+                throw new BadHttpRequestException(_localizer["rule_budgetIdBelongsToUser"].Value);
             }
 
             var budgetPeriods = await _applicationRepository.FilterAsync<BudgetPeriodDto>(x => x.BudgetId == budgetId);
@@ -202,7 +204,7 @@ namespace BusinessLogic.Services
 
             if (budget.UserId != user.Id)
             {
-                throw new BadHttpRequestException("Selected budget does not belong to the user.");
+                throw new BadHttpRequestException(_localizer["rule_budgetIdBelongsToUser"].Value);
             }
 
             // TODO: docelowo powinienem chyba pobierać Categories na podstawie BudgetCategories
@@ -216,7 +218,7 @@ namespace BusinessLogic.Services
 
             if (budget.UserId != user.Id)
             {
-                throw new BadHttpRequestException("Selected budget does not belong to the user.");
+                throw new BadHttpRequestException(_localizer["rule_budgetIdBelongsToUser"].Value);
             }
 
             var accounts = await _applicationRepository.FilterAsync<AccountDto>(x => x.UserId == user.Id && x.IsActive);
@@ -225,20 +227,77 @@ namespace BusinessLogic.Services
 
         public async Task AddTransfer(PostTransfer postTransfer)
         {
-            var budget = await _applicationRepository.GetByIdAsync<BudgetDto>(postTransfer.BudgetId);
-            var user = await _identityService.GetCurrentUser();
-
-            if (budget.UserId != user.Id)
-            {
-                throw new BadHttpRequestException("Selected budget does not belong to the user.");
-            }
-
-            //todo: sprawdzanie budgetId to za mało, trzeba sprawdzić accountId i każde CategoryId
-
             var transfer = _postTransferMapper.Map(postTransfer);
 
             await _applicationRepository.InsertAsync(transfer);
             await _applicationRepository.SaveChangesAsync();
+        }
+
+        public async Task<bool> IsAccountIdsBelongToUser(int userId, IEnumerable<int> accountIds, bool onlyActive = false)
+        {
+            var accounts = await _applicationRepository.FilterAsync<AccountDto>(x => accountIds.Contains(x.Id) && (!onlyActive || x.IsActive));
+            foreach (var account in accounts)
+            {
+                if (account.UserId != userId)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public async Task<bool> IsBudgetIdsBelongToUser(int userId, IEnumerable<int> budgetIds, bool onlyActive = false)
+        {
+            var budgets = await _applicationRepository.FilterAsync<BudgetDto>(x => budgetIds.Contains(x.Id) && (!onlyActive || x.IsActive));
+            foreach (var budget in budgets)
+            {
+                if (budget.UserId != userId)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public async Task<bool> IsBudgetPeriodIdsBelongToBudget(int budgetId, IEnumerable<int> budgetPeriodIds, bool onlyActive = false)
+        {
+            var budgetPeriods = await _applicationRepository.FilterAsync<BudgetPeriodDto>(x => x.BudgetId == budgetId && (!onlyActive || x.IsActive));
+            var periodIds = budgetPeriods.Select(x => x.Id);
+            foreach (var budgetPeriodId in budgetPeriodIds)
+            {
+                if (!periodIds.Contains(budgetPeriodId))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public async Task<bool> IsCategoryIdsBelongToBudget(int budgetId, IEnumerable<int> categoryIds, bool onlyActive = false)
+        {
+            var budgetCategories = await _applicationRepository.FilterAsync<BudgetCategoryDto>(x => x.BudgetId == budgetId && (!onlyActive || x.IsActive));
+            var budgetCategoryIds = budgetCategories.Select(x => x.CategoryId);
+            foreach (var categoryId in categoryIds)
+            {
+                if (!budgetCategoryIds.Contains(categoryId))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public async Task<bool> IsCategoryIdsBelongToUser(int userId, IEnumerable<int> categoryIds, bool onlyActive = false)
+        {
+            var categories = await _applicationRepository.FilterAsync<BudgetDto>(x => categoryIds.Contains(x.Id) && (!onlyActive || x.IsActive));
+            foreach (var category in categories)
+            {
+                if (category.UserId != userId)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

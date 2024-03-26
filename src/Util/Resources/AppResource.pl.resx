@@ -129,7 +129,64 @@
   <data name="err_wrongUserNameOrPassword" xml:space="preserve">
     <value>Nieprawidłowy login lub hasło</value>
   </data>
+  <data name="rule_accountIdBelongsToUser" xml:space="preserve">
+    <value>AccountId nie należy do użytkownika.</value>
+  </data>
+  <data name="rule_budgetIdBelongsToUser" xml:space="preserve">
+    <value>BudgetId nie należy do użytkownika.</value>
+  </data>
+  <data name="rule_categoryIdsBelongToBudget" xml:space="preserve">
+    <value>Jeden lub więcej CategoryId nie należy do budżetu.</value>
+  </data>
   <data name="rule_emailIsRequired" xml:space="preserve">
     <value>Email jest wymagany.</value>
+  </data>
+  <data name="rule_emailMaxLong" xml:space="preserve">
+    <value>Email nie może być dłuższy niż 200 znaków.</value>
+  </data>
+  <data name="rule_emailMinLong" xml:space="preserve">
+    <value>Email musi mieć co najmniej 6 znaków.</value>
+  </data>
+  <data name="rule_emailTaken" xml:space="preserve">
+    <value>Adres email jest już zajęty.</value>
+  </data>
+  <data name="rule_invalid EmailFormat" xml:space="preserve">
+    <value>Nieprawidłowy format adresu email.</value>
+  </data>
+  <data name="rule_passwordFormat" xml:space="preserve">
+    <value>Hasło musi zawierać co najmniej 8 znaków, w tym co najmniej jedną małą literę, jedną dużą literę, jedną cyfrę oraz jeden znak specjalny.</value>
+  </data>
+  <data name="rule_passwordRequired" xml:space="preserve">
+    <value>Hasło jest wymagane.</value>
+  </data>
+  <data name="rule_splitValuePositive" xml:space="preserve">
+    <value>Wartości podziałów powinny być dodatnie.</value>
+  </data>
+  <data name="rule_transferDescMaxLong" xml:space="preserve">
+    <value>Maksymalna długość opisu transferu to 200 znaków.</value>
+  </data>
+  <data name="rule_transferNameMaxLong" xml:space="preserve">
+    <value>Maksymalna długość nazwy transferu to 50 znaków.</value>
+  </data>
+  <data name="rule_transferNameRequired" xml:space="preserve">
+    <value>Nazwa transferu jest wymagana.</value>
+  </data>
+  <data name="rule_transferValueEqualsSplitSum" xml:space="preserve">
+    <value>Wartość transferu nie jest równa sumie wartości podziałów.</value>
+  </data>
+  <data name="rule_transferValuePositive" xml:space="preserve">
+    <value>Wartość transferu powinna być dodatnia.</value>
+  </data>
+  <data name="rule_usernameMaxLong" xml:space="preserve">
+    <value>Nazwa użytkownika nie może być dłuższa niż 50 znaków.</value>
+  </data>
+  <data name="rule_usernameMinLong" xml:space="preserve">
+    <value>Nazwa użytkownika musi mieć co najmniej 3 znaki</value>
+  </data>
+  <data name="rule_usernameRequired" xml:space="preserve">
+    <value>Nazwa użytkownika jest wymagana.</value>
+  </data>
+  <data name="rule_usernameTaken" xml:space="preserve">
+    <value>Nazwa użytkownika jest już zajęta.</value>
   </data>
 </root>

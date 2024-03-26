@@ -110,6 +110,11 @@
 * Translations added (FE + BE partially)
 * Language handling in Web API and other backend projects
 
+### Day 26
+* Translations of validator rules
+* Default values in Add Expense
+* Validators extension
+
 
 
 

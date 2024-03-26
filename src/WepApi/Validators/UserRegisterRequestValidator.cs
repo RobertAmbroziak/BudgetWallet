@@ -18,21 +18,21 @@ namespace WepApi.Validators
 
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage(_localizer["rule_emailIsRequired"].Value)
-                .EmailAddress().WithMessage("Nieprawidłowy format adresu email.")
-                .MinimumLength(6).WithMessage("Email musi mieć co najmniej 6 znaków.")
-                .MaximumLength(200).WithMessage("Email nie może być dłuższy niż 200 znaków.")
-                .MustAsync(async (email, cancellationToken) => await BeUniqueEmail(email)).WithMessage("Adres email jest już zajęty.");
+                .EmailAddress().WithMessage(_localizer["rule_invalid EmailFormat"].Value)
+                .MinimumLength(6).WithMessage(_localizer["rule_emailMinLong"].Value)
+                .MaximumLength(200).WithMessage(_localizer["rule_emailMaxLong"].Value)
+                .MustAsync(async (email, cancellationToken) => await BeUniqueEmail(email)).WithMessage(_localizer["rule_emailTaken"].Value);
 
             RuleFor(x => x.UserName)
-                .NotEmpty().WithMessage("Nazwa użytkownika jest wymagana.")
-                .MinimumLength(3).WithMessage("Nazwa użytkownika musi mieć co najmniej 3 znaki")
-                .MaximumLength(50).WithMessage("Nazwa użytkownika nie może być dłuższa niż 50 znaków.")
-                .MustAsync(async (userName, cancellationToken) => await BeUniqueUserName(userName)).WithMessage("Nazwa użytkownika jest już zajęta.");
+                .NotEmpty().WithMessage(_localizer["rule_usernameRequired"].Value)
+                .MinimumLength(3).WithMessage(_localizer["rule_usernameMinLong"].Value)
+                .MaximumLength(50).WithMessage(_localizer["rule_usernameMaxLong"].Value)
+                .MustAsync(async (userName, cancellationToken) => await BeUniqueUserName(userName)).WithMessage(_localizer["rule_usernameTaken"].Value);
 
             RuleFor(x => x.Password)
-                .NotEmpty().WithMessage("Hasło jest wymagane.")
+                .NotEmpty().WithMessage(_localizer["rule_passwordRequired"].Value)
                 .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$")
-                .WithMessage("Hasło musi zawierać co najmniej 8 znaków, w tym co najmniej jedną małą literę, jedną dużą literę, jedną cyfrę oraz jeden znak specjalny.");
+                .WithMessage(_localizer["rule_passwordFormat"].Value);
         }
 
         private async Task<bool> BeUniqueEmail(string email)

@@ -119,16 +119,22 @@ function AddExpense({ jwtToken }) {
       for (let i = 0; i < splits.length; i++) {
         const { categoryId, name, value } = splits[i];
         if (!validateGreaterThanZero(categoryId)) {
-          errors.push(`${translations[language].errValid_invalidCategoryId} ${i + 1}.`);
+          errors.push(
+            `${translations[language].errValid_invalidCategoryId} ${i + 1}.`
+          );
         }
         if (!validateNotEmpty(name)) {
-          errors.push(`${translations[language].errValid_nameOfSplit} ${i + 1} ${translations[language].errValid_cannotBeEmpty}`);
+          errors.push(
+            `${translations[language].errValid_nameOfSplit} ${i + 1} ${
+              translations[language].errValid_cannotBeEmpty
+            }`
+          );
         }
         if (!validateNumber(value)) {
           errors.push(
-            `${translations[language].errValid_valueOfSplit1} ${
-              i + 1
-            } ${translations[language].errValid_valueOfSplit2}}`
+            `${translations[language].errValid_valueOfSplit1} ${i + 1} ${
+              translations[language].errValid_valueOfSplit2
+            }}`
           );
         } else {
           splitsValueSum += parseFloat(value);
@@ -180,7 +186,15 @@ function AddExpense({ jwtToken }) {
         };
         addTransferSuccessToast();
       } catch (error) {
-        setIsValid({ isValid: false, errors: [error.message] });
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.length > 0
+        ) {
+          setIsValid({ isValid: false, errors: error.response.data });
+        } else {
+          setIsValid({ isValid: false, errors: [error.message] });
+        }
       }
     }
   };
@@ -207,6 +221,20 @@ function AddExpense({ jwtToken }) {
   const handleCategoryChange = (index, value) => {
     const updatedRecords = [...splitRecords];
     updatedRecords[index].categoryId = value;
+
+    const transferValue = document.getElementById("transferValue").value;
+
+    if (index === 0 && transferValue) {
+      updatedRecords[index].value = transferValue;
+    }
+
+    const categoryName = categories.find(
+      (category) => category.id === value
+    )?.name;
+    if (categoryName) {
+      updatedRecords[index].name = categoryName;
+    }
+
     setSplitRecords(updatedRecords);
   };
 
@@ -372,7 +400,7 @@ function AddExpense({ jwtToken }) {
               id={"splitName_" + index}
               variant="outlined"
               label={translations[language].txt_name}
-              value={record.name}
+              value={splitRecords[index].name}
               onChange={(e) =>
                 handleSplitRecordChange(index, "name", e.target.value)
               }
@@ -390,7 +418,7 @@ function AddExpense({ jwtToken }) {
               id={"splitValue_" + index}
               variant="outlined"
               label={translations[language].txt_value}
-              value={record.value}
+              value={splitRecords[index].value}
               onChange={(e) =>
                 handleSplitRecordChange(index, "value", e.target.value)
               }

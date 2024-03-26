@@ -12,5 +12,11 @@ namespace BusinessLogic.Abstractions
         Task<IEnumerable<Category>> GetBudgetCategories(int budgetId);
         Task<IEnumerable<Account>> GetBudgetAccounts(int budgetId);
         Task AddTransfer(PostTransfer postTransfer);
+
+        Task<bool> IsAccountIdsBelongToUser(int userId, IEnumerable<int> accountIds, bool onlyActive = false);
+        Task<bool> IsBudgetIdsBelongToUser(int userId, IEnumerable<int> budgetIds, bool onlyActive = false);
+        Task<bool> IsBudgetPeriodIdsBelongToBudget(int budgetId, IEnumerable<int> budgetPeriodIds, bool onlyActive = false);
+        Task<bool> IsCategoryIdsBelongToBudget(int budgetId, IEnumerable<int> categoryIds, bool onlyActive = false);
+        Task<bool> IsCategoryIdsBelongToUser(int userId, IEnumerable<int> categoryIds, bool onlyActive = false);
     }
 }

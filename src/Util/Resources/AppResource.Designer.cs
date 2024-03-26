@@ -97,11 +97,182 @@ namespace Util.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AccountId doesn&apos;t belong to user..
+        /// </summary>
+        public static string rule_accountIdBelongsToUser {
+            get {
+                return ResourceManager.GetString("rule_accountIdBelongsToUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BudgetId doesn&apos;t belong to user..
+        /// </summary>
+        public static string rule_budgetIdBelongsToUser {
+            get {
+                return ResourceManager.GetString("rule_budgetIdBelongsToUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to One or more categoryId doesn&apos;t belong to budget..
+        /// </summary>
+        public static string rule_categoryIdsBelongToBudget {
+            get {
+                return ResourceManager.GetString("rule_categoryIdsBelongToBudget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email is requaired..
         /// </summary>
         public static string rule_emailIsRequired {
             get {
                 return ResourceManager.GetString("rule_emailIsRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email cannot exceed 200 characters..
+        /// </summary>
+        public static string rule_emailMaxLong {
+            get {
+                return ResourceManager.GetString("rule_emailMaxLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email must be at least 6 characters long..
+        /// </summary>
+        public static string rule_emailMinLong {
+            get {
+                return ResourceManager.GetString("rule_emailMinLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email address is already taken..
+        /// </summary>
+        public static string rule_emailTaken {
+            get {
+                return ResourceManager.GetString("rule_emailTaken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid email address format..
+        /// </summary>
+        public static string rule_invalid_EmailFormat {
+            get {
+                return ResourceManager.GetString("rule_invalid EmailFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password must be at least 8 characters long, including at least one lowercase letter, one uppercase letter, one digit, and one special character..
+        /// </summary>
+        public static string rule_passwordFormat {
+            get {
+                return ResourceManager.GetString("rule_passwordFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password is required..
+        /// </summary>
+        public static string rule_passwordRequired {
+            get {
+                return ResourceManager.GetString("rule_passwordRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Split values should be positive..
+        /// </summary>
+        public static string rule_splitValuePositive {
+            get {
+                return ResourceManager.GetString("rule_splitValuePositive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transfer description cannot exceed 200 characters..
+        /// </summary>
+        public static string rule_transferDescMaxLong {
+            get {
+                return ResourceManager.GetString("rule_transferDescMaxLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transfer name cannot exceed 50 characters..
+        /// </summary>
+        public static string rule_transferNameMaxLong {
+            get {
+                return ResourceManager.GetString("rule_transferNameMaxLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transfer name is required..
+        /// </summary>
+        public static string rule_transferNameRequired {
+            get {
+                return ResourceManager.GetString("rule_transferNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transfer value not equals split value sum..
+        /// </summary>
+        public static string rule_transferValueEqualsSplitSum {
+            get {
+                return ResourceManager.GetString("rule_transferValueEqualsSplitSum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transfer value should be positive..
+        /// </summary>
+        public static string rule_transferValuePositive {
+            get {
+                return ResourceManager.GetString("rule_transferValuePositive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username cannot exceed 50 characters..
+        /// </summary>
+        public static string rule_usernameMaxLong {
+            get {
+                return ResourceManager.GetString("rule_usernameMaxLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username must be at least 3 characters long..
+        /// </summary>
+        public static string rule_usernameMinLong {
+            get {
+                return ResourceManager.GetString("rule_usernameMinLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username is required..
+        /// </summary>
+        public static string rule_usernameRequired {
+            get {
+                return ResourceManager.GetString("rule_usernameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username is already taken..
+        /// </summary>
+        public static string rule_usernameTaken {
+            get {
+                return ResourceManager.GetString("rule_usernameTaken", resourceCulture);
             }
         }
     }

@@ -129,7 +129,64 @@
   <data name="err_wrongUserNameOrPassword" xml:space="preserve">
     <value>Wrong user name or password.</value>
   </data>
+  <data name="rule_accountIdBelongsToUser" xml:space="preserve">
+    <value>AccountId doesn't belong to user.</value>
+  </data>
+  <data name="rule_budgetIdBelongsToUser" xml:space="preserve">
+    <value>BudgetId doesn't belong to user.</value>
+  </data>
+  <data name="rule_categoryIdsBelongToBudget" xml:space="preserve">
+    <value>One or more categoryId doesn't belong to budget.</value>
+  </data>
   <data name="rule_emailIsRequired" xml:space="preserve">
     <value>Email is requaired.</value>
+  </data>
+  <data name="rule_emailMaxLong" xml:space="preserve">
+    <value>Email cannot exceed 200 characters.</value>
+  </data>
+  <data name="rule_emailMinLong" xml:space="preserve">
+    <value>Email must be at least 6 characters long.</value>
+  </data>
+  <data name="rule_emailTaken" xml:space="preserve">
+    <value>Email address is already taken.</value>
+  </data>
+  <data name="rule_invalid EmailFormat" xml:space="preserve">
+    <value>Invalid email address format.</value>
+  </data>
+  <data name="rule_passwordFormat" xml:space="preserve">
+    <value>Password must be at least 8 characters long, including at least one lowercase letter, one uppercase letter, one digit, and one special character.</value>
+  </data>
+  <data name="rule_passwordRequired" xml:space="preserve">
+    <value>Password is required.</value>
+  </data>
+  <data name="rule_splitValuePositive" xml:space="preserve">
+    <value>Split values should be positive.</value>
+  </data>
+  <data name="rule_transferDescMaxLong" xml:space="preserve">
+    <value>Transfer description cannot exceed 200 characters.</value>
+  </data>
+  <data name="rule_transferNameMaxLong" xml:space="preserve">
+    <value>Transfer name cannot exceed 50 characters.</value>
+  </data>
+  <data name="rule_transferNameRequired" xml:space="preserve">
+    <value>Transfer name is required.</value>
+  </data>
+  <data name="rule_transferValueEqualsSplitSum" xml:space="preserve">
+    <value>Transfer value not equals split value sum.</value>
+  </data>
+  <data name="rule_transferValuePositive" xml:space="preserve">
+    <value>Transfer value should be positive.</value>
+  </data>
+  <data name="rule_usernameMaxLong" xml:space="preserve">
+    <value>Username cannot exceed 50 characters.</value>
+  </data>
+  <data name="rule_usernameMinLong" xml:space="preserve">
+    <value>Username must be at least 3 characters long.</value>
+  </data>
+  <data name="rule_usernameRequired" xml:space="preserve">
+    <value>Username is required.</value>
+  </data>
+  <data name="rule_usernameTaken" xml:space="preserve">
+    <value>Username is already taken.</value>
   </data>
 </root>
