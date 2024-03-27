@@ -115,6 +115,11 @@
 * Default values in Add Expense
 * Validators extension
 
+### Day 27
+* Percentage to Splits Table
+* Data for Chart (Splits)
+* Data for SplitSummary
+
 
 
 

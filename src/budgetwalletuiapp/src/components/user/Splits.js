@@ -49,6 +49,7 @@ function Splits({ jwtToken, splitsRequest }) {
                 <Th>{translations[language].hdr_Account}</Th>
                 <Th>{translations[language].hdr_Date}</Th>
                 <Th>{translations[language].hdr_Value}</Th>
+                <Th>{translations[language].hdr_Percentage}</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -60,6 +61,7 @@ function Splits({ jwtToken, splitsRequest }) {
                   <Td>{split.accountSourceName}</Td>
                   <Td>{split.transferDateFormated}</Td>
                   <Td>{split.splitValueFormated}</Td>
+                  <Td>{split.percentage} %</Td>
                 </Tr>
               ))}
             </Tbody>

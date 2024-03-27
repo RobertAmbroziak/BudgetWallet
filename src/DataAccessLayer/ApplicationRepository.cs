@@ -57,7 +57,9 @@ namespace DataAccessLayer
             return await _context.Set<SplitDto>()
                 .Include(e => e.Transfer).ThenInclude(t => t.SourceAccount)
                 .Include(e => e.Category)
-                .Where(filter).ToListAsync();
+                .Where(filter)
+                .OrderBy(x => x.CreatedDate)
+                .ToListAsync();
         }
 
         public async Task AddMockData(IEnumerable<BudgetDto> budgets, IEnumerable<AccountDto> accounts)

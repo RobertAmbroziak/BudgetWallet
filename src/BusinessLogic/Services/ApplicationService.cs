@@ -56,9 +56,35 @@ namespace BusinessLogic.Services
 
             var splits = new List<Split>();
             int k = 0;
+
+            decimal currentValue = 0;
+            decimal budgetFilterValue = 0;
+
+            if (splitsRequest.AccountId == null)
+            {
+                if (splitsRequest.BudgetPeriodId != null && splitsRequest.CategoryId != null)
+                {
+                    budgetFilterValue = (await _applicationRepository.FirstOrDefault<BudgetPeriodCategoryDto>(x => x.BudgetPeriodId == splitsRequest.BudgetPeriodId && x.CategoryId == splitsRequest.CategoryId))?.MaxValue ?? 0;
+                }
+                else if (splitsRequest.BudgetPeriodId == null && splitsRequest.CategoryId != null)
+                {
+                    budgetFilterValue = (await _applicationRepository.FirstOrDefault<BudgetCategoryDto>(x => x.CategoryId == splitsRequest.CategoryId))?.MaxValue ?? 0;
+                }
+                else if (splitsRequest.BudgetPeriodId != null && splitsRequest.CategoryId == null)
+                {
+                    budgetFilterValue = (await _applicationRepository.FilterAsync<BudgetPeriodCategoryDto>(x => x.BudgetPeriodId == splitsRequest.BudgetPeriodId)).Sum(x => x.MaxValue);
+                }
+                else
+                {
+                    budgetFilterValue = (await _applicationRepository.FilterAsync<BudgetCategoryDto>(x => x.BudgetId == splitsRequest.BudgetId)).Sum(x => x.MaxValue);
+                }
+            }
+
+
             foreach (var split in spiltDtos)
             {
                 k++;
+                currentValue += split.Value;
                 splits.Add(
                     new Split
                     {
@@ -78,18 +104,47 @@ namespace BusinessLogic.Services
                         TransferDate = split.Transfer.TransferDate,
 
                         OrderId = k,
-                        Percentage = 0 // TODO:  chciałem żeby to był stosunek przyrostowej wartość wydatków do założonego budżetu na budgetCategory lub PeriodCategory
+                        Percentage = (budgetFilterValue > 0) ? Math.Round((currentValue / budgetFilterValue) * 100, 2) : 0
                     });
             }
 
-            /* TODO: budgetValue jest zależny od filtra. to może być cały budżet więc suma z wszystkich BudgetPeriod, pojedynczy Period, może być tylko dla BudgetPeriodCategory lub mix. Tylko użycie Account w filtrze ma zwrócić 0 */
             var splitSummary = new SplitSummary
             {
-                SplitsValue = splits.Sum(x => x.SplitValue),
-                BudgetValue = splits.Sum(x => x.SplitValue) // TODO : będzie zastąpione przez budgetPeriod
+                SplitsValue = currentValue,
+                BudgetValue = budgetFilterValue
             };
 
             var splitChartsItems = new List<SplitChartItem>(); // TODO: dane na potrzeby wykresu
+
+            Dictionary<int, DateOnly> axisX;
+            if (splitsRequest.BudgetPeriodId != null)
+            {
+                var budgetPeriod = await _applicationRepository.GetByIdAsync<BudgetPeriodDto>(splitsRequest.BudgetPeriodId.Value);
+                axisX = SetAxisX(budgetPeriod.ValidFrom, budgetPeriod.ValidTo);
+            }
+            else
+            {
+                axisX = SetAxisX(budget.ValidFrom, budget.ValidTo);
+            }
+
+            Dictionary<int, decimal> budgetValues;
+            Dictionary<int, decimal> splitValues;
+
+
+
+            /*
+                ustawiamy tylko jeśli nie ma filtra na Account
+                jeśli jest filtr na Period to bierzemy okres periodu i liczbę dni z niego - jako oś X
+                jeśli nie to z budżetu i to samo
+                
+                bierzemy budgetFilterValue i rozbijamy proporcjonalnie przyrostowo jako linia prosta na wszystkie dni
+                może jeśli budżet to zbudujmy nie prostą tylko łamaną z periodów ??? - ale to opcja
+                to oczywiście przyrostowa wartość będzie na oś Y
+
+                ze splitów value liczymy sumy po dacie i jako Y rzucamy na wykres
+               
+             */
+
 
             var splitsResponse = new SplitsResponse
             {
@@ -299,5 +354,20 @@ namespace BusinessLogic.Services
             }
             return true;
         }
+
+        #region private
+
+        private Dictionary<int, DateOnly> SetAxisX(DateTime startDate, DateTime endDate)
+        {
+            var result = new Dictionary<int, DateOnly>();
+            int counter = 1;
+            for (DateTime date = startDate.Date; date.Date <= endDate.Date; date = date.AddDays(1))
+            {
+                result.Add(counter++, DateOnly.FromDateTime(date));
+            }
+            return result;
+        }
+
+        #endregion
     }
 }
