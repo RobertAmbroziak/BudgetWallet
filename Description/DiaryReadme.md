@@ -120,6 +120,11 @@
 * Data for Chart (Splits)
 * Data for SplitSummary
 
+### Day 28
+* Preparation for migration to .Net 8 (and upgrading dependencies)
+* Preparation for migration from CreateReactApp to Vite + TypeScript
+* Review of the work plan
+
 
 
 
