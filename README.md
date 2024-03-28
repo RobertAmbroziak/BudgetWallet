@@ -43,14 +43,14 @@ In my efforts to control expenses and manage the household budget, I have tried 
   - :x: remember me
   - :x: forgot password
 - :white_square_button: Application (User Panel)
- - :heavy_check_mark: buttons - expenses, add, administration
- - :white_square_button: expenses
-   - :heavy_check_mark: get expenses(splits)
-   - :heavy_check_mark: filter for get expenses -> data for filter and filter manipulation
-   - :x: data for summary and presentation summary
-   - :x: data for chart and chart
-   - :x: more details of data row
- - :heavy_check_mark: add (new expense)
+  - :heavy_check_mark: buttons - expenses, add, administration
+  - :white_square_button: expenses
+    - :heavy_check_mark: get expenses(splits)
+    - :heavy_check_mark: filter for get expenses -> data for filter and filter manipulation
+    - :x: data for summary and presentation summary
+    - :x: data for chart and chart
+    - :x: more details of data row
+  - :heavy_check_mark: add (new expense)
  - :x: administration
    - :x: add/edit budget (with budgetCategories), budget period (with budgetPeriodCategories), category, account
    - :x: add/edit internal transfer or deposit
