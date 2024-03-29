@@ -125,6 +125,12 @@
 * Preparation for migration from CreateReactApp to Vite + TypeScript
 * Review of the work plan
 
+### Day 29
+* Chart View
+* Summary View
+
+<img src="Images/sc12.PNG" alt="Image 12" height="300px" style="width:auto;">
+
 
 
 

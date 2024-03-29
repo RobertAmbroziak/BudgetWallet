@@ -114,37 +114,27 @@ namespace BusinessLogic.Services
                 BudgetValue = budgetFilterValue
             };
 
-            var splitChartsItems = new List<SplitChartItem>(); // TODO: dane na potrzeby wykresu
+            var splitChartsItems = new List<SplitChartItem>();
 
-            Dictionary<int, DateOnly> axisX;
-            if (splitsRequest.BudgetPeriodId != null)
+            if (splitsRequest.AccountId == null)
             {
-                var budgetPeriod = await _applicationRepository.GetByIdAsync<BudgetPeriodDto>(splitsRequest.BudgetPeriodId.Value);
-                axisX = SetAxisX(budgetPeriod.ValidFrom, budgetPeriod.ValidTo);
+                Dictionary<int, DateOnly> axisX;
+
+                if (splitsRequest.BudgetPeriodId != null)
+                {
+                    var budgetPeriod = await _applicationRepository.GetByIdAsync<BudgetPeriodDto>(splitsRequest.BudgetPeriodId.Value);
+                    axisX = SetAxisX(budgetPeriod.ValidFrom, budgetPeriod.ValidTo);
+                }
+                else
+                {
+                    axisX = SetAxisX(budget.ValidFrom, budget.ValidTo);
+                }
+
+                var budgetValues = GetBudgetValues(axisX, budgetFilterValue);
+                var splitValues = GetSplitValues(axisX, splits);
+
+                splitChartsItems = GetSplitChartValues(budgetValues, splitValues).ToList();
             }
-            else
-            {
-                axisX = SetAxisX(budget.ValidFrom, budget.ValidTo);
-            }
-
-            Dictionary<int, decimal> budgetValues;
-            Dictionary<int, decimal> splitValues;
-
-
-
-            /*
-                ustawiamy tylko jeśli nie ma filtra na Account
-                jeśli jest filtr na Period to bierzemy okres periodu i liczbę dni z niego - jako oś X
-                jeśli nie to z budżetu i to samo
-                
-                bierzemy budgetFilterValue i rozbijamy proporcjonalnie przyrostowo jako linia prosta na wszystkie dni
-                może jeśli budżet to zbudujmy nie prostą tylko łamaną z periodów ??? - ale to opcja
-                to oczywiście przyrostowa wartość będzie na oś Y
-
-                ze splitów value liczymy sumy po dacie i jako Y rzucamy na wykres
-               
-             */
-
 
             var splitsResponse = new SplitsResponse
             {
@@ -361,10 +351,61 @@ namespace BusinessLogic.Services
         {
             var result = new Dictionary<int, DateOnly>();
             int counter = 1;
-            for (DateTime date = startDate.Date; date.Date <= endDate.Date; date = date.AddDays(1))
+            for (DateTime date = startDate.Date; date.Date < endDate.Date; date = date.AddDays(1))
             {
                 result.Add(counter++, DateOnly.FromDateTime(date));
             }
+            return result;
+        }
+
+        private Dictionary<int, decimal> GetBudgetValues(Dictionary<int, DateOnly> axisX, decimal budgetFilterValue)
+        {
+            var result = new Dictionary<int, decimal>();
+
+            int itemCount = axisX.Count;
+            decimal incrementValue = Math.Round(budgetFilterValue / itemCount, 2);
+
+            decimal currentValue = incrementValue;
+            foreach (var key in axisX.Keys)
+            {
+                result[key] = currentValue;
+                currentValue += incrementValue;
+            }
+
+            return result;
+        }
+
+        private Dictionary<int, decimal> GetSplitValues(Dictionary<int, DateOnly> axisX, IEnumerable<Split> splits)
+        {
+            var result = new Dictionary<int, decimal>();
+
+            decimal cumulativeSum = 0;
+
+            foreach (var day in axisX)
+            {
+                var matchingSplits = splits.Where(s => DateOnly.FromDateTime(s.TransferDate) == day.Value);
+                decimal dailySum = matchingSplits.Sum(s => s.SplitValue);
+                cumulativeSum += dailySum;
+                result[day.Key] = cumulativeSum;
+            }
+
+            return result;
+        }
+
+        private IEnumerable<SplitChartItem> GetSplitChartValues(Dictionary<int, decimal> budgetValues, Dictionary<int, decimal> splitValues)
+        {
+            var result = new List<SplitChartItem>();
+
+            foreach (var budgetValue in budgetValues)
+            {
+                result.Add(new SplitChartItem
+                {
+                    PeriodOrderId = budgetValue.Key,
+                    BudgetPartSumValue = budgetValue.Value,
+                    SpltPartSumValue = splitValues[budgetValue.Key]
+                });
+            }
+
             return result;
         }
 
