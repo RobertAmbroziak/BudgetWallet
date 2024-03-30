@@ -1,8 +1,11 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { useLanguage } from "../../LanguageContext";
+import translations from "../../translations";
 
 function Summary({ splitsSummary }) {
+  const { language } = useLanguage();
 
   return (
     <Box
@@ -17,7 +20,7 @@ function Summary({ splitsSummary }) {
       }}
     >
       <Typography variant="summary">
-        Wartość: {splitsSummary.splitsValue} / Suma: {splitsSummary.budgetValue} | Procent: {splitsSummary.percentage}%
+      {translations[language].lbl_SumOfExpenses}: {splitsSummary.splitsValue} | {translations[language].lbl_BudgetValue}: {splitsSummary.budgetValue} | {translations[language].lbl_Percentage}: {splitsSummary.percentage}%
       </Typography>
     </Box>
   );

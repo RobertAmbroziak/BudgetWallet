@@ -102,6 +102,7 @@ namespace BusinessLogic.Services
                         TransferName = split.Transfer.Name,
                         TransferDescription = split.Transfer.Description,
                         TransferDate = split.Transfer.TransferDate,
+                        TransferValue = split.Transfer.Value,
 
                         OrderId = k,
                         Percentage = (budgetFilterValue > 0) ? Math.Round((currentValue / budgetFilterValue) * 100, 2) : 0

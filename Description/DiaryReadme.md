@@ -131,6 +131,17 @@
 
 <img src="Images/sc12.PNG" alt="Image 12" height="300px" style="width:auto;">
 
+### Day 30
+* Grouping splits by transfer (marking records with a common color)
+* Tooltips with a description (split, transfer, account)
+* Tooltips with a transfer value when hovering over the split value
+* Introduction to editing the split in a modal window
+
+<img src="Description/Images/sc13.PNG" alt="Image 13" height="200px" style="width:auto;">
+ <img src="Description/Images/sc14.PNG" alt="Image 14" height="200px" style="width:auto;">	
+
+
+
 
 
 

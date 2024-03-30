@@ -11,3 +11,13 @@
   border: 1px solid black;
   padding: 8px;
 }
+
+.bwtable .shaded {
+  background-color: #d6d7d1;
+}
+
+.bwtable .editColumn {
+  width: 1%;
+  white-space: nowrap;
+  max-width: 100px;
+}

@@ -59,6 +59,7 @@ namespace DataAccessLayer
                 .Include(e => e.Category)
                 .Where(filter)
                 .OrderBy(x => x.CreatedDate)
+                .ThenBy(x => x.TransferId)
                 .ToListAsync();
         }
 

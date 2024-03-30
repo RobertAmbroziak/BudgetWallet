@@ -113,9 +113,8 @@ public enum UserRole
 Plans regarding the direction of application development, which emerged after 17 days of coding. Unfortunately, it's a complicated jumble of loose thoughts, so I'm leaving it in Polish.
 [Project Plans](/Description/ProjectPlan.md)
 
-
-[Diary](/Description/DiaryReadme.md)
-
+> [!NOTE]
+> [Diary](/Description/DiaryReadme.md) Activity and code change log
 
 ## First screens from the application
 (browser set to Polish language)

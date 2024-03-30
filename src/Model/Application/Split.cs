@@ -16,11 +16,13 @@
         public string TransferName { get; set; }
         public string TransferDescription { get; set; }
         public DateTime TransferDate { get; set; }
+        public decimal TransferValue { get; set; }
 
         public int OrderId { get; set; }
         public decimal Percentage { get; set; }
 
         public string TransferDateFormated => TransferDate.ToString("yyyy-MM-dd HH:mm");
         public string SplitValueFormated => SplitValue.ToString("N2");
+        public string TransferValueFormated => TransferValue.ToString("N2");
     }
 }
