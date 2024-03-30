@@ -137,8 +137,8 @@
 * Tooltips with a transfer value when hovering over the split value
 * Introduction to editing the split in a modal window
 
-<img src="Description/Images/sc13.PNG" alt="Image 13" height="200px" style="width:auto;">
- <img src="Description/Images/sc14.PNG" alt="Image 14" height="200px" style="width:auto;">	
+<img src="Images/sc13.PNG" alt="Image 13" height="200px" style="width:auto;">
+ <img src="Images/sc14.PNG" alt="Image 14" height="200px" style="width:auto;">	
 
 
 
