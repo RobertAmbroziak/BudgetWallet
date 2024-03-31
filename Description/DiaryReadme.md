@@ -140,7 +140,11 @@
 <img src="Images/sc13.PNG" alt="Image 13" height="200px" style="width:auto;">
  <img src="Images/sc14.PNG" alt="Image 14" height="200px" style="width:auto;">	
 
-
+### Day 31
+* Initiation of accounts, categories, and budgets configuration
+* Edit existed Split/Transfer - almost ready
+* small CSS fixes
+* steps towards further changes in the configuration and split editing area
 
 
 

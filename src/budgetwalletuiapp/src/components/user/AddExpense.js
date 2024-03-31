@@ -20,7 +20,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useLanguage } from "../../LanguageContext";
 import translations from "../../translations";
 
-function AddExpense({ jwtToken }) {
+function AddExpense({ jwtToken, inModal = false }) {
   const [budgets, setBudgets] = useState([]);
   const [accounts, setAccounts] = useState([]);
   const [transferDate, setTransferDate] = useState(dayjs());
@@ -282,7 +282,7 @@ function AddExpense({ jwtToken }) {
           </ul>
         </Paper>
       )}
-      <Paper elevation={3} sx={{ margin: "20px" }}>
+      <Paper elevation={3} sx={{ margin: { xs: "5px", sm: "20px" } }}>
         <Box
           component="form"
           sx={{
@@ -356,7 +356,7 @@ function AddExpense({ jwtToken }) {
           </Button>
         </Box>
       </Paper>
-      <Paper elevation={3} sx={{ margin: "20px" }}>
+      <Paper elevation={3} sx={{  margin: { xs: "5px", sm: "20px" }, overflow: "hidden", padding: inModal ? 2 : 0 }}>
         <Button variant="outlined" onClick={handleAddSplitRecord}>
           {translations[language].btn_addSplit}
         </Button>
@@ -365,8 +365,18 @@ function AddExpense({ jwtToken }) {
             key={"key_splitBox_" + index}
             sx={{
               display: "flex",
-              whiteSpace: "nowrap",
-              "& > :not(style)": { m: 1 },
+              //whiteSpace: "nowrap",
+              //flexDirection: "row",
+              flexDirection: inModal ? "column" : "row",
+              "& > :not(style)": { m: 1, width: inModal ? "100%" : "auto" },
+              "@media (max-width:600px)": {
+                flexDirection: "column",
+              },
+              // "& > :not(style)": { m: 1 },
+              // "@media (max-width:600px)": {
+              //   flexDirection: "column",
+              //   whiteSpace: "normal",
+              // },
             }}
             noValidate
             autoComplete="off"

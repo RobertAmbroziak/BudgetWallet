@@ -5,9 +5,11 @@ import Splits from "./Splits";
 function Stats({ jwtToken }) {
   const [showSplits, setShowSplits] = useState(false);
   const [splitsRequest, setSplitsRequest] = useState(null);
-  const handleGetSplitsButtonClick = (request) => {
+  const [filtersData, setFiltersData] = useState({ accounts: [], categories: [] });
+  const handleGetSplitsButtonClick = (request, filters) => {
     setSplitsRequest(request);
     setShowSplits(true);
+    setFiltersData(filters);
   };
 
   return (
@@ -19,7 +21,8 @@ function Stats({ jwtToken }) {
       />
       <br />
       {showSplits && (
-        <Splits jwtToken={jwtToken} splitsRequest={splitsRequest} />
+        // <Splits jwtToken={jwtToken} splitsRequest={splitsRequest} />
+        <Splits jwtToken={jwtToken} splitsRequest={splitsRequest} filtersData={filtersData}/>
       )}
     </div>
   );

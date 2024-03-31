@@ -99,7 +99,7 @@ function SplitsFilter({ jwtToken, onGetSplitsButtonClick }) {
       CategoryId: selectedValues.categoryId,
       AccountId: selectedValues.accountId,
     };
-    onGetSplitsButtonClick(splitsRequest);
+    onGetSplitsButtonClick(splitsRequest, { accounts: filters.accounts, categories: filters.categories });
   };
 
   return (

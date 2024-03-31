@@ -6,6 +6,7 @@ import { useLanguage } from "../../LanguageContext";
 import translations from "../../translations";
 import Stats from "./Stats";
 import AddExpense from "./AddExpense";
+import Configuration from "./Configuration";
 import { MDBBtn } from "mdb-react-ui-kit";
 
 function User({ jwtToken }) {
@@ -16,16 +17,26 @@ function User({ jwtToken }) {
   const [isButtonGetSplitsClicked, setIsButtonGetSplitsClicked] =
     useState(false);
   const [isButtonAddExpenseClicked, setIsButtonAdExpenseClicked] =
-    useState(false);  
+    useState(false);
+  const [isButtonConfigurationClicked, setIsButtonConfigurationClicked] =
+    useState(false);
 
   const handleGetSplitsClick = () => {
     setIsButtonGetSplitsClicked(true);
     setIsButtonAdExpenseClicked(false);
+    setIsButtonConfigurationClicked(false);
   };
 
   const handleAddExpenseClick = () => {
     setIsButtonGetSplitsClicked(false);
     setIsButtonAdExpenseClicked(true);
+    setIsButtonConfigurationClicked(false);
+  };
+
+  const handleConfigurationClick = () => {
+    setIsButtonGetSplitsClicked(false);
+    setIsButtonAdExpenseClicked(false);
+    setIsButtonConfigurationClicked(true);
   };
 
   useEffect(() => {
@@ -61,10 +72,14 @@ function User({ jwtToken }) {
             {translations[language].btn_Expenses}
           </MDBBtn>
           <MDBBtn color="danger" onClick={handleAddExpenseClick}>
-            {translations[language].btn_Edit}</MDBBtn>
-          <MDBBtn color="info">{translations[language].btn_Config}</MDBBtn>
+            {translations[language].btn_Edit}
+          </MDBBtn>
+          <MDBBtn color="info"onClick={handleConfigurationClick}>
+            {translations[language].btn_Config}
+          </MDBBtn>
           {isButtonGetSplitsClicked && <Stats jwtToken={jwtToken} />}
           {isButtonAddExpenseClicked && <AddExpense jwtToken={jwtToken} />}
+          {isButtonConfigurationClicked && <Configuration jwtToken={jwtToken} />}
         </div>
       ) : null}
       <br />

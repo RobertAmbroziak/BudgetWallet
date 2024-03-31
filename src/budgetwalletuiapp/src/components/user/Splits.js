@@ -7,6 +7,7 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import "./Splits.css";
 import Summary from "./Summary.js";
+import SplitEdit from "./SplitEdit.js";
 import { LineChart } from "@mui/x-charts/LineChart";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -14,9 +15,9 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Tooltip from "@mui/material/Tooltip";
 import EditIcon from "@mui/icons-material/Edit";
-import { Modal, Box, Typography, Button } from "@mui/material";
+import { Button } from "@mui/material";
 
-function Splits({ jwtToken, splitsRequest }) {
+function Splits({ jwtToken, splitsRequest, filtersData }) {
   const [splitsResponse, setSplitsResponse] = useState(null);
   const { language } = useLanguage();
   const [openModal, setOpenModal] = useState(false);
@@ -32,16 +33,8 @@ function Splits({ jwtToken, splitsRequest }) {
   };
 
   const handleCloseModal = () => setOpenModal(false);
-  const editSplitBoxStyle = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
+  const handleSaveSplit = () =>{
+    console.log("TODO: zapis splitu i transferu po edycji. Wywołanie refreshu przez click SZUKAJ");
   };
 
   useEffect(() => {
@@ -73,7 +66,7 @@ function Splits({ jwtToken, splitsRequest }) {
             series: [
               {
                 showMark: false,
-                name: translations[language].lbl_budget, 
+                name: translations[language].lbl_budget,
                 data: budgetPartSeries,
                 valueFormatter: (value) =>
                   value == null ? "NaN" : value.toString(),
@@ -108,7 +101,7 @@ function Splits({ jwtToken, splitsRequest }) {
       }
     };
     fetchData();
-  }, [jwtToken, splitsRequest]);
+  }, [jwtToken, splitsRequest, language]);
 
   return (
     <div>
@@ -117,7 +110,7 @@ function Splits({ jwtToken, splitsRequest }) {
           <br />
           {splitsResponse.splitSummary.budgetValue > 0 && (
             <>
-              <Accordion>
+              <Accordion sx={{ my: 1, mx: 2 }}>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls="summary-content"
@@ -129,7 +122,7 @@ function Splits({ jwtToken, splitsRequest }) {
                   <Summary splitsSummary={splitsResponse.splitSummary} />
                 </AccordionDetails>
               </Accordion>
-              <Accordion>
+              <Accordion sx={{ my: 1, mx: 2 }}>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls="pchart-content"
@@ -205,29 +198,8 @@ function Splits({ jwtToken, splitsRequest }) {
               ))}
             </Tbody>
           </Table>
-          <Modal
-            open={openModal}
-            onClose={handleCloseModal}
-            aria-labelledby="modal-editSplit-title"
-            aria-describedby="modal-editSplit-description"
-          >
-            <Box sx={editSplitBoxStyle}>
-              <Typography
-                id="modal-editSplit-title"
-                variant="h6"
-                component="h2"
-              >
-                {translations[language].lbl_SplitEdition}
-              </Typography>
-              <Typography id="modal-editSplit-description" sx={{ mt: 2 }}>
-                {translations[language].lbl_SplitEditionFor}{" "}
-                {currentSplit?.splitName}
-              </Typography>
-              <Button onClick={handleCloseModal}>
-                {translations[language].btn_Close}
-              </Button>
-            </Box>
-          </Modal>
+          {/* <SplitEdit openModal={openModal} handleCloseModal={handleCloseModal} currentSplit={currentSplit}/> */}
+          <SplitEdit jwtToken={jwtToken} openModal={openModal} handleCloseModal={handleCloseModal} handleSaveSplit={handleSaveSplit} currentSplit={currentSplit} accounts={filtersData.accounts} categories={filtersData.categories} />
         </div>
       ) : null}
     </div>

@@ -65,6 +65,9 @@ const translations = {
     btn_Close: "Close",
     hdr_Edit: "Edit",
     lbl_expenses: "Expenses",
+    lbl_ConfigurationAccounts: "Accounts Configuration",
+    lbl_ConfigurationCategories: "Categories Configuration",
+    lbl_ConfigurationBudgets: "Budgets Configuration",
   },
   pl: {
     btn_logout: "Wyloguj",
@@ -132,6 +135,9 @@ const translations = {
     btn_Close: "Zamknij",
     hdr_Edit: "Edytuj",
     lbl_expenses: "Wydatki",
+    lbl_ConfigurationAccounts: "Konfiguracja kont",
+    lbl_ConfigurationCategories: "Konfiguracja kategorii",
+    lbl_ConfigurationBudgets: "Konfiguracja budżetów",
   },
 };
 
