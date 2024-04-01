@@ -4,17 +4,15 @@ import translations from "../../translations";
 import { Modal, Box, Typography, Button } from "@mui/material";
 import AddExpense from "./AddExpense";
 
-function SplitEdit({
+function TransferEdit({
   jwtToken,
   openModal,
   handleCloseModal,
-  handleSaveSplit,
-  currentSplit,
-  accounts,
-  categories,
+  handleSaveTransfer,
+  currentTransfer,
 }) {
   const { language } = useLanguage();
-  const editSplitBoxStyle = {
+  const editTransferBoxStyle = {
     position: "absolute",
     top: "50%",
     left: "50%",
@@ -33,24 +31,24 @@ function SplitEdit({
       <Modal
         open={openModal}
         onClose={handleCloseModal}
-        aria-labelledby="modal-editSplit-title"
-        aria-describedby="modal-editSplit-description"
+        aria-labelledby="modal-editTransfer-title"
+        aria-describedby="modal-editTransfer-description"
       >
-        <Box sx={editSplitBoxStyle}>
+        <Box sx={editTransferBoxStyle}>
           {/* 
                praktycznie formularz, który potrzebuje do edycji splitu/transferu
                to dokładnie to co jest w AddExpense
                użyje więc tego komponentu, trzeba go zmodyfikować tak aby nie tylko obsługiwał dodanie nowego
                ale edycję istniejącego splitu/Transferu
               */}
-          <Typography id="modal-editSplit-title" variant="h6" component="h2">
-            {translations[language].lbl_SplitEdition}
+          <Typography id="modal-editTransfer-title" variant="h6" component="h2">
+            {translations[language].lbl_TransferEdition}
           </Typography>
-          <Typography id="modal-editSplit-description" sx={{ mt: 2 }}>
-            {translations[language].lbl_SplitEditionFor}{" "}
-            {currentSplit?.splitName}
+          <Typography id="modal-editTransfer-description" sx={{ mt: 2 }}>
+            {translations[language].lbl_TransferEditionFor}{" "}
+            {currentTransfer?.transferName}
           </Typography>
-          <AddExpense jwtToken={jwtToken} inModal={true} />
+          <AddExpense jwtToken={jwtToken} transferEdit={currentTransfer} isEdit={true} />
           <Button onClick={handleCloseModal}>
             {translations[language].btn_Close}
           </Button>
@@ -60,4 +58,4 @@ function SplitEdit({
   );
 }
 
-export default SplitEdit;
+export default TransferEdit;

@@ -20,16 +20,17 @@ import "react-toastify/dist/ReactToastify.css";
 import { useLanguage } from "../../LanguageContext";
 import translations from "../../translations";
 
-function AddExpense({ jwtToken, inModal = false }) {
+function AddExpense({ jwtToken, transferEdit = null, isEdit = false }) {
   const [budgets, setBudgets] = useState([]);
   const [accounts, setAccounts] = useState([]);
   const [transferDate, setTransferDate] = useState(dayjs());
   const [categories, setCategories] = useState([]);
   const [budgetId, setBudgetId] = useState();
+  const [transferId, setTransferId] = useState();
   const [accountId, setAccountId] = useState("");
   const [isValid, setIsValid] = useState({ isValid: true, errors: [] });
   const [splitRecords, setSplitRecords] = useState([
-    { categoryId: "", name: "", description: "", value: "" },
+    { id: "", categoryId: "", name: "", description: "", value: "" },
   ]);
 
   const { language } = useLanguage();
@@ -37,7 +38,7 @@ function AddExpense({ jwtToken, inModal = false }) {
   const handleAddSplitRecord = () => {
     setSplitRecords([
       ...splitRecords,
-      { categoryId: "", name: "", description: "", value: "" },
+      { id: "", categoryId: "", name: "", description: "", value: "" },
     ]);
   };
 
@@ -150,7 +151,7 @@ function AddExpense({ jwtToken, inModal = false }) {
     const validateResult = validateTransferFields(transfer);
     setIsValid(validateResult);
 
-    if (validateResult.isValid) {
+    if (validateResult.isValid && !isEdit) {
       try {
         const response = await axios.post(
           `${config.API_BASE_URL}${config.API_ENDPOINTS.TRANSFERS}`,
@@ -196,6 +197,24 @@ function AddExpense({ jwtToken, inModal = false }) {
           setIsValid({ isValid: false, errors: [error.message] });
         }
       }
+    } else if (validateResult.isValid && isEdit) {
+      try {
+        console.log("Update");
+        const response = await axios.put(
+          `${config.API_BASE_URL}${config.API_ENDPOINTS.TRANSFERS}`,
+          transfer,
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+      // TODO: zamknięcie modala i powrót do listy splitów z wyszukaniem po pierwotnym filtrze
+      // ogarnąć pokazywanie ewentualnych błędów z API i toast z sukcesem
     }
   };
 
@@ -244,6 +263,26 @@ function AddExpense({ jwtToken, inModal = false }) {
   };
 
   useEffect(() => {
+    if (isEdit && transferEdit) {
+      setTransferId(transferEdit.transferId);
+      document.getElementById("transferName").value = transferEdit.transferName;
+      document.getElementById("transferDescription").value =
+        transferEdit.transferDescription;
+      document.getElementById("transferValue").value =
+        transferEdit.transferValue;
+      setTransferDate(dayjs(transferEdit.transferDate));
+      setAccounts(transferEdit.accounts);
+      setAccountId(transferEdit.accountSourceId);
+      setBudgetId(transferEdit.budgetId ?? 0);
+      setCategories(transferEdit.categories);
+      setSplitRecords(
+        transferEdit.splits.map((split) => ({
+          ...split,
+        }))
+      );
+      return;
+    }
+
     const fetchBudgets = async () => {
       try {
         const response = await axios.get(
@@ -268,7 +307,7 @@ function AddExpense({ jwtToken, inModal = false }) {
       }
     };
     fetchBudgets();
-  }, [jwtToken]);
+  }, [jwtToken, isEdit, transferEdit]);
 
   return (
     <>
@@ -291,25 +330,27 @@ function AddExpense({ jwtToken, inModal = false }) {
           noValidate
           autoComplete="off"
         >
-          <FormControl sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="budgetSelect">
-              {translations[language].lbl_budget}
-            </InputLabel>
-            <Select
-              labelId="budgetSelect"
-              id="budgetSelect"
-              value={budgetId ?? ""}
-              label={translations[language].lbl_budget}
-              name="budgetId"
-              onChange={handleDropdownBudgetChange}
-            >
-              {budgets.map((budget) => (
-                <MenuItem key={budget.id} value={budget.id}>
-                  {budget.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          {!isEdit && (
+            <FormControl sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="budgetSelect">
+                {translations[language].lbl_budget}
+              </InputLabel>
+              <Select
+                labelId="budgetSelect"
+                id="budgetSelect"
+                value={budgetId ?? ""}
+                label={translations[language].lbl_budget}
+                name="budgetId"
+                onChange={handleDropdownBudgetChange}
+              >
+                {budgets.map((budget) => (
+                  <MenuItem key={budget.id} value={budget.id}>
+                    {budget.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
           <FormControl sx={{ m: 1, minWidth: 120 }}>
             <InputLabel id="accountSelect">
               {translations[language].lbl_account}
@@ -356,7 +397,14 @@ function AddExpense({ jwtToken, inModal = false }) {
           </Button>
         </Box>
       </Paper>
-      <Paper elevation={3} sx={{  margin: { xs: "5px", sm: "20px" }, overflow: "hidden", padding: inModal ? 2 : 0 }}>
+      <Paper
+        elevation={3}
+        sx={{
+          margin: { xs: "5px", sm: "20px" },
+          overflow: "hidden",
+          padding: isEdit ? 2 : 0,
+        }}
+      >
         <Button variant="outlined" onClick={handleAddSplitRecord}>
           {translations[language].btn_addSplit}
         </Button>
@@ -365,18 +413,11 @@ function AddExpense({ jwtToken, inModal = false }) {
             key={"key_splitBox_" + index}
             sx={{
               display: "flex",
-              //whiteSpace: "nowrap",
-              //flexDirection: "row",
-              flexDirection: inModal ? "column" : "row",
-              "& > :not(style)": { m: 1, width: inModal ? "100%" : "auto" },
+              flexDirection: isEdit ? "column" : "row",
+              "& > :not(style)": { m: 1, width: isEdit ? "100%" : "auto" },
               "@media (max-width:600px)": {
                 flexDirection: "column",
               },
-              // "& > :not(style)": { m: 1 },
-              // "@media (max-width:600px)": {
-              //   flexDirection: "column",
-              //   whiteSpace: "normal",
-              // },
             }}
             noValidate
             autoComplete="off"

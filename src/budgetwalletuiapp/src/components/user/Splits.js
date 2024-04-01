@@ -7,7 +7,7 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import "./Splits.css";
 import Summary from "./Summary.js";
-import SplitEdit from "./SplitEdit.js";
+import TransferEdit from "./TransferEdit.js";
 import { LineChart } from "@mui/x-charts/LineChart";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -21,19 +21,42 @@ function Splits({ jwtToken, splitsRequest, filtersData }) {
   const [splitsResponse, setSplitsResponse] = useState(null);
   const { language } = useLanguage();
   const [openModal, setOpenModal] = useState(false);
-  const [currentSplit, setCurrentSplit] = useState(null);
+  const [currentTransfer, setCurrentTransfer] = useState(null);
   const [chartData, setChartData] = useState({
     xAxis: [],
     series: [],
   });
 
   const handleOpenModal = (split) => {
-    setCurrentSplit(split);
+    const relatedSplits = splitsResponse.splits.filter(s => s.transferId === split.transferId).map(s => ({
+      id: s.id,
+      name: s.splitName,
+      description: s.splitDescription,
+      value: s.splitValue,
+      categoryId: s.categoryId,
+    }));
+    
+    const currentTransfer = {
+      transferId: split.transferId,
+      transferName: split.transferName,
+      transferDescription: split.transferDescription,
+      transferValue: split.transferValue,
+      transferDate: split.transferDate,
+      budgetId: splitsRequest.BudgetId,
+      accountSourceId: split.accountSourceId,
+      accountSourceName: split.accountSourceName,
+      accountSourceDescription: split.accountSourceDescription,
+      splits: relatedSplits,
+      accounts: filtersData.accounts,
+      categories: filtersData.categories
+    };
+
+    setCurrentTransfer(currentTransfer);
     setOpenModal(true);
   };
 
   const handleCloseModal = () => setOpenModal(false);
-  const handleSaveSplit = () =>{
+  const handleSaveTransfer= () =>{
     console.log("TODO: zapis splitu i transferu po edycji. Wywołanie refreshu przez click SZUKAJ");
   };
 
@@ -199,7 +222,7 @@ function Splits({ jwtToken, splitsRequest, filtersData }) {
             </Tbody>
           </Table>
           {/* <SplitEdit openModal={openModal} handleCloseModal={handleCloseModal} currentSplit={currentSplit}/> */}
-          <SplitEdit jwtToken={jwtToken} openModal={openModal} handleCloseModal={handleCloseModal} handleSaveSplit={handleSaveSplit} currentSplit={currentSplit} accounts={filtersData.accounts} categories={filtersData.categories} />
+          <TransferEdit jwtToken={jwtToken} openModal={openModal} handleCloseModal={handleCloseModal} handleSaveTransfer={handleSaveTransfer} currentTransfer={currentTransfer}/>
         </div>
       ) : null}
     </div>

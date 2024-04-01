@@ -5,7 +5,7 @@ import Splits from "./Splits";
 function Stats({ jwtToken }) {
   const [showSplits, setShowSplits] = useState(false);
   const [splitsRequest, setSplitsRequest] = useState(null);
-  const [filtersData, setFiltersData] = useState({ accounts: [], categories: [] });
+  const [filtersData, setFiltersData] = useState({ accounts: [], categories: [], budgetId: "" });
   const handleGetSplitsButtonClick = (request, filters) => {
     setSplitsRequest(request);
     setShowSplits(true);
@@ -21,7 +21,6 @@ function Stats({ jwtToken }) {
       />
       <br />
       {showSplits && (
-        // <Splits jwtToken={jwtToken} splitsRequest={splitsRequest} />
         <Splits jwtToken={jwtToken} splitsRequest={splitsRequest} filtersData={filtersData}/>
       )}
     </div>

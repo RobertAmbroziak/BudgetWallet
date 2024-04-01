@@ -146,6 +146,8 @@
 * small CSS fixes
 * steps towards further changes in the configuration and split editing area
 
+### Day 32
+* Edit Transfer/Splits - It's still not finished
 
 
 
