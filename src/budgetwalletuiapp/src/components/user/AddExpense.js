@@ -20,7 +20,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useLanguage } from "../../LanguageContext";
 import translations from "../../translations";
 
-function AddExpense({ jwtToken, transferEdit = null, isEdit = false }) {
+function AddExpense({ jwtToken, transferEdit = null, handleSaveTransfer = null, isEdit = false }) {
   const [budgets, setBudgets] = useState([]);
   const [accounts, setAccounts] = useState([]);
   const [transferDate, setTransferDate] = useState(dayjs());
@@ -58,6 +58,7 @@ function AddExpense({ jwtToken, transferEdit = null, isEdit = false }) {
 
   const handleAddTransferButtonClick = async () => {
     const transfer = {
+      id: transferId,
       budgetId: budgetId,
       sourceAccountId: accountId,
       name: document.getElementById("transferName").value,
@@ -66,6 +67,7 @@ function AddExpense({ jwtToken, transferEdit = null, isEdit = false }) {
       transferDate: transferDate,
       transferType: "Expense",
       splits: splitRecords.map((record) => ({
+        id: record.id,
         categoryId: record.categoryId,
         name: document.getElementById(
           `splitName_${splitRecords.indexOf(record)}`
@@ -151,6 +153,20 @@ function AddExpense({ jwtToken, transferEdit = null, isEdit = false }) {
     const validateResult = validateTransferFields(transfer);
     setIsValid(validateResult);
 
+    const addTransferSuccessToast = () => {
+      toast.success(translations[language].toast_addTransferSuccess, {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        //transition: Bounce,
+      });
+    };
+
     if (validateResult.isValid && !isEdit) {
       try {
         const response = await axios.post(
@@ -169,22 +185,8 @@ function AddExpense({ jwtToken, transferEdit = null, isEdit = false }) {
         setAccountId();
         setIsValid({ isValid: true, errors: [] });
         setSplitRecords([
-          { categoryId: "", name: "", description: "", value: "" },
+          { id: "", categoryId: "", name: "", description: "", value: "" },
         ]);
-
-        const addTransferSuccessToast = () => {
-          toast.success(translations[language].toast_addTransferSuccess, {
-            position: "top-right",
-            autoClose: 4000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            //transition: Bounce,
-          });
-        };
         addTransferSuccessToast();
       } catch (error) {
         if (
@@ -199,7 +201,6 @@ function AddExpense({ jwtToken, transferEdit = null, isEdit = false }) {
       }
     } else if (validateResult.isValid && isEdit) {
       try {
-        console.log("Update");
         const response = await axios.put(
           `${config.API_BASE_URL}${config.API_ENDPOINTS.TRANSFERS}`,
           transfer,
@@ -209,12 +210,18 @@ function AddExpense({ jwtToken, transferEdit = null, isEdit = false }) {
             },
           }
         );
-        console.log(response);
+        handleSaveTransfer();
       } catch (error) {
-        console.log(error);
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.length > 0
+        ) {
+          setIsValid({ isValid: false, errors: error.response.data });
+        } else {
+          setIsValid({ isValid: false, errors: [error.message] });
+        }
       }
-      // TODO: zamknięcie modala i powrót do listy splitów z wyszukaniem po pierwotnym filtrze
-      // ogarnąć pokazywanie ewentualnych błędów z API i toast z sukcesem
     }
   };
 

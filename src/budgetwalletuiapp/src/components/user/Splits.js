@@ -16,8 +16,11 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Tooltip from "@mui/material/Tooltip";
 import EditIcon from "@mui/icons-material/Edit";
 import { Button } from "@mui/material";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Splits({ jwtToken, splitsRequest, filtersData }) {
+  const [refreshData, setRefreshData] = useState(false);
   const [splitsResponse, setSplitsResponse] = useState(null);
   const { language } = useLanguage();
   const [openModal, setOpenModal] = useState(false);
@@ -29,7 +32,7 @@ function Splits({ jwtToken, splitsRequest, filtersData }) {
 
   const handleOpenModal = (split) => {
     const relatedSplits = splitsResponse.splits.filter(s => s.transferId === split.transferId).map(s => ({
-      id: s.id,
+      id: s.splitId,
       name: s.splitName,
       description: s.splitDescription,
       value: s.splitValue,
@@ -55,9 +58,25 @@ function Splits({ jwtToken, splitsRequest, filtersData }) {
     setOpenModal(true);
   };
 
+  const editTransferSuccessToast = () => {
+    toast.success(translations[language].toast_editTransferSuccess, {
+      position: "top-right",
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      //transition: Bounce,
+    });
+  };
+
   const handleCloseModal = () => setOpenModal(false);
   const handleSaveTransfer= () =>{
-    console.log("TODO: zapis splitu i transferu po edycji. Wywołanie refreshu przez click SZUKAJ");
+    handleCloseModal();
+    setRefreshData(current => !current); // ???
+    editTransferSuccessToast(); // nie wyświetla się :( to znaczy przez ułamek sekundy
   };
 
   useEffect(() => {
@@ -124,10 +143,12 @@ function Splits({ jwtToken, splitsRequest, filtersData }) {
       }
     };
     fetchData();
-  }, [jwtToken, splitsRequest, language]);
+  }, [jwtToken, splitsRequest, language, refreshData]);
 
   return (
+    <><ToastContainer />
     <div>
+      
       {splitsResponse && splitsResponse.splits ? (
         <div>
           <br />
@@ -226,6 +247,7 @@ function Splits({ jwtToken, splitsRequest, filtersData }) {
         </div>
       ) : null}
     </div>
+    </>
   );
 }
 

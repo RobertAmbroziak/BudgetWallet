@@ -12,6 +12,7 @@ function TransferEdit({
   currentTransfer,
 }) {
   const { language } = useLanguage();
+  
   const editTransferBoxStyle = {
     position: "absolute",
     top: "50%",
@@ -48,7 +49,7 @@ function TransferEdit({
             {translations[language].lbl_TransferEditionFor}{" "}
             {currentTransfer?.transferName}
           </Typography>
-          <AddExpense jwtToken={jwtToken} transferEdit={currentTransfer} isEdit={true} />
+          <AddExpense jwtToken={jwtToken} transferEdit={currentTransfer} handleSaveTransfer={handleSaveTransfer} isEdit={true} />
           <Button onClick={handleCloseModal}>
             {translations[language].btn_Close}
           </Button>

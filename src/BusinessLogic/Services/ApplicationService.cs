@@ -279,6 +279,52 @@ namespace BusinessLogic.Services
             await _applicationRepository.SaveChangesAsync();
         }
 
+        public async Task UpdateTransfer(PostTransfer postTransfer)
+        {
+            var transfer = await _applicationRepository.GetTransferWithSplits(postTransfer.Id);
+
+            transfer.TransferDate = postTransfer.TransferDate;
+            transfer.Name = postTransfer.Name;
+            transfer.Description = postTransfer.Description;
+            transfer.Value = postTransfer.Value;
+            transfer.SourceAccountId = postTransfer.SourceAccountId;
+
+            foreach (var postSplit in postTransfer.Splits)
+            {
+                if (postSplit.Id > 0)
+                {
+                    var split = transfer.Splits.FirstOrDefault(x => x.Id == postSplit.Id);
+
+                    split.Name = postSplit.Name;
+                    split.Description = postSplit.Description;
+                    split.Value = postSplit.Value;
+                    split.CategoryId = postSplit.CategoryId;
+                }
+                else 
+                {
+                    transfer.Splits.Add( new SplitDto
+                    {
+                        TransferId = postTransfer.Id,
+                        Name = postSplit.Name,
+                        Description = postSplit.Description,
+                        Value = postSplit.Value,
+                        CategoryId = postSplit.CategoryId
+                    });
+                }
+            }
+
+            foreach (var split in transfer.Splits)
+            {
+                var postSplit = postTransfer.Splits.FirstOrDefault(x => x.Id == split.Id);
+                if (postSplit == null)
+                {
+                    split.IsActive = false;
+                }
+            }
+
+            await _applicationRepository.SaveChangesAsync();
+        }
+
         public async Task<bool> IsAccountIdsBelongToUser(int userId, IEnumerable<int> accountIds, bool onlyActive = false)
         {
             var accounts = await _applicationRepository.FilterAsync<AccountDto>(x => accountIds.Contains(x.Id) && (!onlyActive || x.IsActive));

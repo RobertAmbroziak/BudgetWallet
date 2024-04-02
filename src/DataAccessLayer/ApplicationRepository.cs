@@ -20,6 +20,14 @@ namespace DataAccessLayer
             await SaveChangesAsync();
         }
 
+        public async Task<TransferDto> GetTransferWithSplits(int transferId)
+        {
+            return await _context.Set<TransferDto>()
+                .Include(e => e.Splits)
+                .Where(x => x.Id == transferId)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<IEnumerable<SplitDto>> GetSplits(SplitsRequest splitsRequest)
         {
             var conditions = new Dictionary<string, object>();

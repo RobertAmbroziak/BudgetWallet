@@ -149,6 +149,9 @@
 ### Day 32
 * Edit Transfer/Splits - It's still not finished
 
+### Day 33
+* Edit Transfer/Splits - Backend, refreesh table after transfer edition
+
 
 
 

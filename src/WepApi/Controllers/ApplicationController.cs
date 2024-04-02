@@ -97,5 +97,18 @@ namespace WepApi.Controllers
             await _applicationService.AddTransfer(postTransfer);
             return Accepted();
         }
+        [HttpPut("transfers")]
+        public async Task<ActionResult> UpdateTransfer([FromBody] PostTransfer postTransfer)
+        {
+            var validationResult = await _validator.ValidateAsync(postTransfer);
+
+            if (!validationResult.IsValid)
+            {
+                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                return BadRequest(errors);
+            }
+            await _applicationService.UpdateTransfer(postTransfer);
+            return Accepted();
+        }
     }
 }
