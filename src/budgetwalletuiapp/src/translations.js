@@ -42,7 +42,9 @@ const translations = {
     txt_value: "Value",
     txt_description: "Description",
     txt_name: "Name",
+    txt_minValue: "Minimal Value",
     btn_addSplit: "Add Split",
+    btn_addAccount: "Add Account",
     btn_save: "Save",
     lbl_transferDate: "Transfer Date",
     errValid_invalidBudgeId: "Invalid budget identifier.",
@@ -69,6 +71,7 @@ const translations = {
     lbl_ConfigurationAccounts: "Accounts Configuration",
     lbl_ConfigurationCategories: "Categories Configuration",
     lbl_ConfigurationBudgets: "Budgets Configuration",
+    btn_Default: "Get Default",
   },
   pl: {
     btn_logout: "Wyloguj",
@@ -113,7 +116,9 @@ const translations = {
     txt_value: "Wartość",
     txt_description: "Opis",
     txt_name: "Nazwa",
+    txt_minValue: "Wartość Minimalna",
     btn_addSplit: "Dodaj Podział",
+    btn_addAccount: "Dodaj Konto",
     btn_save: "Zapisz",
     lbl_transferDate: "Data Transferu",
     errValid_invalidBudgeId: "Nieprawidłowy identyfikator budżetu.",
@@ -140,6 +145,7 @@ const translations = {
     lbl_ConfigurationAccounts: "Konfiguracja kont",
     lbl_ConfigurationCategories: "Konfiguracja kategorii",
     lbl_ConfigurationBudgets: "Konfiguracja budżetów",
+    btn_Default: "Pobierz domyślne",
   },
 };
 

@@ -392,6 +392,13 @@ namespace BusinessLogic.Services
             return true;
         }
 
+        public async Task<IEnumerable<Account>> GetAccounts()
+        {
+            var user = await _identityService.GetCurrentUser();
+            var accounts = await _applicationRepository.FilterAsync<AccountDto>(x => x.UserId == user.Id);
+            return _accountMapper.Map(accounts);
+        }
+
         #region private
 
         private Dictionary<int, DateOnly> SetAxisX(DateTime startDate, DateTime endDate)

@@ -10,10 +10,11 @@ const config = {
       SPLITS: '/api/application/splits',
       FILTER: '/api/application/filter',
       FILTER_BUDGET_PERIODS: '/api/application/filterBudgetPeriods',
-      BUDGETS: '/api/application/budget',
-      BUDGET_CATEGORIES: '/api/application/budget/{budgetId}/categories',
-      BUDGET_ACCOUNTS: '/api/application/budget/{budgetId}/accounts',
+      BUDGETS: '/api/application/budgets',
+      BUDGET_CATEGORIES: '/api/application/budgets/{budgetId}/categories',
+      BUDGET_ACCOUNTS: '/api/application/budgets/{budgetId}/accounts',
       TRANSFERS: '/api/application/transfers',
+      ACCOUNTS: '/api/application/accounts',
     },
     GOOGLE_CLIENT_ID: 'ADD_YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com'
   };

@@ -152,6 +152,9 @@
 ### Day 33
 * Edit Transfer/Splits - Backend, refreesh table after transfer edition
 
+### Day 34
+* Configuration Accounts - first steps (FE+BE)
+
 
 
 

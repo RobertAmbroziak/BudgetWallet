@@ -63,21 +63,21 @@ namespace WepApi.Controllers
             return Ok(result);
         }
 
-        [HttpGet("budget")]
+        [HttpGet("budgets")]
         public async Task<ActionResult<UserBudgetsInfo>> GetBudgets()
         {
             var result = await _applicationService.GetUserBudgetsInfo();
             return Ok(result);
         }
 
-        [HttpGet("budget/{budgetId}/categories")]
+        [HttpGet("budgets/{budgetId}/categories")]
         public async Task<ActionResult<IEnumerable<Category>>> GetBudgetCategories([FromRoute] int budgetId)
         {
             var result = await _applicationService.GetBudgetCategories(budgetId);
             return Ok(result);
         }
 
-        [HttpGet("budget/{budgetId}/accounts")]
+        [HttpGet("budgets/{budgetId}/accounts")]
         public async Task<ActionResult<IEnumerable<Account>>> GetBudgetAccounts([FromRoute] int budgetId)
         {
             var result = await _applicationService.GetBudgetAccounts(budgetId);
@@ -109,6 +109,13 @@ namespace WepApi.Controllers
             }
             await _applicationService.UpdateTransfer(postTransfer);
             return Accepted();
+        }
+
+        [HttpGet("accounts")]
+        public async Task<ActionResult<IEnumerable<Account>>> GetAccounts()
+        {
+            var result = await _applicationService.GetAccounts();
+            return Ok(result);
         }
     }
 }
