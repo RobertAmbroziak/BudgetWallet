@@ -1,0 +1,6 @@
+﻿Dockerfile
+**/bin/
+**/obj/
+.git
+.vs
+

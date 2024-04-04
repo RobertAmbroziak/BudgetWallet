@@ -1,0 +1,45 @@
+﻿﻿services:
+  webapi:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:2777
+    container_name: webapi
+    image: webapi
+    build:
+      context: .
+      dockerfile: WebApi/Dockerfile
+    ports:
+      - "2777:2777"
+    depends_on:
+      database.server:
+        condition: service_healthy
+  
+  database.server:
+    image: "mcr.microsoft.com/mssql/server"
+    container_name: database.server
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=y
+      - SA_PASSWORD=BudgetWallet123
+    volumes:
+      - ./sqlserver/data:/var/opt/mssql/data
+      - ./sqlserver/log:/var/opt/mssql/log
+        
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "BudgetWallet123" -Q "SELECT 1" -b -o /dev/null
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+      
+  budgetwalletuiapp:
+    build:
+      context: budgetwalletuiapp
+      dockerfile: Dockerfile
+    image: budgetwalletuiapp
+    container_name: budgetwalletuiapp
+    ports:
+      - "3000:3000"
+    depends_on: 
+      - webapi

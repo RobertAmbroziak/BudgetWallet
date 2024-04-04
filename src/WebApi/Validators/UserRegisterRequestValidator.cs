@@ -4,7 +4,7 @@ using Microsoft.Extensions.Localization;
 using Model.Identity;
 using Util.Resources;
 
-namespace WepApi.Validators
+namespace WebApi.Validators
 {
     public class UserRegisterRequestValidator : AbstractValidator<UserRegisterRequest>
     {

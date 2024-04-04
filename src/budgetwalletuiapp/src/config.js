@@ -1,5 +1,5 @@
 const config = {
-    API_BASE_URL: 'https://localhost:7006', /*'https://budgetwalletapi.azurewebsites.net',*/
+    API_BASE_URL: 'http://localhost:2777',/*,'https://localhost:7006',*/ /*'https://budgetwalletapi.azurewebsites.net',*/
     API_ENDPOINTS: {
       ADMIN: '/api/administration/adminPanel',
       USER: '/api/application/userPanel',

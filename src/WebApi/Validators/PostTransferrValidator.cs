@@ -4,7 +4,7 @@ using Microsoft.Extensions.Localization;
 using Model.Application;
 using Util.Resources;
 
-namespace WepApi.Validators
+namespace WebApi.Validators
 {
     public class PostTransferValidator : AbstractValidator<PostTransfer>
     {

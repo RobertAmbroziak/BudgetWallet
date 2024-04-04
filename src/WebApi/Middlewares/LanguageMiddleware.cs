@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace WepApi.Middlewares
+namespace WebApi.Middlewares
 {
     public class LanguageMiddleware
     {

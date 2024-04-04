@@ -7,7 +7,7 @@ using Model.CustomExceptions;
 using Microsoft.Extensions.Localization;
 using Util.Resources;
 
-namespace WepApi.Controllers
+namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

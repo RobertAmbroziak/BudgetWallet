@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model.Application;
 
-namespace WepApi.Controllers
+namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [Authorize(Roles = "User,Admin")]

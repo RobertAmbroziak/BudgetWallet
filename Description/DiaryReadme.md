@@ -155,6 +155,9 @@
 ### Day 34
 * Configuration Accounts - first steps (FE+BE)
 
+### Day 35
+* Launching the whole application (API + UI + DB) in Docker
+
 
 
 

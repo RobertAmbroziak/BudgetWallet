@@ -13,8 +13,8 @@ using Model.Identity;
 using Model.Tables;
 using System.Globalization;
 using System.Text;
-using WepApi.Middlewares;
-using WepApi.Validators;
+using WebApi.Middlewares;
+using WebApi.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("appsettings.json");
@@ -115,6 +115,21 @@ if (app.Environment.IsDevelopment())
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API V1");
     });
+
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        try
+        {
+            var context = services.GetRequiredService<ApplicationDbContext>();
+            context.Database.Migrate();
+        }
+        catch (Exception ex)
+        {
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "An error occurred while migrating the database.");
+        }
+    }
 }
 app.UseCors("AllowSpecificOrigin");
 app.UseHttpsRedirection();
