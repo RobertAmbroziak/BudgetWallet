@@ -95,7 +95,7 @@ StyleCopReport.xml
 *.dbmdl
 *.jfm
 
-# project to dev db compare results
-Source/BiasDB/BIAS/sql/*
+# Docker DB
+src/sqlserver/
 
 sh.exe.stackdump

@@ -157,6 +157,7 @@
 
 ### Day 35
 * Launching the whole application (API + UI + DB) in Docker
+* Fix Project Name WepApi to WebApi :)
 
 
 
