@@ -132,6 +132,9 @@
   <data name="rule_accountIdBelongsToUser" xml:space="preserve">
     <value>AccountId doesn't belong to user.</value>
   </data>
+  <data name="rule_budgetCannotBeNull" xml:space="preserve">
+    <value>Budget can't be empty.</value>
+  </data>
   <data name="rule_budgetIdBelongsToUser" xml:space="preserve">
     <value>BudgetId doesn't belong to user.</value>
   </data>

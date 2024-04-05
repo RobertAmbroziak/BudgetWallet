@@ -106,6 +106,15 @@ namespace Util.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Budget can&apos;t be empty..
+        /// </summary>
+        public static string rule_budgetCannotBeNull {
+            get {
+                return ResourceManager.GetString("rule_budgetCannotBeNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to BudgetId doesn&apos;t belong to user..
         /// </summary>
         public static string rule_budgetIdBelongsToUser {

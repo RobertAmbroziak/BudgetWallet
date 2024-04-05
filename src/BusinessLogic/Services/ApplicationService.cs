@@ -47,6 +47,11 @@ namespace BusinessLogic.Services
             var budget = await _applicationRepository.GetByIdAsync<BudgetDto>(splitsRequest.BudgetId);
             var user = await _identityService.GetCurrentUser();
 
+            if (budget == null)
+            {
+                throw new BadHttpRequestException(_localizer["rule_budgetCannotBeNull"].Value);
+            }
+
             if (budget.UserId != user.Id)
             {
                 throw new BadHttpRequestException(_localizer["rule_budgetIdBelongsToUser"].Value);
@@ -184,15 +189,21 @@ namespace BusinessLogic.Services
             var currentBudget = budgets.FirstOrDefault(x => x.ValidFrom <= DateTime.Now && x.ValidTo > DateTime.Now);
             if (currentBudget == null)
             {
-                budgets.FirstOrDefault();
+                currentBudget = budgets.FirstOrDefault();
             }
-            var budgetPeriods = await _applicationRepository.FilterAsync<BudgetPeriodDto>(x => x.BudgetId == currentBudget.Id);
+
+            IEnumerable<BudgetPeriodDto> budgetPeriods = new List<BudgetPeriodDto>();
+            if (currentBudget != null)
+            {
+                budgetPeriods = await _applicationRepository.FilterAsync<BudgetPeriodDto>(x => x.BudgetId == currentBudget.Id);
+            }
+            
             var categories = await _applicationRepository.FilterAsync<CategoryDto>(x => x.UserId == user.Id);
             var accounts = await _applicationRepository.FilterAsync<AccountDto>(x => x.UserId == user.Id);
 
             return new Filter
             {
-                CurrentBudgetId = currentBudget.Id,
+                CurrentBudgetId = currentBudget?.Id ?? 0,
                 Budgets = _budgetMapper.Map(budgets),
                 BudgetPeriods = _budgetPeriodMapper.Map(budgetPeriods),
                 Categories = _categoryMapper.Map(categories),
@@ -226,7 +237,7 @@ namespace BusinessLogic.Services
             var currentBudget = budgets.FirstOrDefault(x => x.ValidFrom <= DateTime.Now && x.ValidTo > DateTime.Now);
             if (currentBudget == null)
             {
-                budgets.FirstOrDefault();
+                currentBudget = budgets.FirstOrDefault();
             }
 
             // TODO: docelowo powinienem chyba pobierać Categories na podstawie BudgetCategories
@@ -238,7 +249,7 @@ namespace BusinessLogic.Services
                 Budgets = _budgetMapper.Map(budgets),
                 CurrentBudgetAccounts = _accountMapper.Map(accounts),
                 CurrentBudgetCategories = _categoryMapper.Map(categories),
-                CurrentBudgetId = currentBudget.Id
+                CurrentBudgetId = currentBudget?.Id ?? 0
             };
 
             return userBudgetsInfo;
@@ -397,6 +408,29 @@ namespace BusinessLogic.Services
             var user = await _identityService.GetCurrentUser();
             var accounts = await _applicationRepository.FilterAsync<AccountDto>(x => x.UserId == user.Id);
             return _accountMapper.Map(accounts);
+        }
+
+        public async Task<IEnumerable<Account>> GetDefaultAccounts(IEnumerable<Account> currentAccounts)
+        {
+            /*
+                pobieramy z Mock ustalone na sztywno defaulty - być może różne zestawy po języku
+                ale zwracamy tylko te których name nie ma w w currentAccounts
+                to tylko propozycja bez zapisu do bazy, ewentualny zapis odbywa się przez PUT
+             */
+            throw new NotImplementedException();
+        }
+
+        public async Task UpdateAccounts(IEnumerable<Account> accounts)
+        {
+            /*
+                w przekazanym zestawie accounts mogą być istniejące rekordy z id
+                zmienione Name, Description, MinValue lub isActive
+                i je updatujemy
+
+               mogą być też zupełnie nowe rekordy bez id i je nalezy zainsertować
+             
+             */
+            throw new NotImplementedException();
         }
 
         #region private

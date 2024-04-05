@@ -14,6 +14,8 @@ namespace BusinessLogic.Abstractions
         Task AddTransfer(PostTransfer postTransfer);
         Task UpdateTransfer(PostTransfer postTransfer);
         Task<IEnumerable<Account>> GetAccounts();
+        Task<IEnumerable<Account>> GetDefaultAccounts(IEnumerable<Account> currentAccounts);
+        Task UpdateAccounts(IEnumerable<Account> accounts);
 
         Task<bool> IsAccountIdsBelongToUser(int userId, IEnumerable<int> accountIds, bool onlyActive = false);
         Task<bool> IsBudgetIdsBelongToUser(int userId, IEnumerable<int> budgetIds, bool onlyActive = false);

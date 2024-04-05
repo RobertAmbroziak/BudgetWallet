@@ -8,12 +8,39 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Budgets from "./Budgets.js";
 import Categories from "./Categories.js";
 import Accounts from "./Accounts.js";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Configuration({ jwtToken }) {
   const { language } = useLanguage();
+  const handleSuccessToast = (message) => {
+    toast.success(message, {
+      position: "top-right",
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    });
+  };
+  const handleErrorToast = (message) => {
+    toast.error(message, {
+      position: "top-right",
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    });
+  };
 
   return (
     <>
+      <ToastContainer />
       <Accordion sx={{ my: 1, mx: 2 }}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -23,7 +50,7 @@ function Configuration({ jwtToken }) {
           {translations[language].lbl_ConfigurationAccounts}
         </AccordionSummary>
         <AccordionDetails>
-          <Accounts jwtToken={jwtToken} />
+          <Accounts jwtToken={jwtToken} onSuccess={handleSuccessToast} onError={handleErrorToast}/>
         </AccordionDetails>
       </Accordion>
       <Accordion sx={{ my: 1, mx: 2 }}>

@@ -117,5 +117,19 @@ namespace WebApi.Controllers
             var result = await _applicationService.GetAccounts();
             return Ok(result);
         }
+
+        [HttpGet("accounts/default")]
+        public async Task<ActionResult<IEnumerable<Account>>> GetDefaultAccounts(IEnumerable<Account> currentAccounts)
+        {
+            var result = await _applicationService.GetDefaultAccounts(currentAccounts);
+            return Ok(result);
+        }
+
+        [HttpPut("accounts")]
+        public async Task<ActionResult> UpdateAccounts(IEnumerable<Account> accounts)
+        {
+            await _applicationService.UpdateAccounts(accounts);
+            return Accepted();
+        }
     }
 }

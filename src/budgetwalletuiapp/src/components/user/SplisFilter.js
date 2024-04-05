@@ -93,13 +93,18 @@ function SplitsFilter({ jwtToken, onGetSplitsButtonClick }) {
   };
 
   const handleGetSplitsButtonClick = () => {
-    const splitsRequest = {
-      BudgetId: selectedValues.budgetId,
-      BudgetPeriodId: selectedValues.budgetPeriodId,
-      CategoryId: selectedValues.categoryId,
-      AccountId: selectedValues.accountId,
-    };
-    onGetSplitsButtonClick(splitsRequest, { accounts: filters.accounts, categories: filters.categories });
+    if (selectedValues.budgetId > 0) {
+      const splitsRequest = {
+        BudgetId: selectedValues.budgetId,
+        BudgetPeriodId: selectedValues.budgetPeriodId,
+        CategoryId: selectedValues.categoryId,
+        AccountId: selectedValues.accountId,
+      };
+      onGetSplitsButtonClick(splitsRequest, {
+        accounts: filters.accounts,
+        categories: filters.categories,
+      });
+    }
   };
 
   return (

@@ -72,6 +72,7 @@ const translations = {
     lbl_ConfigurationCategories: "Categories Configuration",
     lbl_ConfigurationBudgets: "Budgets Configuration",
     btn_Default: "Get Default",
+    cbx_ShowInactive: "Show Inactive",
   },
   pl: {
     btn_logout: "Wyloguj",
@@ -146,6 +147,7 @@ const translations = {
     lbl_ConfigurationCategories: "Konfiguracja kategorii",
     lbl_ConfigurationBudgets: "Konfiguracja budżetów",
     btn_Default: "Pobierz domyślne",
+    cbx_ShowInactive: "Pokaż nieaktywne",
   },
 };
 
