@@ -6,6 +6,7 @@ using Model.Tables;
 using Mocks.MockData;
 using Microsoft.Extensions.Localization;
 using Util.Resources;
+using Mocks.DefaultData;
 
 namespace BusinessLogic.Services
 {
@@ -108,6 +109,7 @@ namespace BusinessLogic.Services
                         TransferDescription = split.Transfer.Description,
                         TransferDate = split.Transfer.TransferDate,
                         TransferValue = split.Transfer.Value,
+                        IsActive = split.IsActive,
 
                         OrderId = k,
                         Percentage = (budgetFilterValue > 0) ? Math.Round((currentValue / budgetFilterValue) * 100, 2) : 0
@@ -310,6 +312,7 @@ namespace BusinessLogic.Services
                     split.Description = postSplit.Description;
                     split.Value = postSplit.Value;
                     split.CategoryId = postSplit.CategoryId;
+                    split.IsActive = postSplit.IsActive;
                 }
                 else 
                 {
@@ -319,7 +322,8 @@ namespace BusinessLogic.Services
                         Name = postSplit.Name,
                         Description = postSplit.Description,
                         Value = postSplit.Value,
-                        CategoryId = postSplit.CategoryId
+                        CategoryId = postSplit.CategoryId,
+                        IsActive = postSplit.IsActive
                     });
                 }
             }
@@ -378,6 +382,7 @@ namespace BusinessLogic.Services
 
         public async Task<bool> IsCategoryIdsBelongToBudget(int budgetId, IEnumerable<int> categoryIds, bool onlyActive = false)
         {
+            var x = await _applicationRepository.FilterAsync<BudgetCategoryDto>(x => x.BudgetId == budgetId);
             var budgetCategories = await _applicationRepository.FilterAsync<BudgetCategoryDto>(x => x.BudgetId == budgetId && (!onlyActive || x.IsActive));
             var budgetCategoryIds = budgetCategories.Select(x => x.CategoryId);
             foreach (var categoryId in categoryIds)
@@ -410,27 +415,113 @@ namespace BusinessLogic.Services
             return _accountMapper.Map(accounts);
         }
 
-        public async Task<IEnumerable<Account>> GetDefaultAccounts(IEnumerable<Account> currentAccounts)
+        public Task<IEnumerable<Account>> GetDefaultAccounts(IEnumerable<Account> currentAccounts)
         {
-            /*
-                pobieramy z Mock ustalone na sztywno defaulty - być może różne zestawy po języku
-                ale zwracamy tylko te których name nie ma w w currentAccounts
-                to tylko propozycja bez zapisu do bazy, ewentualny zapis odbywa się przez PUT
-             */
-            throw new NotImplementedException();
+            var defaultAccounts = DefaultAccounts.Get();
+            var result = new List<Account>();
+
+            var currentAccountNames = currentAccounts.Select(x => x.Name).Distinct();
+
+            foreach (var account in defaultAccounts)
+            {
+                if (!currentAccountNames.Contains(account.Name))
+                {
+                    result.Add(account);
+                }
+            }
+
+            return Task.FromResult<IEnumerable<Account>>(result);
         }
 
         public async Task UpdateAccounts(IEnumerable<Account> accounts)
         {
-            /*
-                w przekazanym zestawie accounts mogą być istniejące rekordy z id
-                zmienione Name, Description, MinValue lub isActive
-                i je updatujemy
+            var user = await _identityService.GetCurrentUser();
+            var userAccounts = (await _applicationRepository.FilterAsync<AccountDto>(x => x.UserId == user.Id)).ToList();
 
-               mogą być też zupełnie nowe rekordy bez id i je nalezy zainsertować
-             
-             */
-            throw new NotImplementedException();
+            foreach (var account in accounts)
+            {
+                if (account.Id > 0)
+                {
+                    var userAccount = userAccounts.FirstOrDefault(x => x.Id == account.Id);
+                    if (userAccount != null)
+                    {
+                        userAccount.Name = account.Name;
+                        userAccount.Description = account.Description;
+                        userAccount.IsActive = account.IsActive;
+                        userAccount.MinValue = account.MinValue;
+                    }
+                }
+                else
+                {
+                    await _applicationRepository.InsertAsync(new AccountDto
+                    {
+                        Name = account.Name,
+                        Description = account.Description,
+                        IsActive = account.IsActive,
+                        MinValue = account.MinValue,
+                        UserId = user.Id
+                    });
+                }
+            }
+
+            await _applicationRepository.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Category>> GetCategories()
+        {
+            var user = await _identityService.GetCurrentUser();
+            var categories = await _applicationRepository.FilterAsync<CategoryDto>(x => x.UserId == user.Id);
+            return _categoryMapper.Map(categories);
+        }
+
+        public Task<IEnumerable<Category>> GetDefaultCategories(IEnumerable<Category> currentCategories)
+        {
+            var defaultCategories = DefaultCategories.Get();
+            var result = new List<Category>();
+
+            var currentCategoryNames = currentCategories.Select(x => x.Name).Distinct();
+
+            foreach (var category in defaultCategories)
+            {
+                if (!currentCategoryNames.Contains(category.Name))
+                {
+                    result.Add(category);
+                }
+            }
+
+            return Task.FromResult<IEnumerable<Category>>(result);
+        }
+
+        public async Task UpdateCategories(IEnumerable<Category> categories)
+        {
+            var user = await _identityService.GetCurrentUser();
+            var userCategories = (await _applicationRepository.FilterAsync<CategoryDto>(x => x.UserId == user.Id)).ToList();
+
+            foreach (var category in categories)
+            {
+                if (category.Id > 0)
+                {
+                    var userCategory = userCategories.FirstOrDefault(x => x.Id == category.Id);
+                    if (userCategory != null)
+                    {
+                        userCategory.Name = category.Name;
+                        userCategory.Description = category.Description;
+                        userCategory.IsActive = category.IsActive;
+                    }
+                }
+                else
+                {
+                    await _applicationRepository.InsertAsync(new CategoryDto
+                    {
+                        Name = category.Name,
+                        Description = category.Description,
+                        IsActive = category.IsActive,
+                        UserId = user.Id
+                    });
+                }
+            }
+
+            await _applicationRepository.SaveChangesAsync();
         }
 
         #region private

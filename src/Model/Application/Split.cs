@@ -17,6 +17,7 @@
         public string TransferDescription { get; set; }
         public DateTime TransferDate { get; set; }
         public decimal TransferValue { get; set; }
+        public bool IsActive { get; set; }
 
         public int OrderId { get; set; }
         public decimal Percentage { get; set; }

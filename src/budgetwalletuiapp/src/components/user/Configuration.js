@@ -62,7 +62,7 @@ function Configuration({ jwtToken }) {
           {translations[language].lbl_ConfigurationCategories}
         </AccordionSummary>
         <AccordionDetails>
-          <Categories jwtToken={jwtToken} />
+          <Categories jwtToken={jwtToken} onSuccess={handleSuccessToast} onError={handleErrorToast} />
         </AccordionDetails>
       </Accordion>
       <Accordion sx={{ my: 1, mx: 2 }}>

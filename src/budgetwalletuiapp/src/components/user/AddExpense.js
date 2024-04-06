@@ -26,11 +26,11 @@ function AddExpense({ jwtToken, transferEdit = null, handleSaveTransfer = null, 
   const [transferDate, setTransferDate] = useState(dayjs());
   const [categories, setCategories] = useState([]);
   const [budgetId, setBudgetId] = useState();
-  const [transferId, setTransferId] = useState();
+  const [transferId, setTransferId] = useState(0);
   const [accountId, setAccountId] = useState("");
   const [isValid, setIsValid] = useState({ isValid: true, errors: [] });
   const [splitRecords, setSplitRecords] = useState([
-    { id: "", categoryId: "", name: "", description: "", value: "" },
+    { id: 0, categoryId: "", name: "", description: "", value: "", isActive: true },
   ]);
 
   const { language } = useLanguage();
@@ -38,7 +38,7 @@ function AddExpense({ jwtToken, transferEdit = null, handleSaveTransfer = null, 
   const handleAddSplitRecord = () => {
     setSplitRecords([
       ...splitRecords,
-      { id: "", categoryId: "", name: "", description: "", value: "" },
+      { id: 0, categoryId: "", name: "", description: "", value: "", isActive: true },
     ]);
   };
 
@@ -57,8 +57,11 @@ function AddExpense({ jwtToken, transferEdit = null, handleSaveTransfer = null, 
   };
 
   const handleAddTransferButtonClick = async () => {
+    console.log(splitRecords);
+
     const transfer = {
       id: transferId,
+      isActive: true,
       budgetId: budgetId,
       sourceAccountId: accountId,
       name: document.getElementById("transferName").value,
@@ -68,6 +71,7 @@ function AddExpense({ jwtToken, transferEdit = null, handleSaveTransfer = null, 
       transferType: "Expense",
       splits: splitRecords.map((record) => ({
         id: record.id,
+        isActive: record.isActive,
         categoryId: record.categoryId,
         name: document.getElementById(
           `splitName_${splitRecords.indexOf(record)}`
@@ -80,7 +84,7 @@ function AddExpense({ jwtToken, transferEdit = null, handleSaveTransfer = null, 
         ).value,
       })),
     };
-
+    console.log(transfer);
     const validateNumber = (value) => {
       const regex = /^\d+(\.\d{1,2})?$/;
       return regex.test(value);
@@ -168,6 +172,7 @@ function AddExpense({ jwtToken, transferEdit = null, handleSaveTransfer = null, 
     };
 
     if (validateResult.isValid && !isEdit) {
+      console.log(transfer);
       try {
         const response = await axios.post(
           `${config.API_BASE_URL}${config.API_ENDPOINTS.TRANSFERS}`,
@@ -185,7 +190,7 @@ function AddExpense({ jwtToken, transferEdit = null, handleSaveTransfer = null, 
         setAccountId();
         setIsValid({ isValid: true, errors: [] });
         setSplitRecords([
-          { id: "", categoryId: "", name: "", description: "", value: "" },
+          { id: "", categoryId: "", name: "", description: "", value: "", isActive: true },
         ]);
         addTransferSuccessToast();
       } catch (error) {
@@ -201,6 +206,8 @@ function AddExpense({ jwtToken, transferEdit = null, handleSaveTransfer = null, 
       }
     } else if (validateResult.isValid && isEdit) {
       try {
+        console.log('PUT');
+        console.log(transfer);
         const response = await axios.put(
           `${config.API_BASE_URL}${config.API_ENDPOINTS.TRANSFERS}`,
           transfer,

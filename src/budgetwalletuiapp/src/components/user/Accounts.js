@@ -43,11 +43,12 @@ function Accounts({ jwtToken, onSuccess, onError }) {
   const handleAddAccountRecord = () => {
     setAccounts([
       ...accounts,
-      { id: "", name: "", description: "", minValue: 0, isActive: true },
+      { id: 0, name: "", description: "", minValue: 0, isActive: true },
     ]);
   };
 
   const handleSaveChanges = async () => {
+    console.log(accounts);
     try {
       const response = await axios.put(
         `${config.API_BASE_URL}${config.API_ENDPOINTS.ACCOUNTS}`,
@@ -61,19 +62,20 @@ function Accounts({ jwtToken, onSuccess, onError }) {
       onSuccess(translations[language].toast_updateAccountsSuccess);
 
     } catch (error) {
+      console.log(error);
       onError(translations[language].toast_updateAccountsError);
     }
   };
 
   const handleGetDefault = async () => {
     try {
-      const response = await axios.get(
+      const response = await axios.post(
         `${config.API_BASE_URL}${config.API_ENDPOINTS.ACCOUNTS}/default`,
+        accounts,
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
           },
-          data: accounts,
         }
       );
       const updatedAccounts = [...accounts, ...response.data];

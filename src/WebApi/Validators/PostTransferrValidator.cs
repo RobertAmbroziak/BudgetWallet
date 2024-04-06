@@ -71,7 +71,7 @@ namespace WebApi.Validators
 
         private async Task<bool> IsCategoryIdsBelongToBudget(IEnumerable<int> categoryIds, int budgetId)
         {
-            return await _applicationService.IsAccountIdsBelongToUser(budgetId, categoryIds, true);
+            return await _applicationService.IsCategoryIdsBelongToBudget(budgetId, categoryIds, true);
         }
     }
 }

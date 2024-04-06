@@ -60,6 +60,8 @@ namespace DataAccessLayer
                 conditions.Add(nameof(SplitDto.CategoryId), splitsRequest.CategoryId);
             }
 
+            conditions.Add(nameof(SplitDto.IsActive), true);
+
             Expression<Func<SplitDto, bool>> filter = BuildDynamicCondition<SplitDto>(conditions);
 
             return await _context.Set<SplitDto>()

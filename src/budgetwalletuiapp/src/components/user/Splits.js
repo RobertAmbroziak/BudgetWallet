@@ -37,6 +37,7 @@ function Splits({ jwtToken, splitsRequest, filtersData }) {
       description: s.splitDescription,
       value: s.splitValue,
       categoryId: s.categoryId,
+      isActive: s.isActive,
     }));
     
     const currentTransfer = {
@@ -242,7 +243,6 @@ function Splits({ jwtToken, splitsRequest, filtersData }) {
               ))}
             </Tbody>
           </Table>
-          {/* <SplitEdit openModal={openModal} handleCloseModal={handleCloseModal} currentSplit={currentSplit}/> */}
           <TransferEdit jwtToken={jwtToken} openModal={openModal} handleCloseModal={handleCloseModal} handleSaveTransfer={handleSaveTransfer} currentTransfer={currentTransfer}/>
         </div>
       ) : null}

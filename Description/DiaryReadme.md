@@ -162,6 +162,11 @@
 ### Day 36
 * Configuration - Accounts
 
+### Day 37
+* Configuration - Accounts Backend
+* Configuration - Categories Full
+* Fixes in splits and transfers area (logic for isActive)
+
 
 
 

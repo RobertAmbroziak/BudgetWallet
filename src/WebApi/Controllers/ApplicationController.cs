@@ -118,7 +118,7 @@ namespace WebApi.Controllers
             return Ok(result);
         }
 
-        [HttpGet("accounts/default")]
+        [HttpPost("accounts/default")]
         public async Task<ActionResult<IEnumerable<Account>>> GetDefaultAccounts(IEnumerable<Account> currentAccounts)
         {
             var result = await _applicationService.GetDefaultAccounts(currentAccounts);
@@ -129,6 +129,27 @@ namespace WebApi.Controllers
         public async Task<ActionResult> UpdateAccounts(IEnumerable<Account> accounts)
         {
             await _applicationService.UpdateAccounts(accounts);
+            return Accepted();
+        }
+
+        [HttpGet("categories")]
+        public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
+        {
+            var result = await _applicationService.GetCategories();
+            return Ok(result);
+        }
+
+        [HttpPost("categories/default")]
+        public async Task<ActionResult<IEnumerable<Category>>> GetDefaultCategories(IEnumerable<Category> currentCategories)
+        {
+            var result = await _applicationService.GetDefaultCategories(currentCategories);
+            return Ok(result);
+        }
+
+        [HttpPut("categories")]
+        public async Task<ActionResult> UpdateCategories(IEnumerable<Category> categories)
+        {
+            await _applicationService.UpdateCategories(categories);
             return Accepted();
         }
     }

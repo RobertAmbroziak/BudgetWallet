@@ -10,6 +10,7 @@
         public decimal Value { get; set; }
         public DateTime TransferDate { get; set; }
         public string TransferType { get; set; }
+        public bool IsActive { get; set; }
         public IEnumerable<PostSplit> Splits { get; set; }
     }
 }

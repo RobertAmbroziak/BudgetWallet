@@ -18,7 +18,8 @@ namespace BusinessLogic.Services.Mappers
                     CategoryId = split.CategoryId,
                     Name = split.Name,
                     Description = split.Description,
-                    Value = split.Value
+                    Value = split.Value,
+                    IsActive = split.IsActive
                 });
             }
 
@@ -31,6 +32,7 @@ namespace BusinessLogic.Services.Mappers
                 Value = source.Value,
                 TransferType = (TransferType)Enum.Parse(typeof(TransferType), source.TransferType),
                 SourceAccountId = source.SourceAccountId,
+                IsActive = source.IsActive,
                 Splits = splits
             };
         }

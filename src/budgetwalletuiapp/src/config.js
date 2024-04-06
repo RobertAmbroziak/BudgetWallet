@@ -1,5 +1,5 @@
 const config = {
-    API_BASE_URL: 'http://localhost:2777',/*,'https://localhost:7006',*/ /*'https://budgetwalletapi.azurewebsites.net',*/
+    API_BASE_URL: 'http://localhost:2777',/*'https://localhost:7006','https://budgetwalletapi.azurewebsites.net',*/
     API_ENDPOINTS: {
       ADMIN: '/api/administration/adminPanel',
       USER: '/api/application/userPanel',
@@ -15,6 +15,7 @@ const config = {
       BUDGET_ACCOUNTS: '/api/application/budgets/{budgetId}/accounts',
       TRANSFERS: '/api/application/transfers',
       ACCOUNTS: '/api/application/accounts',
+      CATEGORIES: '/api/application/categories',
     },
     GOOGLE_CLIENT_ID: 'ADD_YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com'
   };

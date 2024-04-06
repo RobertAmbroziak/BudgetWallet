@@ -45,6 +45,7 @@ const translations = {
     txt_minValue: "Minimal Value",
     btn_addSplit: "Add Split",
     btn_addAccount: "Add Account",
+    btn_addCategory: "Add Category",
     btn_save: "Save",
     lbl_transferDate: "Transfer Date",
     errValid_invalidBudgeId: "Invalid budget identifier.",
@@ -73,6 +74,10 @@ const translations = {
     lbl_ConfigurationBudgets: "Budgets Configuration",
     btn_Default: "Get Default",
     cbx_ShowInactive: "Show Inactive",
+    toast_updateAccountsSuccess : "Accounts have been modified",
+    toast_updateAccountsError : "Modification of accounts has failed",
+    toast_updateCategoriesSuccess : "Categories have been modified",
+    toast_updateCategoriesError : "Modification of categories has failed",
   },
   pl: {
     btn_logout: "Wyloguj",
@@ -120,6 +125,7 @@ const translations = {
     txt_minValue: "Wartość Minimalna",
     btn_addSplit: "Dodaj Podział",
     btn_addAccount: "Dodaj Konto",
+    btn_addCategory: "Dodaj Kategorię",
     btn_save: "Zapisz",
     lbl_transferDate: "Data Transferu",
     errValid_invalidBudgeId: "Nieprawidłowy identyfikator budżetu.",
@@ -148,6 +154,10 @@ const translations = {
     lbl_ConfigurationBudgets: "Konfiguracja budżetów",
     btn_Default: "Pobierz domyślne",
     cbx_ShowInactive: "Pokaż nieaktywne",
+    toast_updateAccountsSuccess : "Konta zostały zmodyfikowane",
+    toast_updateAccountsError : "Modyfikacja kont się nie powiodła",
+    toast_updateCategoriesSuccess : "Kategorie zostały zmodyfikowane",
+    toast_updateCategoriesError : "Modyfikacja kategorii się nie powiodła",
   },
 };
 
