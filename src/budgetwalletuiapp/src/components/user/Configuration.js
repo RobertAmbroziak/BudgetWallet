@@ -74,7 +74,7 @@ function Configuration({ jwtToken }) {
           {translations[language].lbl_ConfigurationBudgets}
         </AccordionSummary>
         <AccordionDetails>
-          <Budgets jwtToken={jwtToken} />
+          <Budgets jwtToken={jwtToken} onSuccess={handleSuccessToast} onError={handleErrorToast} />
         </AccordionDetails>
       </Accordion>
       <br />

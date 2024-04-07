@@ -13,7 +13,8 @@ namespace BusinessLogic.Services.Mappers
                 Id = source.Id,
                 BudgetId = source.BudgetId,
                 ValidFrom = source.ValidFrom,
-                ValidTo = source.ValidTo
+                ValidTo = source.ValidTo,
+                IsActive = source.IsActive
             };
         }
     }

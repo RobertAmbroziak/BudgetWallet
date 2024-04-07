@@ -14,7 +14,8 @@ namespace BusinessLogic.Services.Mappers
                 Name = source.Name,
                 Description = source.Description,
                 ValidFrom = source.ValidFrom,
-                ValidTo = source.ValidTo
+                ValidTo = source.ValidTo,
+                IsActive = source.IsActive
             };
         }
     }

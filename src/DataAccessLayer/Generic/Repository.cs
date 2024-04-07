@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Model.Tables.Abstractions;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace DataAccessLayer.Generic
 {
@@ -96,7 +98,17 @@ namespace DataAccessLayer.Generic
             return _context.SaveChangesAsync();
         }
 
-        /* TODO:  WTF ??? It works for now in my cases, but it's quite messy */
+        # region Hiper Enigmatic Dynamic Condition Builder
+        /// <summary>
+        /// Builds a dynamic LINQ expression based on the provided conditions. This method allows for creating complex filtering expressions at runtime, supporting both simple and nested property comparisons within TEntity.
+        /// </summary>
+        /// <param name="conditions">A dictionary where keys are the property names (with optional comparison operators and nested properties indicated by a dot notation) and values are the values to compare against.</param>
+        /// <typeparam name="TEntity">The entity type for which the condition is being built. Must inherit from BaseDto.</typeparam>
+        /// <returns>An Expression representing the dynamically built condition, suitable for use with LINQ queries.</returns>
+        /// <remarks>
+        /// This method supports handling nullable properties and comparison operations such as equal, not equal, greater than, and less than. 
+        /// Example usage: conditions.Add("Property.SubProperty >= @0", value); to add a condition that SubProperty of Property must be greater or equal to the specified value.
+        /// </remarks>
         protected Expression<Func<TEntity, bool>> BuildDynamicCondition<TEntity>(Dictionary<string, object> conditions) where TEntity : BaseDto
         {
             ParameterExpression param = Expression.Parameter(typeof(TEntity), "x");
@@ -104,133 +116,102 @@ namespace DataAccessLayer.Generic
 
             foreach (var kvp in conditions)
             {
-                if (kvp.Key.Contains("."))
+                var (propertyName, operation) = ParseConditionKey(kvp.Key);
+                Expression binaryExpression = propertyName.Contains(".")
+                    ? HandleNestedPropertyComparison<TEntity>(propertyName, operation, kvp.Value, param)
+                    : HandleSimplePropertyComparison<TEntity>(propertyName, operation, kvp.Value, param);
+
+                condition = condition == null ? binaryExpression : Expression.AndAlso(condition, binaryExpression);
+            }
+
+            return Expression.Lambda<Func<TEntity, bool>>(condition ?? Expression.Constant(true), param);
+        }
+
+        private (string propertyName, string operation) ParseConditionKey(string key)
+        {
+            var operationPatterns = new Dictionary<string, string>
+            {
+                { @"\s*>=\s*@\d+", ">=" },
+                { @"\s*<=\s*@\d+", "<=" },
+                { @"\s*>\s*@\d+", ">" },
+                { @"\s*<\s*@\d+", "<" }
+            };
+
+            string operation = "=";
+            string propertyName = key;
+
+            foreach (var pattern in operationPatterns)
+            {
+                var regex = new Regex(pattern.Key);
+                if (regex.IsMatch(key))
                 {
-                    string[] parts = kvp.Key.Split('.');
-                    string nestedPropertyName = parts[0];
-                    string nestedPropertyNestedName = parts[1];
-
-                    if (kvp.Key.EndsWith(">= @0"))
-                    {
-                        PropertyInfo nestedProperty = typeof(TEntity).GetProperty(nestedPropertyName);
-                        if (nestedProperty == null)
-                        {
-                            throw new ArgumentException($"Property {nestedPropertyName} does not exist in the class {typeof(TEntity)}.");
-                        }
-                        PropertyInfo nestedPropertyNested = nestedProperty.PropertyType.GetProperty(nestedPropertyNestedName.Replace(" >= @0", string.Empty));
-                        if (nestedPropertyNested == null)
-                        {
-                            throw new ArgumentException($"Property {nestedPropertyNested} does not exist in the class {nestedProperty}.");
-                        }
-
-                        Expression nestedPropertyAccess = Expression.Property(param, nestedProperty);
-                        Expression nestedPropertyNestedAccess = Expression.Property(nestedPropertyAccess, nestedPropertyNested);
-
-                        ConstantExpression value = Expression.Constant(kvp.Value);
-
-                        BinaryExpression binaryExpression = Expression.GreaterThanOrEqual(nestedPropertyNestedAccess, value);
-                        condition = condition == null ? binaryExpression : Expression.AndAlso(condition, binaryExpression);
-                    }
-                    else if (kvp.Key.EndsWith("< @1"))
-                    {
-                        PropertyInfo nestedProperty = typeof(TEntity).GetProperty(nestedPropertyName);
-                        if (nestedProperty == null)
-                        {
-                            throw new ArgumentException($"Property {nestedPropertyName} does not exist in the class {typeof(TEntity)}.");
-                        }
-                        PropertyInfo nestedPropertyNested = nestedProperty.PropertyType.GetProperty(nestedPropertyNestedName.Replace(" < @1", string.Empty));
-                        if (nestedPropertyNested == null)
-                        {
-                            throw new ArgumentException($"Property {nestedPropertyNested} does not exist in the class {nestedProperty}.");
-                        }
-
-                        Expression nestedPropertyAccess = Expression.Property(param, nestedProperty);
-                        Expression nestedPropertyNestedAccess = Expression.Property(nestedPropertyAccess, nestedPropertyNested);
-
-                        ConstantExpression value = Expression.Constant(kvp.Value);
-
-                        BinaryExpression binaryExpression = Expression.LessThan(nestedPropertyNestedAccess, value);
-                        condition = condition == null ? binaryExpression : Expression.AndAlso(condition, binaryExpression);
-                    }
-                    else
-                    {
-                        PropertyInfo nestedProperty = typeof(TEntity).GetProperty(nestedPropertyName);
-                        if (nestedProperty == null)
-                        {
-                            throw new ArgumentException($"Property {nestedPropertyName} does not exist in the class {typeof(TEntity)}.");
-                        }
-                        PropertyInfo nestedPropertyNested = nestedProperty.PropertyType.GetProperty(nestedPropertyNestedName);
-                        if (nestedPropertyNested == null)
-                        {
-                            throw new ArgumentException($"Property {nestedPropertyNested} does not exist in the class {nestedProperty}.");
-                        }
-
-                        Expression nestedPropertyAccess = Expression.Property(param, nestedProperty);
-                        Expression nestedPropertyNestedAccess = Expression.Property(nestedPropertyAccess, nestedPropertyNested);
-
-                        ConstantExpression value = Expression.Constant(kvp.Value);
-
-                        if (nestedPropertyNested.PropertyType.IsGenericType && nestedPropertyNested.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
-                        {
-                            Type underlyingType = Nullable.GetUnderlyingType(nestedPropertyNested.PropertyType);
-
-                            if (kvp.Value != null && kvp.Value.GetType() == underlyingType)
-                            {
-                                value = Expression.Constant(kvp.Value, nestedPropertyNested.PropertyType);
-                            }
-                        }
-
-                        BinaryExpression binaryExpression = Expression.Equal(nestedPropertyNestedAccess, value);
-
-                        if (condition == null)
-                        {
-                            condition = binaryExpression;
-                        }
-                        else
-                        {
-                            condition = Expression.AndAlso(condition, binaryExpression);
-                        }
-                    }
-                }
-                else
-                {
-                    PropertyInfo property = typeof(TEntity).GetProperty(kvp.Key);
-                    if (property == null)
-                    {
-                        throw new ArgumentException($"Property {kvp.Key} does not exist in the class {typeof(TEntity)}.");
-                    }
-
-                    MemberExpression propertyAccess = Expression.Property(param, property);
-                    ConstantExpression value = Expression.Constant(kvp.Value);
-
-                    if (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
-                    {
-                        Type underlyingType = Nullable.GetUnderlyingType(property.PropertyType);
-
-                        if (kvp.Value != null && kvp.Value.GetType() == underlyingType)
-                        {
-                            value = Expression.Constant(kvp.Value, property.PropertyType);
-                        }
-                        else if (kvp.Value == null)
-                        {
-                            value = Expression.Constant(null, property.PropertyType);
-                        }
-                    }
-
-                    BinaryExpression binaryExpression = Expression.Equal(propertyAccess, value);
-
-                    if (condition == null)
-                    {
-                        condition = binaryExpression;
-                    }
-                    else
-                    {
-                        condition = Expression.AndAlso(condition, binaryExpression);
-                    }
+                    operation = pattern.Value;
+                    propertyName = regex.Replace(key, "").Trim();
+                    break; 
                 }
             }
 
-            return Expression.Lambda<Func<TEntity, bool>>(condition, param);
+            return (propertyName, operation);
         }
+
+        private Expression HandleSimplePropertyComparison<TEntity>(string propertyName, string operation, object value, ParameterExpression param)
+        {
+            PropertyInfo propertyInfo = GetPropertyInfo(typeof(TEntity), propertyName);
+            MemberExpression propertyAccess = Expression.Property(param, propertyInfo);
+            return CreateBinaryExpression(propertyAccess, value, operation, propertyInfo.PropertyType);
+        }
+
+        private Expression HandleNestedPropertyComparison<TEntity>(string propertyName, string operation, object value, ParameterExpression param)
+        {
+            string[] parts = propertyName.Split('.');
+            PropertyInfo propertyInfo = GetPropertyInfo(typeof(TEntity), parts[0]);
+            PropertyInfo nestedPropertyInfo = GetPropertyInfo(propertyInfo.PropertyType, parts[1]);
+
+            Expression propertyAccess = Expression.Property(param, propertyInfo);
+            MemberExpression nestedPropertyAccess = Expression.Property(propertyAccess, nestedPropertyInfo);
+
+            return CreateBinaryExpression(nestedPropertyAccess, value, operation, nestedPropertyInfo.PropertyType);
+        }
+
+        private PropertyInfo GetPropertyInfo(Type entityType, string propertyName)
+        {
+            PropertyInfo property = entityType.GetProperty(propertyName);
+            if (property == null)
+                throw new ArgumentException($"Property {propertyName} does not exist in {entityType}.");
+            return property;
+        }
+
+        private Expression CreateBinaryExpression(Expression propertyAccess, object value, string operation, Type propertyType)
+        {
+            ConstantExpression constant = CreateConstantExpression(value, propertyType);
+            return operation switch
+            {
+                "=" => Expression.Equal(propertyAccess, constant),
+                ">=" => Expression.GreaterThanOrEqual(propertyAccess, constant),
+                "<=" => Expression.LessThanOrEqual(propertyAccess, constant),
+                ">" => Expression.GreaterThan(propertyAccess, constant),
+                "<" => Expression.LessThan(propertyAccess, constant),
+                _ => throw new NotSupportedException($"Operation '{operation}' is not supported."),
+            };
+        }
+
+        private ConstantExpression CreateConstantExpression(object value, Type propertyType)
+        {
+            if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                if (value == null)
+                {
+                    return Expression.Constant(null, propertyType);
+                }
+                Type nullableType = Nullable.GetUnderlyingType(propertyType);
+                return Expression.Constant(Convert.ChangeType(value, nullableType), propertyType);
+            }
+            else
+            {
+                return Expression.Constant(value, value.GetType());
+            }
+        }
+
+        #endregion
     }
 }

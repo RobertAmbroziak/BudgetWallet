@@ -167,6 +167,18 @@
 * Configuration - Categories Full
 * Fixes in splits and transfers area (logic for isActive)
 
+### Day 38
+* Hiper enigmatic dynamic condition builder for db repository
+* Configuration - Budgets 33% of all
+  - Show current budgets
+  -	Hide/Show inactive
+  -	Add new empty budget - (maximum one record)
+  -	Set a default (unique) name, description, dates for new empty budget
+  -	Edit icon next to each record
+  -	Open budget details on click + return option available in the budgetDetails
+
+
+
 
 
 
