@@ -177,7 +177,10 @@
   -	Edit icon next to each record
   -	Open budget details on click + return option available in the budgetDetails
 
-
+### Day 39
+* Further development of budget configurations
+  - List of periods
+  - List of budget categories
 
 
 

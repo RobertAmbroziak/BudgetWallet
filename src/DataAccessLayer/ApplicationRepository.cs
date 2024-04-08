@@ -68,8 +68,7 @@ namespace DataAccessLayer
                 .Include(e => e.Transfer).ThenInclude(t => t.SourceAccount)
                 .Include(e => e.Category)
                 .Where(filter)
-                .OrderBy(x => x.CreatedDate)
-                .ThenBy(x => x.TransferId)
+                .OrderBy(x => x.Transfer.CreatedDate)
                 .ToListAsync();
         }
 
@@ -99,6 +98,23 @@ namespace DataAccessLayer
                     throw;
                 }
             }
+        }
+
+        public async Task<IEnumerable<CategoryDto>> GetCategoriesByBudgetId(int budgetId)
+        {
+            return await _context.BudgetCategories
+            .Where(bc => bc.BudgetId == budgetId && bc.IsActive && bc.Category.IsActive)
+            .Select(bc => bc.Category)
+            .ToListAsync();
+        }
+
+        public async Task<BudgetDto> GetBudget(int budgetId)
+        {
+            return await _context.Budgets
+            .Include(b => b.BudgetPeriods).ThenInclude(bp => bp.BudgetPeriodCategories).ThenInclude(bpc => bpc.Category)
+            .Include(b => b.BudgetCategories).ThenInclude(bc => bc.Category)
+            .Where(b => b.Id == budgetId)
+            .FirstOrDefaultAsync();
         }
     }
 }

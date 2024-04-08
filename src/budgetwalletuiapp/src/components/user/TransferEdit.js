@@ -36,12 +36,6 @@ function TransferEdit({
         aria-describedby="modal-editTransfer-description"
       >
         <Box sx={editTransferBoxStyle}>
-          {/* 
-               praktycznie formularz, który potrzebuje do edycji splitu/transferu
-               to dokładnie to co jest w AddExpense
-               użyje więc tego komponentu, trzeba go zmodyfikować tak aby nie tylko obsługiwał dodanie nowego
-               ale edycję istniejącego splitu/Transferu
-              */}
           <Typography id="modal-editTransfer-title" variant="h6" component="h2">
             {translations[language].lbl_TransferEdition}
           </Typography>

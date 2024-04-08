@@ -70,6 +70,13 @@ namespace WebApi.Controllers
             return Ok(result);
         }
 
+        [HttpGet("budgets/{budgetId}")]
+        public async Task<ActionResult<Budget>> GetBudgets([FromRoute] int budgetId)
+        {
+            var result = await _applicationService.GetBudget(budgetId);
+            return Ok(result);
+        }
+
         [HttpGet("budgets/{budgetId}/categories")]
         public async Task<ActionResult<IEnumerable<Category>>> GetBudgetCategories([FromRoute] int budgetId)
         {

@@ -8,5 +8,8 @@
         public DateTime ValidFrom { get; set; }
         public DateTime ValidTo { get; set; }
         public bool IsActive { get; set; }
+
+        public IEnumerable<BudgetPeriod> BudgetPeriods { get; set; }
+        public IEnumerable<BudgetCategory> BudgetCategories { get; set; }
     }
 }

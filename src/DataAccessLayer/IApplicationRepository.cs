@@ -10,5 +10,7 @@ namespace DataAccessLayer
         Task AddTransferWithSplits(TransferDto transfer);
         Task<TransferDto> GetTransferWithSplits(int transferId);
         Task AddMockData(IEnumerable<BudgetDto> budgets, IEnumerable<AccountDto> accounts);
+        Task<IEnumerable<CategoryDto>> GetCategoriesByBudgetId(int budgetId);
+        Task<BudgetDto> GetBudget(int budgetId);
     }
 }
