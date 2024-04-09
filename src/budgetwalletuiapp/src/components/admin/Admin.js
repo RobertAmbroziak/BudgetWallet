@@ -4,8 +4,10 @@ import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import { useLanguage } from '../../LanguageContext';
 import translations from '../../translations';
+import { useUser } from '../../UserContext';
 
-function Admin({ jwtToken }) {
+function Admin() {
+  const { jwtToken } = useUser(); 
   const [adminData, setData] = useState(null);
   const navigate = useNavigate();
   const { language } = useLanguage();

@@ -12,7 +12,7 @@ import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import { useLanguage } from '../../LanguageContext';
 import translations from '../../translations';
-import context from '../../context';
+import ToastContext from '../../ToastContext';
 
   async function authenticate(token, onSetToken) {
     //axios.defaults.headers.common['Accept-Language'] = language;
@@ -154,7 +154,7 @@ import context from '../../context';
       setRegisterRepeatPassword('');
     };
 
-    const { registerSuccessToast } = useContext(context);
+    const { registerSuccessToast } = useContext(ToastContext);
 
     const notifyRegisterSuccess = () => {
         registerSuccessToast();

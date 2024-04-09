@@ -18,9 +18,10 @@ import {useNavigate} from 'react-router-dom';
 import {jwtDecode} from "jwt-decode";
 import { useLanguage } from '../../../LanguageContext';
 import translations from '../../../translations';
+import { useUser } from '../../../UserContext';
 
-export default function Header({ jwtToken, onRemoveToken, onSetToken }) {
-
+export default function Header() {
+  const { jwtToken, handleSetToken, handleRemoveToken } = useUser();
   const [openNavColorSecond, setOpenNavColorSecond] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const location = useLocation();
@@ -37,12 +38,8 @@ export default function Header({ jwtToken, onRemoveToken, onSetToken }) {
 
   const handleLogout = () => {
     googleLogout();
-    onRemoveToken();
+    handleRemoveToken();
     navigate('/');
-  };
-  
-  const handleSetToken = (token) => {
-    onSetToken(token);
   };
   
   const isValidToken = () =>{

@@ -181,6 +181,12 @@
 * Further development of budget configurations
   - List of periods
   - List of budget categories
+  
+### Day 40
+* Context Api for jwtToken
+* Context Api for user Categories
+* Budget Configurations another steps - List Of Budget period Categories
+
 
 
 

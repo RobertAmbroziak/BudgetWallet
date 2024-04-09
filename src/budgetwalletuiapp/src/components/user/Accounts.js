@@ -11,8 +11,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { DataSaverOn } from "@mui/icons-material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import { useUser } from '../../UserContext';
 
-function Accounts({ jwtToken, onSuccess, onError }) {
+function Accounts({ onSuccess, onError }) {
+  const { jwtToken } = useUser(); 
   const { language } = useLanguage();
   const [accounts, setAccounts] = useState([]);
   const [showInactive, setShowInactive] = useState(false);

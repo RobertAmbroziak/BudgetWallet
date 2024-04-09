@@ -17,8 +17,10 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import BudgetDetails from "./BudgetDetails";
+import { useUser } from '../../UserContext';
 
-function Budgets({ jwtToken, onSuccess, onError }) {
+function Budgets({ onSuccess, onError }) {
+  const { jwtToken } = useUser(); 
   const { language } = useLanguage();
   const [budgets, setBudgets] = useState([]);
   const [showInactive, setShowInactive] = useState(false);
@@ -138,7 +140,7 @@ function Budgets({ jwtToken, onSuccess, onError }) {
   }, [jwtToken, onSuccess]);
 
   if (selectedBudgetId !== null) {
-    return <BudgetDetails jwtToken={jwtToken} budgetId={selectedBudgetId} onBack={() => setSelectedBudgetId(null)} />;
+    return <BudgetDetails budgetId={selectedBudgetId} onBack={() => setSelectedBudgetId(null)} />;
   }
 
   return (

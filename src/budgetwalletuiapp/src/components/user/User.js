@@ -8,12 +8,14 @@ import Stats from "./Stats";
 import AddExpense from "./AddExpense";
 import Configuration from "./Configuration";
 import { MDBBtn } from "mdb-react-ui-kit";
+import { CategoriesProvider } from './CategoriesContext'; 
+import { useUser } from '../../UserContext';
 
-function User({ jwtToken }) {
+function User() {
+  const { jwtToken } = useUser();
   const [userData, setData] = useState(null);
   const navigate = useNavigate();
   const { language } = useLanguage();
-
   const [isButtonGetSplitsClicked, setIsButtonGetSplitsClicked] =
     useState(false);
   const [isButtonAddExpenseClicked, setIsButtonAdExpenseClicked] =
@@ -60,9 +62,10 @@ function User({ jwtToken }) {
       }
     };
     fetchData();
-  }, [jwtToken, navigate]);
+  }, [navigate]);
 
   return (
+    <CategoriesProvider>
     <div>
       {userData ? (
         <div>
@@ -77,9 +80,9 @@ function User({ jwtToken }) {
           <MDBBtn color="info"onClick={handleConfigurationClick}>
             {translations[language].btn_Config}
           </MDBBtn>
-          {isButtonGetSplitsClicked && <Stats jwtToken={jwtToken} />}
-          {isButtonAddExpenseClicked && <AddExpense jwtToken={jwtToken} />}
-          {isButtonConfigurationClicked && <Configuration jwtToken={jwtToken} />}
+          {isButtonGetSplitsClicked && <Stats />}
+          {isButtonAddExpenseClicked && <AddExpense  />}
+          {isButtonConfigurationClicked && <Configuration />}
         </div>
       ) : null}
       <br />
@@ -89,6 +92,7 @@ function User({ jwtToken }) {
       <br />
       <br />
     </div>
+    </CategoriesProvider>
   );
 }
 

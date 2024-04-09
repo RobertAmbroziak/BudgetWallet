@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import SplitsFilter from "./SplisFilter";
 import Splits from "./Splits";
+import { useUser } from '../../UserContext'; 
 
-function Stats({ jwtToken }) {
+function Stats() {
+  const { jwtToken } = useUser(); 
   const [showSplits, setShowSplits] = useState(false);
   const [splitsRequest, setSplitsRequest] = useState(null);
   const [filtersData, setFiltersData] = useState({ accounts: [], categories: [], budgetId: "" });
@@ -16,12 +18,11 @@ function Stats({ jwtToken }) {
     <div>
       <br />
       <SplitsFilter
-        jwtToken={jwtToken}
         onGetSplitsButtonClick={handleGetSplitsButtonClick}
       />
       <br />
       {showSplits && (
-        <Splits jwtToken={jwtToken} splitsRequest={splitsRequest} filtersData={filtersData}/>
+        <Splits splitsRequest={splitsRequest} filtersData={filtersData}/>
       )}
     </div>
   );

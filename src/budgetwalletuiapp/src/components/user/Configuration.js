@@ -10,8 +10,10 @@ import Categories from "./Categories.js";
 import Accounts from "./Accounts.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useUser } from '../../UserContext';
 
-function Configuration({ jwtToken }) {
+function Configuration() {
+  const { jwtToken } = useUser(); 
   const { language } = useLanguage();
   const handleSuccessToast = (message) => {
     toast.success(message, {
@@ -50,7 +52,7 @@ function Configuration({ jwtToken }) {
           {translations[language].lbl_ConfigurationAccounts}
         </AccordionSummary>
         <AccordionDetails>
-          <Accounts jwtToken={jwtToken} onSuccess={handleSuccessToast} onError={handleErrorToast}/>
+          <Accounts onSuccess={handleSuccessToast} onError={handleErrorToast}/>
         </AccordionDetails>
       </Accordion>
       <Accordion sx={{ my: 1, mx: 2 }}>
@@ -62,7 +64,7 @@ function Configuration({ jwtToken }) {
           {translations[language].lbl_ConfigurationCategories}
         </AccordionSummary>
         <AccordionDetails>
-          <Categories jwtToken={jwtToken} onSuccess={handleSuccessToast} onError={handleErrorToast} />
+          <Categories onSuccess={handleSuccessToast} onError={handleErrorToast} />
         </AccordionDetails>
       </Accordion>
       <Accordion sx={{ my: 1, mx: 2 }}>
@@ -74,7 +76,7 @@ function Configuration({ jwtToken }) {
           {translations[language].lbl_ConfigurationBudgets}
         </AccordionSummary>
         <AccordionDetails>
-          <Budgets jwtToken={jwtToken} onSuccess={handleSuccessToast} onError={handleErrorToast} />
+          <Budgets onSuccess={handleSuccessToast} onError={handleErrorToast} />
         </AccordionDetails>
       </Accordion>
       <br />

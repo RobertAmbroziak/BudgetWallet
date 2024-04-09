@@ -19,8 +19,10 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useLanguage } from "../../LanguageContext";
 import translations from "../../translations";
+import { useUser } from '../../UserContext';
 
-function AddExpense({ jwtToken, transferEdit = null, handleSaveTransfer = null, isEdit = false }) {
+function AddExpense({ transferEdit = null, handleSaveTransfer = null, isEdit = false }) {
+  const { jwtToken } = useUser(); 
   const [budgets, setBudgets] = useState([]);
   const [accounts, setAccounts] = useState([]);
   const [transferDate, setTransferDate] = useState(dayjs());
@@ -57,8 +59,6 @@ function AddExpense({ jwtToken, transferEdit = null, handleSaveTransfer = null, 
   };
 
   const handleAddTransferButtonClick = async () => {
-    console.log(splitRecords);
-
     const transfer = {
       id: transferId,
       isActive: true,
@@ -321,7 +321,7 @@ function AddExpense({ jwtToken, transferEdit = null, handleSaveTransfer = null, 
       }
     };
     fetchBudgets();
-  }, [jwtToken, isEdit, transferEdit]);
+  }, [isEdit, transferEdit]);
 
   return (
     <>

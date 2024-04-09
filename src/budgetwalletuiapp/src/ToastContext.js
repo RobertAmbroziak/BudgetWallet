@@ -1,19 +1,19 @@
 import React, { createContext, useState } from 'react';
 
-const context = createContext();
+const ToastContext = createContext();
 
-export const MyProvider = ({ children }) => {
+export const ToastProvider = ({ children }) => {
   const [registerSuccessToast, setRegisterSuccessToast ] = useState(() => () => {});
 
   return (
-    <context.Provider value={
+    <ToastContext.Provider value={
       { 
         registerSuccessToast,
         setRegisterSuccessToast
       }}>
       {children}
-    </context.Provider>
+    </ToastContext.Provider>
   );
 };
 
-export default context;
+export default ToastContext;

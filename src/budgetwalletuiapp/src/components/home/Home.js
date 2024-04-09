@@ -1,13 +1,13 @@
 import React, {useState, useEffect, useContext} from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import context from '../../context';
+import ToastContext from '../../ToastContext';
 import { useLanguage } from '../../LanguageContext';
 import translations from '../../translations';
 
 function Home() {
   const [count, setCount] = useState(0);
-  const { setRegisterSuccessToast } = useContext(context);
+  const { setRegisterSuccessToast } = useContext(ToastContext);
   const { language } = useLanguage();
  
   useEffect(() => {

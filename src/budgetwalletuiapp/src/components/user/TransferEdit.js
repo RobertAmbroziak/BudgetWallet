@@ -3,14 +3,16 @@ import { useLanguage } from "../../LanguageContext";
 import translations from "../../translations";
 import { Modal, Box, Typography, Button } from "@mui/material";
 import AddExpense from "./AddExpense";
+import { useUser } from '../../UserContext';
 
 function TransferEdit({
-  jwtToken,
   openModal,
   handleCloseModal,
   handleSaveTransfer,
   currentTransfer,
 }) {
+
+  const { jwtToken } = useUser(); 
   const { language } = useLanguage();
   
   const editTransferBoxStyle = {
@@ -43,7 +45,7 @@ function TransferEdit({
             {translations[language].lbl_TransferEditionFor}{" "}
             {currentTransfer?.transferName}
           </Typography>
-          <AddExpense jwtToken={jwtToken} transferEdit={currentTransfer} handleSaveTransfer={handleSaveTransfer} isEdit={true} />
+          <AddExpense transferEdit={currentTransfer} handleSaveTransfer={handleSaveTransfer} isEdit={true} />
           <Button onClick={handleCloseModal}>
             {translations[language].btn_Close}
           </Button>

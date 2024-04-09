@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import config from "../../config";
 import axios from "axios";
+import config from "../../config";
 import { useLanguage } from "../../LanguageContext";
 import translations from "../../translations";
 import Box from "@mui/material/Box";
@@ -11,56 +11,58 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { DataSaverOn } from "@mui/icons-material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import { useCategories } from './CategoriesContext';
+import { useUser } from '../../UserContext';
 
-function Categories({ jwtToken, onSuccess, onError }) {
+function Categories({ onSuccess, onError }) {
+  const { jwtToken } = useUser(); 
   const { language } = useLanguage();
-  const [categories, setCategories] = useState([]);
+  const { categories: globalCategories, fetchCategories, updateCategories: updateGlobalCategories } = useCategories();
+  const [localCategories, setLocalCategories] = useState([]);
   const [showInactive, setShowInactive] = useState(false);
+  
+  useEffect(() => {
+    setLocalCategories(globalCategories);
+  }, [globalCategories]);
 
   const handleCategoryRecordChange = (index, field, value) => {
-    const updatedRecords = [...categories];
+    const updatedRecords = [...localCategories];
     updatedRecords[index][field] = value;
-    setCategories(updatedRecords);
+    setLocalCategories(updatedRecords);
   };
 
   const handleDeleteCategoryRecord = (index) => {
-    const updatedRecords = [...categories];
+    const updatedRecords = [...localCategories];
     if (updatedRecords[index].id > 0) {
       updatedRecords[index].isActive = false;
-      setCategories(updatedRecords);
     } else {
       updatedRecords.splice(index, 1);
-      setCategories(updatedRecords);
     }
+    setLocalCategories(updatedRecords);
   };
 
   const handleRestoreCategoryRecord = (index, field, value) => {
-    const updatedRecords = [...categories];
+    const updatedRecords = [...localCategories];
     updatedRecords[index][field] = value;
-    setCategories(updatedRecords);
+    setLocalCategories(updatedRecords);
   };
 
   const handleAddCategoryRecord = () => {
-    setCategories([
-      ...categories,
-      { id: 0, name: "", description: "", isActive: true },
-    ]);
+    const newCategory = { id: 0, name: "", description: "", isActive: true };
+    setLocalCategories([...localCategories, newCategory]);
   };
 
   const handleSaveChanges = async () => {
     try {
-      const response = await axios.put(
+      await axios.put(
         `${config.API_BASE_URL}${config.API_ENDPOINTS.CATEGORIES}`,
-        categories,
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        }
+        localCategories,
+        { headers: { Authorization: `Bearer ${jwtToken}` } }
       );
+      updateGlobalCategories(localCategories);
       onSuccess(translations[language].toast_updateCategoriesSuccess);
-
     } catch (error) {
+      console.error("Failed to save categories:", error);
       onError(translations[language].toast_updateCategoriesError);
     }
   };
@@ -69,38 +71,14 @@ function Categories({ jwtToken, onSuccess, onError }) {
     try {
       const response = await axios.post(
         `${config.API_BASE_URL}${config.API_ENDPOINTS.CATEGORIES}/default`,
-        categories,
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        }
+        {},
+        { headers: { Authorization: `Bearer ${jwtToken}` } }
       );
-      const updatedCategories = [...categories, ...response.data];
-      setCategories(updatedCategories);
+      setLocalCategories([...localCategories, ...response.data]);
     } catch (error) {
       console.error("Error fetching default categories:", error);
     }
   };
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get(
-          `${config.API_BASE_URL}${config.API_ENDPOINTS.CATEGORIES}`,
-          {
-            headers: {
-              Authorization: `Bearer ${jwtToken}`,
-            },
-          }
-        );
-        setCategories(response.data);
-      } catch (error) {
-        console.error("Error fetching categories", error);
-      }
-    };
-    fetchCategories();
-  }, [jwtToken, onSuccess]);
 
   return (
     <>
@@ -122,9 +100,9 @@ function Categories({ jwtToken, onSuccess, onError }) {
         }
         label={translations[language].cbx_ShowInactive}
       />
-      {categories.map((record, index) => (
+      {localCategories.map((record, index) => (
         <Box
-          key={"key_categoryBox_" + index}
+          key={`key_categoryBox_${index}`}
           sx={{
             display: "flex",
             flexDirection: "row",
@@ -132,10 +110,8 @@ function Categories({ jwtToken, onSuccess, onError }) {
             "@media (max-width:600px)": {
               flexDirection: "column",
             },
-            visibility:
-              !record.isActive && !showInactive ? "hidden" : "visible",
-            position:
-              !record.isActive && !showInactive ? "absolute" : "relative",
+            visibility: !record.isActive && !showInactive ? "hidden" : "visible",
+            position: !record.isActive && !showInactive ? "absolute" : "relative",
             height: !record.isActive && !showInactive ? 0 : "auto",
             overflow: !record.isActive && !showInactive ? "hidden" : "visible",
           }}
@@ -152,31 +128,25 @@ function Categories({ jwtToken, onSuccess, onError }) {
           ) : (
             <IconButton
               aria-label="restore"
-              onClick={() =>
-                handleRestoreCategoryRecord(index, "isActive", true)
-              }
+              onClick={() => handleRestoreCategoryRecord(index, "isActive", true)}
             >
               <DataSaverOn />
             </IconButton>
           )}
 
           <TextField
-            id={"categoryName_" + index}
+            id={`categoryName_${index}`}
             variant="outlined"
             label={translations[language].txt_name}
-            value={categories[index].name}
-            onChange={(e) =>
-              handleCategoryRecordChange(index, "name", e.target.value)
-            }
+            value={record.name}
+            onChange={(e) => handleCategoryRecordChange(index, "name", e.target.value)}
           />
           <TextField
-            id={"categoryDescription" + index}
+            id={`categoryDescription_${index}`}
             variant="outlined"
             label={translations[language].txt_description}
-            value={categories[index].description}
-            onChange={(e) =>
-              handleCategoryRecordChange(index, "description", e.target.value)
-            }
+            value={record.description}
+            onChange={(e) => handleCategoryRecordChange(index, "description", e.target.value)}
           />
         </Box>
       ))}

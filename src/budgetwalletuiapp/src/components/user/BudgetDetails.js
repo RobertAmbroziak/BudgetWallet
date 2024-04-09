@@ -26,14 +26,42 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import BudgetPeriodCategories from "./BudgetPeriodCategories";
+import { useCategories } from './CategoriesContext';
+import { useUser } from '../../UserContext';
 
-function BudgetDetails({ jwtToken, budgetId, onBack }) {
+function BudgetDetails({ budgetId, onBack }) {
+  const { jwtToken } = useUser(); 
+  const { categories } = useCategories();
   const { language } = useLanguage();
   const [budget, setBudget] = useState();
+  const [editingBudgetPeriod, setEditingBudgetPeriod] = useState(null);
   const handleBackClick = () => {
     onBack();
   };
+  
+  const editBudgetPeriod = (record) => {
+    setEditingBudgetPeriod(record);
+  };
 
+  const onBudgetPeriodCategoryChange = (budgetPeriodCategoryId, name, value) => {
+    let updatedBudget = { ...budget, budgetPeriods: budget.budgetPeriods.map(period => ({ ...period, budgetPeriodCategories: period.budgetPeriodCategories.map(category => ({ ...category })) })) };
+  
+    updatedBudget.budgetPeriods.forEach(period => {
+      period.budgetPeriodCategories.forEach(category => {
+        if (category.id === budgetPeriodCategoryId) {
+          category[name] = value; 
+        }
+      });
+  
+      if (budgetPeriodCategoryId === 0) {
+        period.budgetPeriodCategories.push(budgetPeriodCategoryId );
+      }
+    });
+  
+    setBudget(updatedBudget);
+  };
+  
   const handleDeleteBudgetCategoryRecord = (index) => {};
 
   const handleDeleteBudgetPeriodRecord = (index) => {};
@@ -65,14 +93,19 @@ function BudgetDetails({ jwtToken, budgetId, onBack }) {
       }
     };
     fetchBudgetDetails();
-  }, [jwtToken]);
+  }, []);
+
+  if (editingBudgetPeriod) {
+    return (
+      <BudgetPeriodCategories
+        budgetPeriod={editingBudgetPeriod}
+        onBudgetPeriodCategoryChange={onBudgetPeriodCategoryChange}
+      />
+    );
+  }
 
   return (
     <div>
-      {/* 
-         pobieramy po id cały budżet z jego periodami periodCat i budCategoriami
-         i rzucamy na widok ... bez budgetPeriodCategories - to po kolejnym kliku na poziomie BudgetPeriod ale już nie dociągam z API
-      */}
       Detale budżetu: {budgetId}
       <Button onClick={handleBackClick} variant="outlined">
         Powrót
@@ -206,18 +239,18 @@ function BudgetDetails({ jwtToken, budgetId, onBack }) {
                             handleBudgetCategoryChange(index, e.target.value)
                           }
                         >
-                          {budget.budgetCategories.map((budgetCategory) => (
+                          {categories.map((category) => (
                             <MenuItem
-                              key={budgetCategory.categoryId}
-                              value={budgetCategory.categoryId}
+                              key={category.id}
+                              value={category.id}
                             >
-                              {budgetCategory.category.name}
+                              {category.name}
                             </MenuItem>
                           ))}
                         </Select>
                       </FormControl>
                       <TextField
-                        id="budgetCategoryValue"
+                        id={"budgetCategoryValue_" + index}
                         label={translations[language].txt_value}
                         variant="outlined"
                         value={record.maxValue}
@@ -280,6 +313,12 @@ function BudgetDetails({ jwtToken, budgetId, onBack }) {
                         onClick={() => handleDeleteBudgetPeriodRecord(index)}
                       >
                         <DeleteIcon />
+                      </IconButton>
+                      <IconButton
+                        aria-label="edit"
+                        onClick={() => editBudgetPeriod(record)}
+                      >
+                        <EditIcon />
                       </IconButton>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker

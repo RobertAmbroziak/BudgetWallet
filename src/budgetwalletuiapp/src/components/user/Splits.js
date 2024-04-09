@@ -18,8 +18,10 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Button } from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useUser } from '../../UserContext';
 
-function Splits({ jwtToken, splitsRequest, filtersData }) {
+function Splits({ splitsRequest, filtersData }) {
+  const { jwtToken } = useUser();
   const [refreshData, setRefreshData] = useState(false);
   const [splitsResponse, setSplitsResponse] = useState(null);
   const { language } = useLanguage();
@@ -144,7 +146,7 @@ function Splits({ jwtToken, splitsRequest, filtersData }) {
       }
     };
     fetchData();
-  }, [jwtToken, splitsRequest, language, refreshData]);
+  }, [splitsRequest, language, refreshData]);
 
   return (
     <><ToastContainer />
@@ -243,7 +245,7 @@ function Splits({ jwtToken, splitsRequest, filtersData }) {
               ))}
             </Tbody>
           </Table>
-          <TransferEdit jwtToken={jwtToken} openModal={openModal} handleCloseModal={handleCloseModal} handleSaveTransfer={handleSaveTransfer} currentTransfer={currentTransfer}/>
+          <TransferEdit openModal={openModal} handleCloseModal={handleCloseModal} handleSaveTransfer={handleSaveTransfer} currentTransfer={currentTransfer}/>
         </div>
       ) : null}
     </div>
