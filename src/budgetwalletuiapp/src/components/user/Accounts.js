@@ -104,7 +104,7 @@ function Accounts({ onSuccess, onError }) {
       }
     };
     fetchAccounts();
-  }, [jwtToken, onSuccess]);
+  }, [onSuccess]);
 
   return (
     <>

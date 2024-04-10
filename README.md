@@ -15,12 +15,12 @@ In my efforts to control expenses and manage the household budget, I have tried 
 
 ## Expected Technology
 
-* Web Api - probably in .Net 6 - currently, my IDE is not quite ready for another LTS version
+* Web Api - Currently .NET 6, planned .NET 8
 * Entity Framework - CodeFirst, Migrations
 * Clean architecture (onion) with separation of layers into separate projects
-* Front-end application mostly created using create-react-app
-* Ready-made controls from Material Design for Bootstrap 5 & React 18
-* A bit of react-router, but mainly SPA based on simple hooks useState/useEffect
+* Front-end - Currently CRA + js files, planned Vite + tsx files
+* Ready-made controls from Material UI
+* A bit of react-router, but mainly SPA based on simple hooks useState/useEffect/useContext
 
 ## Functionality (from the user's point of view)
 
@@ -61,28 +61,6 @@ In my efforts to control expenses and manage the household budget, I have tried 
 This database schema emerged after the initial analysis:
 
 <div style="text-align:center"><img src='./Description/Images/database_diagram.PNG' width='500'/></div>
-
-In addition, there are 3 enums:
-```csharp
-public enum Provider
-{
-	Application,
-	Google
-}
-
-public enum TransferType
-{
-	Deposit,
-	Expense,
-	InternalTransfer
-}
-
-public enum UserRole
-{
-	User,
-	Admin
-}
-```
 
 * Users - table of users with roles
 * RegisterConfirmations - auxiliary table for the registration process and account confirmation via email

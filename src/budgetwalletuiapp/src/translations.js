@@ -81,6 +81,8 @@ const translations = {
     toast_updateAccountsError : "Modification of accounts has failed",
     toast_updateCategoriesSuccess : "Categories have been modified",
     toast_updateCategoriesError : "Modification of categories has failed",
+    btn_addBudgetCategory: "Add Budget Category",
+    btn_addBudgetPeriod: "Add Budget Period",
   },
   pl: {
     btn_logout: "Wyloguj",
@@ -164,6 +166,8 @@ const translations = {
     toast_updateAccountsError : "Modyfikacja kont się nie powiodła",
     toast_updateCategoriesSuccess : "Kategorie zostały zmodyfikowane",
     toast_updateCategoriesError : "Modyfikacja kategorii się nie powiodła",
+    btn_addBudgetCategory: "Dodaj Budżet Kategorię",
+    btn_addBudgetPeriod: "Dodaj Okres Budżetu",
   },
 };
 

@@ -187,6 +187,13 @@
 * Context Api for user Categories
 * Budget Configurations another steps - List Of Budget period Categories
 
+### Day 41
+* Another day of battling with budget configuration
+  - Complete manipulation of Budget Periods
+  - Complete manipulation of Budget Categories
+
+
+
 
 
 

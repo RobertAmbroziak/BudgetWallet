@@ -131,7 +131,7 @@ namespace BusinessLogic.Services
                 _config["Jwt:Issuer"],
                 _config["Jwt:Audience"],
                 claims,
-                expires: DateTime.Now.AddMinutes(60),
+                expires: DateTime.Now.AddMinutes(480),
                 signingCredentials: credentials);
 
             var result = new JwtSecurityTokenHandler().WriteToken(token);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -14,12 +14,15 @@ import { useUser } from '../../UserContext';
 import { useCategories } from './CategoriesContext';
 
 function BudgetPeriodCategories({ budgetPeriod, onBudgetPeriodCategoryChange }) {
+  const [showInactive, setShowInactive] = useState(false);
   const { categories } = useCategories();
   const { jwtToken } = useUser(); 
   const { language } = useLanguage();
   const handleBudgetPeriodCategoryChange = (index, name, value) => {
     onBudgetPeriodCategoryChange(index, name, value);
   };
+
+  
 
   return (
     <div>

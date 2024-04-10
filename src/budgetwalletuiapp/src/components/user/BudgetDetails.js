@@ -27,11 +27,13 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import BudgetPeriodCategories from "./BudgetPeriodCategories";
-import { useCategories } from './CategoriesContext';
-import { useUser } from '../../UserContext';
+import { useCategories } from "./CategoriesContext";
+import { useUser } from "../../UserContext";
 
 function BudgetDetails({ budgetId, onBack }) {
-  const { jwtToken } = useUser(); 
+  const [showInactive, setShowInactive] = useState(false);
+  const [showInactive2, setShowInactive2] = useState(false);
+  const { jwtToken } = useUser();
   const { categories } = useCategories();
   const { language } = useLanguage();
   const [budget, setBudget] = useState();
@@ -39,32 +41,76 @@ function BudgetDetails({ budgetId, onBack }) {
   const handleBackClick = () => {
     onBack();
   };
-  
+
   const editBudgetPeriod = (record) => {
     setEditingBudgetPeriod(record);
   };
 
-  const onBudgetPeriodCategoryChange = (budgetPeriodCategoryId, name, value) => {
-    let updatedBudget = { ...budget, budgetPeriods: budget.budgetPeriods.map(period => ({ ...period, budgetPeriodCategories: period.budgetPeriodCategories.map(category => ({ ...category })) })) };
-  
-    updatedBudget.budgetPeriods.forEach(period => {
-      period.budgetPeriodCategories.forEach(category => {
+  const onBudgetPeriodCategoryChange = (
+    // ta metoda musi nie tylko przyjmować zmiany naistniejących budgetPeriodCategory
+    // ale również dodawać nowe do kolekcji
+    // usuwać te z id = 0
+    budgetPeriodCategoryId,
+    name,
+    value
+  ) => {
+    let updatedBudget = {
+      ...budget,
+      budgetPeriods: budget.budgetPeriods.map((period) => ({
+        ...period,
+        budgetPeriodCategories: period.budgetPeriodCategories.map(
+          (category) => ({ ...category })
+        ),
+      })),
+    };
+
+    updatedBudget.budgetPeriods.forEach((period) => {
+      period.budgetPeriodCategories.forEach((category) => {
         if (category.id === budgetPeriodCategoryId) {
-          category[name] = value; 
+          category[name] = value;
         }
       });
-  
+
       if (budgetPeriodCategoryId === 0) {
-        period.budgetPeriodCategories.push(budgetPeriodCategoryId );
+        period.budgetPeriodCategories.push(budgetPeriodCategoryId);
       }
     });
-  
+
     setBudget(updatedBudget);
   };
-  
-  const handleDeleteBudgetCategoryRecord = (index) => {};
 
-  const handleDeleteBudgetPeriodRecord = (index) => {};
+  const handleAddBudgetCategoryRecord = () => {
+    if (budget) {
+      const newBudgetCategory = {
+        id: 0,
+        categoryId: "",
+        maxValue: "",
+        isActive: true,
+      };
+
+      setBudget((prevBudget) => ({
+        ...prevBudget,
+        budgetCategories: [...prevBudget.budgetCategories, newBudgetCategory],
+      }));
+    }
+  };
+
+  const handleAddBudgetPeriodRecord = () => {
+    if (budget) {
+      const newBudgetPeriod = {
+        id: 0,
+        validFrom: "",
+        validTo: "",
+        isActive: true,
+      };
+
+      setBudget((prevBudget) => ({
+        ...prevBudget,
+        budgetPeriods: [...prevBudget.budgetPeriods, newBudgetPeriod],
+      }));
+    }
+  };
+
 
   const setBudgetValidFromDate = (validFrom) => {};
 
@@ -74,7 +120,47 @@ function BudgetDetails({ budgetId, onBack }) {
 
   const setBudgetPeriodValidToDate = (validTo) => {};
 
-  const handleBudgetCategoryChange = (index, value) => {};
+  const handleBudgetCategoryChange = (index, name, value) => {
+    if (budget && budget.budgetCategories) {
+      let updatedBudget = { ...budget };
+
+      if (name === "isActive" && value === false) {
+        if (updatedBudget.budgetCategories[index].id > 0) {
+          updatedBudget.budgetCategories[index][name] = value;
+        } else {
+          updatedBudget.budgetCategories =
+            updatedBudget.budgetCategories.filter((_, i) => i !== index);
+        }
+      } else {
+        if (updatedBudget.budgetCategories[index]) {
+          updatedBudget.budgetCategories[index][name] = value;
+        }
+      }
+
+      setBudget(updatedBudget);
+    }
+  };
+
+  const handleBudgetPeriodChange = (index, name, value) => {
+    if (budget && budget.budgetPeriods) {
+      let updatedBudget = { ...budget };
+
+      if (name === "isActive" && value === false) {
+        if (updatedBudget.budgetPeriods[index].id > 0) {
+          updatedBudget.budgetPeriods[index][name] = value;
+        } else {
+          updatedBudget.budgetPeriods =
+            updatedBudget.budgetPeriods.filter((_, i) => i !== index);
+        }
+      } else {
+        if (updatedBudget.budgetPeriods[index]) {
+          updatedBudget.budgetPeriods[index][name] = value;
+        }
+      }
+
+      setBudget(updatedBudget);
+    }
+  };
 
   useEffect(() => {
     const fetchBudgetDetails = async () => {
@@ -164,6 +250,7 @@ function BudgetDetails({ budgetId, onBack }) {
               </LocalizationProvider>
             </Box>
           </Paper>
+
           <Box
             sx={{
               display: "flex",
@@ -198,6 +285,21 @@ function BudgetDetails({ budgetId, onBack }) {
                     width: { xs: "100%", sm: "auto" },
                   }}
                 >
+                  <Button
+                    variant="outlined"
+                    onClick={handleAddBudgetCategoryRecord}
+                  >
+                    {translations[language].btn_addBudgetCategory}
+                  </Button>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={showInactive}
+                        onChange={(e) => setShowInactive(e.target.checked)}
+                      />
+                    }
+                    label={translations[language].cbx_ShowInactive}
+                  />
                   {budget.budgetCategories.map((record, index) => (
                     <Box
                       key={"key_budgetCategoryBox_" + index}
@@ -213,16 +315,42 @@ function BudgetDetails({ budgetId, onBack }) {
                         flexWrap: "wrap",
                         width: "calc(100% - 4px)",
                         margin: "2px",
+                        visibility:
+                          !record.isActive && !showInactive
+                            ? "hidden"
+                            : "visible",
+                        position:
+                          !record.isActive && !showInactive
+                            ? "absolute"
+                            : "relative",
+                        height: !record.isActive && !showInactive ? 0 : "auto",
+                        overflow:
+                          !record.isActive && !showInactive
+                            ? "hidden"
+                            : "visible",
                       }}
                       noValidate
                       autoComplete="off"
                     >
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() => handleDeleteBudgetCategoryRecord(index)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
+                      {record.isActive ? (
+                        <IconButton
+                          aria-label="delete"
+                          onClick={() =>
+                            handleBudgetCategoryChange(index, "isActive", false)
+                          }
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      ) : (
+                        <IconButton
+                          aria-label="restore"
+                          onClick={() =>
+                            handleBudgetCategoryChange(index, "isActive", true)
+                          }
+                        >
+                          <DataSaverOn />
+                        </IconButton>
+                      )}
                       <FormControl sx={{ m: 1, minWidth: 120 }}>
                         <InputLabel id="categorySelect">
                           {translations[language].lbl_category}
@@ -236,14 +364,15 @@ function BudgetDetails({ budgetId, onBack }) {
                           label={translations[language].lbl_category}
                           name={`categoryId_${index}`}
                           onChange={(e) =>
-                            handleBudgetCategoryChange(index, e.target.value)
+                            handleBudgetCategoryChange(
+                              index,
+                              "categoryId",
+                              e.target.value
+                            )
                           }
                         >
                           {categories.map((category) => (
-                            <MenuItem
-                              key={category.id}
-                              value={category.id}
-                            >
+                            <MenuItem key={category.id} value={category.id}>
                               {category.name}
                             </MenuItem>
                           ))}
@@ -254,6 +383,13 @@ function BudgetDetails({ budgetId, onBack }) {
                         label={translations[language].txt_value}
                         variant="outlined"
                         value={record.maxValue}
+                        onChange={(e) =>
+                          handleBudgetCategoryChange(
+                            index,
+                            "maxValue",
+                            e.target.value
+                          )
+                        }
                         sx={{
                           width: "auto",
                           flexGrow: 1,
@@ -289,6 +425,21 @@ function BudgetDetails({ budgetId, onBack }) {
                     width: { xs: "100%", sm: "auto" },
                   }}
                 >
+                  <Button
+                    variant="outlined"
+                    onClick={handleAddBudgetPeriodRecord}
+                  >
+                    {translations[language].btn_addBudgetPeriod}
+                  </Button>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={showInactive2}
+                        onChange={(e) => setShowInactive2(e.target.checked)}
+                      />
+                    }
+                    label={translations[language].cbx_ShowInactive}
+                  />
                   {budget.budgetPeriods.map((record, index) => (
                     <Box
                       key={"key_budgetPeriodBox_" + index}
@@ -304,16 +455,42 @@ function BudgetDetails({ budgetId, onBack }) {
                         flexWrap: "wrap",
                         width: "calc(100% - 4px)",
                         margin: "2px",
+                        visibility:
+                          !record.isActive && !showInactive2
+                            ? "hidden"
+                            : "visible",
+                        position:
+                          !record.isActive && !showInactive2
+                            ? "absolute"
+                            : "relative",
+                        height: !record.isActive && !showInactive2 ? 0 : "auto",
+                        overflow:
+                          !record.isActive && !showInactive2
+                            ? "hidden"
+                            : "visible",
                       }}
                       noValidate
                       autoComplete="off"
                     >
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() => handleDeleteBudgetPeriodRecord(index)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
+                      {record.isActive ? (
+                        <IconButton
+                          aria-label="delete"
+                          onClick={() =>
+                            handleBudgetPeriodChange(index, "isActive", false)
+                          }
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      ) : (
+                        <IconButton
+                          aria-label="restore"
+                          onClick={() =>
+                            handleBudgetPeriodChange(index, "isActive", true)
+                          }
+                        >
+                          <DataSaverOn />
+                        </IconButton>
+                      )}
                       <IconButton
                         aria-label="edit"
                         onClick={() => editBudgetPeriod(record)}
@@ -327,14 +504,16 @@ function BudgetDetails({ budgetId, onBack }) {
                           onChange={(newDate) =>
                             setBudgetPeriodValidFromDate(newDate)
                           }
-                          sx ={{m: 1}}
+                          sx={{ m: 1 }}
                         />
                       </LocalizationProvider>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                           label={translations[language].lbl_budgetValidToDate}
                           value={dayjs(record.validTo)}
-                          onChange={(newDate) => setBudgetPeriodValidToDate(newDate)}
+                          onChange={(newDate) =>
+                            setBudgetPeriodValidToDate(newDate)
+                          }
                         />
                       </LocalizationProvider>
                     </Box>
