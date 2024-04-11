@@ -60,7 +60,7 @@ function SplitsFilter({ onGetSplitsButtonClick }) {
       }
     };
     fetchFilters();
-  }, []);
+  }, [jwtToken]);
 
   const handleDropdownChange = async (event) => {
     const { name, value } = event.target;

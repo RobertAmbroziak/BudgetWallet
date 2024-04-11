@@ -17,7 +17,7 @@ import { useUser } from '../../UserContext';
 function Categories({ onSuccess, onError }) {
   const { jwtToken } = useUser(); 
   const { language } = useLanguage();
-  const { categories: globalCategories, fetchCategories, updateCategories: updateGlobalCategories } = useCategories();
+  const { categories: globalCategories, updateCategories: updateGlobalCategories } = useCategories();
   const [localCategories, setLocalCategories] = useState([]);
   const [showInactive, setShowInactive] = useState(false);
   

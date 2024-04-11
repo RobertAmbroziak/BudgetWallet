@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -10,23 +10,80 @@ import TextField from "@mui/material/TextField";
 import { DataSaverOn } from "@mui/icons-material";
 import { useLanguage } from "../../LanguageContext";
 import translations from "../../translations";
-import { useUser } from '../../UserContext';
-import { useCategories } from './CategoriesContext';
+import { useCategories } from "./CategoriesContext";
+import Checkbox from "@mui/material/Checkbox";
+import Button from "@mui/material/Button";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
-function BudgetPeriodCategories({ budgetPeriod, onBudgetPeriodCategoryChange }) {
+function BudgetPeriodCategories({ budgetPeriod, onBack }) {
+  const [thisBudgetPeriod, setBudgetPeriod] = useState(budgetPeriod);
   const [showInactive, setShowInactive] = useState(false);
   const { categories } = useCategories();
-  const { jwtToken } = useUser(); 
   const { language } = useLanguage();
-  const handleBudgetPeriodCategoryChange = (index, name, value) => {
-    onBudgetPeriodCategoryChange(index, name, value);
+
+  const handleBack = () => {
+    onBack(thisBudgetPeriod);
   };
 
-  
+  const handleBudgetPeriodCategoryChange = (index, name, value) => {
+    if (thisBudgetPeriod) {
+      let updatedBudgetPeriod = { ...thisBudgetPeriod };
+
+      if (name === "isActive" && value === false) {
+        if (updatedBudgetPeriod.budgetPeriodCategories[index].id > 0) {
+          updatedBudgetPeriod.budgetPeriodCategories[index][name] = value;
+        } else {
+          updatedBudgetPeriod.budgetPeriodCategories =
+            updatedBudgetPeriod.budgetPeriodCategories.filter(
+              (_, i) => i !== index
+            );
+        }
+      } else {
+        if (updatedBudgetPeriod.budgetPeriodCategories[index]) {
+          updatedBudgetPeriod.budgetPeriodCategories[index][name] = value;
+        }
+      }
+
+      setBudgetPeriod(updatedBudgetPeriod);
+    }
+  };
+
+  const handleAddBudgetPeriodCategoryRecord = () => {
+    console.log('dodaje nowy BPC');
+    const newBudgetPeriodCategory = {
+      id: 0,
+      budgetPeriodId: budgetPeriod.id,
+      categoryId: "",
+      maxValue: "",
+      isActive: true,
+    };
+    console.log(newBudgetPeriodCategory);
+    setBudgetPeriod((prevBudgetPeriod) => ({
+      ...prevBudgetPeriod,
+      budgetPeriodCategories: [...prevBudgetPeriod.budgetPeriodCategories, newBudgetPeriodCategory],
+    }));
+    console.log(thisBudgetPeriod);
+    console.log(budgetPeriod);
+  };
 
   return (
     <div>
-      {budgetPeriod.budgetPeriodCategories.map((record, index) => (
+      <Button variant="outlined" onClick={handleAddBudgetPeriodCategoryRecord}>
+        {translations[language].btn_addBudgetPeriodCategory}
+      </Button>
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={showInactive}
+            onChange={(e) => setShowInactive(e.target.checked)}
+          />
+        }
+        label={translations[language].cbx_ShowInactive}
+      />
+      <Button onClick={handleBack} variant="outlined">
+      Powrót
+    </Button>
+      {thisBudgetPeriod.budgetPeriodCategories.map((record, index) => (
         <Box
           key={"key_budgetPeriodCategoryBox_" + index}
           sx={{
@@ -41,6 +98,12 @@ function BudgetPeriodCategories({ budgetPeriod, onBudgetPeriodCategoryChange }) 
             flexWrap: "wrap",
             width: "calc(100% - 4px)",
             margin: "2px",
+            visibility:
+              !record.isActive && !showInactive ? "hidden" : "visible",
+            position:
+              !record.isActive && !showInactive ? "absolute" : "relative",
+            height: !record.isActive && !showInactive ? 0 : "auto",
+            overflow: !record.isActive && !showInactive ? "hidden" : "visible",
           }}
           noValidate
           autoComplete="off"

@@ -10,10 +10,8 @@ import Categories from "./Categories.js";
 import Accounts from "./Accounts.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useUser } from '../../UserContext';
 
 function Configuration() {
-  const { jwtToken } = useUser(); 
   const { language } = useLanguage();
   const handleSuccessToast = (message) => {
     toast.success(message, {
@@ -28,6 +26,7 @@ function Configuration() {
     });
   };
   const handleErrorToast = (message) => {
+    console.log(message);
     toast.error(message, {
       position: "top-right",
       autoClose: 4000,

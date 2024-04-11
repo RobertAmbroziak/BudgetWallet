@@ -7,14 +7,11 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { DataSaverOn } from "@mui/icons-material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import BudgetDetails from "./BudgetDetails";
 import { useUser } from '../../UserContext';
@@ -26,11 +23,11 @@ function Budgets({ onSuccess, onError }) {
   const [showInactive, setShowInactive] = useState(false);
   const [selectedBudgetId, setSelectedBudgetId] = useState(null);
 
-  const handleBudgetRecordChange = (index, field, value) => {
-    const updatedRecords = [...budgets];
-    updatedRecords[index][field] = value;
-    setBudgets(updatedRecords);
-  };
+  // const handleBudgetRecordChange = (index, field, value) => {
+  //   const updatedRecords = [...budgets];
+  //   updatedRecords[index][field] = value;
+  //   setBudgets(updatedRecords);
+  // };
 
   const handleEditBudgetRecord = (budgetId) => {
     setSelectedBudgetId(budgetId);
@@ -57,25 +54,20 @@ function Budgets({ onSuccess, onError }) {
       ).padStart(2, "0")}`;
 
       let baseName = description;
-      let name = baseName;
+      let budgetName = baseName;
       let version = 2;
 
-      while (budgets.some((budget) => budget.name === name)) {
-        name = `${baseName}v${version}`;
+      // eslint-disable-next-line no-loop-func
+      while (budgets.some((budget) => budget.name === budgetName)) {
+        budgetName = `${baseName}v${version}`;
         version++;
       }
-
-      const formatYYYYMMDD = (date) =>
-        `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-          2,
-          "0"
-        )}-${String(date.getDate()).padStart(2, "0")}`;
 
       setBudgets([
         ...budgets,
         {
           id: 0,
-          name: name,
+          name: budgetName,
           description: description,
           validFrom: validFrom,
           validTo: validTo,
@@ -85,22 +77,22 @@ function Budgets({ onSuccess, onError }) {
     }
   };
 
-  const handleSaveChanges = async () => {
-    try {
-      const response = await axios.put(
-        `${config.API_BASE_URL}${config.API_ENDPOINTS.TODOBudgets}`,
-        budgets,
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        }
-      );
-      onSuccess(translations[language].toast_updateBudgetsSuccess);
-    } catch (error) {
-      onError(translations[language].toast_updateBudgetsError);
-    }
-  };
+  // const handleSaveChanges = async () => {
+  //   try {
+  //     const response = await axios.put(
+  //       `${config.API_BASE_URL}${config.API_ENDPOINTS.TODOBudgets}`,
+  //       budgets,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${jwtToken}`,
+  //         },
+  //       }
+  //     );
+  //     onSuccess(translations[language].toast_updateBudgetsSuccess);
+  //   } catch (error) {
+  //     onError(translations[language].toast_updateBudgetsError);
+  //   }
+  // };
 
   const handleGetDefault = async () => {
     try {
@@ -137,10 +129,10 @@ function Budgets({ onSuccess, onError }) {
       }
     };
     fetchBudgets();
-  }, [jwtToken, onSuccess]);
+  }, [jwtToken, onSuccess, onError]);
 
   if (selectedBudgetId !== null) {
-    return <BudgetDetails budgetId={selectedBudgetId} onBack={() => setSelectedBudgetId(null)} />;
+    return <BudgetDetails budgetId={selectedBudgetId} onBack={() => setSelectedBudgetId(null)} onSuccess={onSuccess} onError={onError}/>;
   }
 
   return (

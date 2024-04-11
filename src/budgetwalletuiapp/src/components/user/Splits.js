@@ -146,7 +146,7 @@ function Splits({ splitsRequest, filtersData }) {
       }
     };
     fetchData();
-  }, [splitsRequest, language, refreshData]);
+  }, [splitsRequest, language, refreshData, jwtToken]);
 
   return (
     <><ToastContainer />

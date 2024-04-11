@@ -172,9 +172,8 @@ function AddExpense({ transferEdit = null, handleSaveTransfer = null, isEdit = f
     };
 
     if (validateResult.isValid && !isEdit) {
-      console.log(transfer);
       try {
-        const response = await axios.post(
+        await axios.post(
           `${config.API_BASE_URL}${config.API_ENDPOINTS.TRANSFERS}`,
           transfer,
           {
@@ -206,9 +205,7 @@ function AddExpense({ transferEdit = null, handleSaveTransfer = null, isEdit = f
       }
     } else if (validateResult.isValid && isEdit) {
       try {
-        console.log('PUT');
-        console.log(transfer);
-        const response = await axios.put(
+        await axios.put(
           `${config.API_BASE_URL}${config.API_ENDPOINTS.TRANSFERS}`,
           transfer,
           {
@@ -321,7 +318,7 @@ function AddExpense({ transferEdit = null, handleSaveTransfer = null, isEdit = f
       }
     };
     fetchBudgets();
-  }, [isEdit, transferEdit]);
+  }, [isEdit, transferEdit, jwtToken]);
 
   return (
     <>

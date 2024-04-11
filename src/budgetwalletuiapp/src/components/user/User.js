@@ -62,7 +62,7 @@ function User() {
       }
     };
     fetchData();
-  }, [navigate]);
+  }, [navigate, jwtToken]);
 
   return (
     <CategoriesProvider>

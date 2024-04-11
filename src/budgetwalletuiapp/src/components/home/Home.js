@@ -10,10 +10,6 @@ function Home() {
   const { setRegisterSuccessToast } = useContext(ToastContext);
   const { language } = useLanguage();
  
-  useEffect(() => {
-    setRegisterSuccessToast(() => registerSuccessToast);
-  }, []);
-
   const registerSuccessToast = () => {
     toast.success(translations[language].toast_registerSuccess, {
       position: "top-right",
@@ -27,6 +23,10 @@ function Home() {
       //transition: Bounce,
       });
   };
+
+  useEffect(() => {
+    setRegisterSuccessToast(() => registerSuccessToast);
+  }, []);
 
   return (
     <div>

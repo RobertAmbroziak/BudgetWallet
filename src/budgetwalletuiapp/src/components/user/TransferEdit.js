@@ -3,7 +3,6 @@ import { useLanguage } from "../../LanguageContext";
 import translations from "../../translations";
 import { Modal, Box, Typography, Button } from "@mui/material";
 import AddExpense from "./AddExpense";
-import { useUser } from '../../UserContext';
 
 function TransferEdit({
   openModal,
@@ -12,7 +11,6 @@ function TransferEdit({
   currentTransfer,
 }) {
 
-  const { jwtToken } = useUser(); 
   const { language } = useLanguage();
   
   const editTransferBoxStyle = {

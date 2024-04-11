@@ -192,6 +192,9 @@
   - Complete manipulation of Budget Periods
   - Complete manipulation of Budget Categories
 
+### Day 42
+* Budget Configuration - manipulation of Budget Period Categories
+
 
 
 

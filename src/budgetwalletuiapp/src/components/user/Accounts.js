@@ -52,7 +52,7 @@ function Accounts({ onSuccess, onError }) {
   const handleSaveChanges = async () => {
     console.log(accounts);
     try {
-      const response = await axios.put(
+      await axios.put(
         `${config.API_BASE_URL}${config.API_ENDPOINTS.ACCOUNTS}`,
         accounts,
         {
@@ -104,7 +104,7 @@ function Accounts({ onSuccess, onError }) {
       }
     };
     fetchAccounts();
-  }, [onSuccess]);
+  }, [onSuccess, jwtToken]);
 
   return (
     <>

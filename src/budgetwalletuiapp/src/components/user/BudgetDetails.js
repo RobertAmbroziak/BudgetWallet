@@ -30,7 +30,8 @@ import BudgetPeriodCategories from "./BudgetPeriodCategories";
 import { useCategories } from "./CategoriesContext";
 import { useUser } from "../../UserContext";
 
-function BudgetDetails({ budgetId, onBack }) {
+function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
+  const [isValid, setIsValid] = useState({ isValid: true, errors: [] });
   const [showInactive, setShowInactive] = useState(false);
   const [showInactive2, setShowInactive2] = useState(false);
   const { jwtToken } = useUser();
@@ -41,44 +42,61 @@ function BudgetDetails({ budgetId, onBack }) {
   const handleBackClick = () => {
     onBack();
   };
+  
+
+  const validateBudget = (budget) => {
+    const errors = [];
+    
+    console.log(budget);
+
+    errors.push('testowy błąd');
+    errors.push('testowy błąd2');
+    errors.push('testowy błąd3');
+    
+    return { isValid: errors.length === 0, errors };
+  };
+
+  const handleBudgetSave = async () => {
+
+    const validateResult = validateBudget(budget);
+    setIsValid(validateResult);
+    if (!isValid.isValid) return;
+
+    try {
+      const response = await axios.put(
+        `${config.API_BASE_URL}${config.API_ENDPOINTS.BUDGETS}`,
+        budget,
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+      onSuccess(translations[language].toast_updateBudgetsSuccess);
+    } catch (error) {
+      onError(translations[language].toast_updateBudgetsError);
+    }
+  };
+
+  const updateBudgetPeriod = (updatedPeriod) => {
+    setBudget((prevBudget) => {
+      const updatedBudgetPeriods = prevBudget.budgetPeriods.map((period) => {
+        if (period.id === updatedPeriod.id) {
+          return updatedPeriod;
+        }
+        return period;
+      });
+  
+      return { ...prevBudget, budgetPeriods: updatedBudgetPeriods };
+    });
+  
+    setEditingBudgetPeriod(null);
+  };
 
   const editBudgetPeriod = (record) => {
     setEditingBudgetPeriod(record);
   };
-
-  const onBudgetPeriodCategoryChange = (
-    // ta metoda musi nie tylko przyjmować zmiany naistniejących budgetPeriodCategory
-    // ale również dodawać nowe do kolekcji
-    // usuwać te z id = 0
-    budgetPeriodCategoryId,
-    name,
-    value
-  ) => {
-    let updatedBudget = {
-      ...budget,
-      budgetPeriods: budget.budgetPeriods.map((period) => ({
-        ...period,
-        budgetPeriodCategories: period.budgetPeriodCategories.map(
-          (category) => ({ ...category })
-        ),
-      })),
-    };
-
-    updatedBudget.budgetPeriods.forEach((period) => {
-      period.budgetPeriodCategories.forEach((category) => {
-        if (category.id === budgetPeriodCategoryId) {
-          category[name] = value;
-        }
-      });
-
-      if (budgetPeriodCategoryId === 0) {
-        period.budgetPeriodCategories.push(budgetPeriodCategoryId);
-      }
-    });
-
-    setBudget(updatedBudget);
-  };
-
+  
   const handleAddBudgetCategoryRecord = () => {
     if (budget) {
       const newBudgetCategory = {
@@ -112,13 +130,13 @@ function BudgetDetails({ budgetId, onBack }) {
   };
 
 
-  const setBudgetValidFromDate = (validFrom) => {};
-
-  const setBudgetValidToDate = (validTo) => {};
-
-  const setBudgetPeriodValidFromDate = (validFrom) => {};
-
-  const setBudgetPeriodValidToDate = (validTo) => {};
+  const handleBudgetChange = (name, value) => {
+    if (budget) {
+      let updatedBudget = { ...budget };
+        updatedBudget[name] = value;
+        setBudget(updatedBudget);
+      }
+  };
 
   const handleBudgetCategoryChange = (index, name, value) => {
     if (budget && budget.budgetCategories) {
@@ -179,13 +197,13 @@ function BudgetDetails({ budgetId, onBack }) {
       }
     };
     fetchBudgetDetails();
-  }, []);
+  }, [budgetId, jwtToken]);
 
   if (editingBudgetPeriod) {
     return (
       <BudgetPeriodCategories
         budgetPeriod={editingBudgetPeriod}
-        onBudgetPeriodCategoryChange={onBudgetPeriodCategoryChange}
+        onBack={updateBudgetPeriod}
       />
     );
   }
@@ -196,6 +214,15 @@ function BudgetDetails({ budgetId, onBack }) {
       <Button onClick={handleBackClick} variant="outlined">
         Powrót
       </Button>
+      {!isValid.isValid && (
+        <Paper elevation={3} sx={{ margin: "20px", color: "red" }}>
+          <ul>
+            {isValid.errors.map((error, index) => (
+              <li key={index}>{error}</li>
+            ))}
+          </ul>
+        </Paper>
+      )}
       {budget && (
         <>
           <Paper elevation={3} sx={{ margin: { xs: "5px", sm: "20px" } }}>
@@ -227,27 +254,35 @@ function BudgetDetails({ budgetId, onBack }) {
                 label={translations[language].txt_name}
                 variant="outlined"
                 value={budget.name}
+                onChange={(e) =>
+                  handleBudgetChange("name", e.target.value)}
               />
               <TextField
                 id="budgetDescription"
                 label={translations[language].txt_description}
                 variant="outlined"
                 value={budget.description}
+                onChange={(e) =>
+                  handleBudgetChange("description", e.target.value)}
               />
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label={translations[language].lbl_budgetValidFromDate}
                   value={dayjs(budget.validFrom)}
-                  onChange={(newDate) => setBudgetValidFromDate(newDate)}
+                  onChange={(newDate) => handleBudgetChange('validFrom', newDate)}
                 />
               </LocalizationProvider>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label={translations[language].lbl_budgetValidToDate}
                   value={dayjs(budget.validTo)}
-                  onChange={(newDate) => setBudgetValidToDate(newDate)}
+                  onChange={(newDate) => handleBudgetChange('validTo', newDate)}
                 />
               </LocalizationProvider>
+              <Button onClick={handleBudgetSave} variant="outlined">
+                ZAPISZ
+              </Button>     
+
             </Box>
           </Paper>
 
@@ -502,7 +537,7 @@ function BudgetDetails({ budgetId, onBack }) {
                           label={translations[language].lbl_budgetValidFromDate}
                           value={dayjs(record.validFrom)}
                           onChange={(newDate) =>
-                            setBudgetPeriodValidFromDate(newDate)
+                            handleBudgetPeriodChange('validFrom', newDate)
                           }
                           sx={{ m: 1 }}
                         />
@@ -512,7 +547,7 @@ function BudgetDetails({ budgetId, onBack }) {
                           label={translations[language].lbl_budgetValidToDate}
                           value={dayjs(record.validTo)}
                           onChange={(newDate) =>
-                            setBudgetPeriodValidToDate(newDate)
+                            handleBudgetPeriodChange('validTo', newDate)
                           }
                         />
                       </LocalizationProvider>
