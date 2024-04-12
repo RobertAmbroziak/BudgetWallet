@@ -46,11 +46,11 @@ To drugi przycisk w górnej części karty Aplikacja. Służy do dodawania noweg
   - zapis jak również błąd zapisu warto potwierdzić jakimś monitem
 
 ## Konfiguracja
-To trzeci przycisk w górnej części karty Aplikacja. Służy do ustawiania swojej aplikacji. Tworzenia oraz modyfikowania budżetów, okresów, kont, kategorii, i templatów
+To trzeci przycisk w górnej części karty Aplikacja. Służy do ustawiania swojej aplikacji. Tworzenia oraz modyfikowania budżetów, okresów, kont, kategorii, i templatów - ZROBIONE CZĘŚCIOWO (Konta, Kategorie)
 
 1. Pomoc w pierwszym stworzeniu konfiguracji
    Zaraz po utworzeniu konta, użytkownik nie ma pustą aplikację. Żadnych zdefiniowanych kont, budżetów, kategorii itp. Mozolne byłoby tworzenie wszystkiego samemu i dodawanie rekord po rekordzie. Będzie możliwość skorzystania z jakiś zdefiniowanych propozycji.
-  - osobno dla obszarów konta, kategorie, budżety można skorzystać z przycisków KLONUJ DOMYŚLNE, który wylistuje propozycję kategorii, kont lub budżetów. Oczywiście wszystko można samemu zmodyfikować, usunąć lub dodać własne. Dopiero ostatecznie zdefiniowaną listę przyciskiem ZAPISZ wyślemy do API. Więcej w temacie w kolejnym punkcie omawiającym edycję istniejących elementów oraz klonowanie poprzednich budżetów. Klonowanie domyślnych jest podobne do klonowania z poprzedniego budżetu
+  - osobno dla obszarów konta, kategorie, budżety można skorzystać z przycisków KLONUJ DOMYŚLNE, który wylistuje propozycję kategorii, kont lub budżetów. Oczywiście wszystko można samemu zmodyfikować, usunąć lub dodać własne. Dopiero ostatecznie zdefiniowaną listę przyciskiem ZAPISZ wyślemy do API. Więcej w temacie w kolejnym punkcie omawiającym edycję istniejących elementów oraz klonowanie poprzednich budżetów. Klonowanie domyślnych jest podobne do klonowania z poprzedniego budżetu - ZROBIONE CZĘŚCIOWO (default tak, klonowanie nie )
  
 2. Dodawanie i Klonowanie elementów
 - BUDŻET - możesz utworzyć nowy ręcznie. nie musi posiadać BudgetPeriods ani BudgetCategories ale wszystkie te elementy będą dostępne w ramach drzewiastego złożonego formularza.
@@ -58,15 +58,15 @@ To trzeci przycisk w górnej części karty Aplikacja. Służy do ustawiania swo
   - walidator nie pozwoli na stworzenie budżetu o zakresie dat nachodzącym na inny budżet użytkownika ani na dodanie BudgetPeriods, których zakresy nie będą ciągłe lub wykroczą poza zakres budżetu
   - dodanie BudgetCategores i BudgetPeriodCategories nie jest konieczne, ale ich brak mocno zaburzy sens aplikacji, dlatego chyba dodać trzeba walidator, który sprawdzi czy budget ma wszystkie aktywne na dany moment kategorie w BudgetCategories. Podobnie odnośnie każdego BudgetPeriod czy ma wszystkie BudgetPeriodCategories. Co najwyżej mogą mieć zdefiniowaną wartość na 0.
   - proces kończymy przyciskiem ZAPISZ
-- KATEGORIE - możesz zawsze dodać nową kategorię wypełniając tylko nazwę i opis, KLONUJ DOMYŚLNE zadziała tylko jeśli jeszcze nie masz żadnych kategorii, ewentualnie sklonuje tylko to o nazwach innych niż istniejące na danym użytkowniku
-- KONTO - podobnie jak kategorie
+- KATEGORIE - możesz zawsze dodać nową kategorię wypełniając tylko nazwę i opis, KLONUJ DOMYŚLNE zadziała tylko jeśli jeszcze nie masz żadnych kategorii, ewentualnie sklonuje tylko to o nazwach innych niż istniejące na danym użytkowniku - ZROBIONE
+- KONTO - podobnie jak kategorie - ZROBIONE
 - TEMPLATY TRANSFERÓW - podobnie jak kategorie, ale dodatkowy warunek jest taki że może być ich maksymalnie 5 lub 7, więc klon nigdy nie przekroczy tej liczby
-- dodanie nowej kategorii w trakcie trwania budżetu powinno utworzyć automatycznie BudgetCategory i BudgetPeriodCategories z wartością 0.
+- dodanie nowej kategorii w trakcie trwania budżetu powinno utworzyć automatycznie BudgetCategory i BudgetPeriodCategories z wartością 0. - POMINIĘTE
 
 3. Edycja i Usuwanie (Dezaktywacja)
-- BUDŻET - możesz zmienić jego nazwę i opis, a zakres dat tylko jeśli nie istnieje jeszcze żaden transfer w danym budżecie, który by miał inną datę niż nowy zakres. BudgetPeriods można zawsze swobodnie edytować wraz z datami, oczywiście z zachowaniem warunku ciągłości zakresów i tego aby nie przekraczały granic zakresu budżetu. W BudgetCategories i BudgetPeriodCategories można dowolnie zmieniać wartość. Dodawanie, usuwanie tych elementów ogranicza walidacja jak przy dodawaniu. Muszą istnieć te elementy dla wszystkich aktywnych kategorii.
-- KATEGORIE - możesz zawsze zmienić nazwę i opis oraz dezaktywować kategorię
-- KONTO - możesz zawsze zmienić nazwę , opis i minimalną wartość oraz dezaktywować konto
+- BUDŻET - możesz zmienić jego nazwę i opis, a zakres dat tylko jeśli nie istnieje jeszcze żaden transfer w danym budżecie, który by miał inną datę niż nowy zakres. BudgetPeriods można zawsze swobodnie edytować wraz z datami, oczywiście z zachowaniem warunku ciągłości zakresów i tego aby nie przekraczały granic zakresu budżetu. W BudgetCategories i BudgetPeriodCategories można dowolnie zmieniać wartość. Dodawanie, usuwanie tych elementów ogranicza walidacja jak przy dodawaniu. Muszą istnieć te elementy dla wszystkich aktywnych kategorii. - ZROBIONE (trochę inaczej niż w pierwotnym założeniu)
+- KATEGORIE - możesz zawsze zmienić nazwę i opis oraz dezaktywować kategorię - ZROBIONE
+- KONTO - możesz zawsze zmienić nazwę , opis i minimalną wartość oraz dezaktywować konto - ZROBIONE
 - TEMPLATY TRANSFERÓW - możesz zawsze dezaktywować lub edytować istniejący template
 
 ## Serwis Mailowy
@@ -82,11 +82,13 @@ Mechanizm logowania i rejestracji użytkownika. Generalnie jest  już działają
 ## Refaktoryzacja
  - testy jednostkowe i integracyjne, również dla warstwy DAL z użyciem bazy InMemory lub testowej wskazanej z konfiguracji
  - porządek w nazewnictwie klas i serwisów oraz strukturze katalogów, w której się znajdują. Dotyczy BE i FE
+ - refaktoryzacja struktury plików FE - obecnie przeroścnięte komponenty robiące wszystko
+ - refaktoryzacja struktury klas i folderów BE - rozdzielenie ApplicationController i ApplicationService na mniejsze składowe
  - refaktoryzacja konfiguracji, tak aby nie trzymać danych w appsetting.json tylko dedykowanym pliku mającym odpowiednik klasowy. Dodatkowo być może opcjonalna integracja z AZURE KeyVault
  - refaktoryzacja klasy Startup dla Web Api
- - dodanie IsActive do bazowej klasy każdej tabeli oraz zmiana logiki pod to
+ - dodanie IsActive do bazowej klasy każdej tabeli oraz zmiana logiki pod to   - ZROBIONE
  - ustalenie jednego templatu React. Obecnie używam React MUI , MDB i 2 dodatkowe rozwiązania pod Toast i responsywną tabelę
- - context Api dla jwtToken. Obecnie przekazuje go pomiędzy komponentami, aby nie pobieraż ze Storage przeglądarki
+ - context Api dla jwtToken. Obecnie przekazuje go pomiędzy komponentami, aby nie pobieraż ze Storage przeglądarki - ZROBIONE (do szerszych testów)
 
 ## Panel administracyjny
 Obecnie nie mam pomysłu co może się tu znaleźć. Jest na to osobna karta w React Router i rola Admin w Claims.  Na początek jedyna funkcjonalność to możliwość nadania userowi roli Admin.

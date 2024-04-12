@@ -281,7 +281,7 @@ function AddExpense({ transferEdit = null, handleSaveTransfer = null, isEdit = f
         transferEdit.transferDescription;
       document.getElementById("transferValue").value =
         transferEdit.transferValue;
-      setTransferDate(dayjs(transferEdit.transferDate));
+      setTransferDate(dayjs(transferEdit.transferDate).startOf('day'));
       setAccounts(transferEdit.accounts);
       setAccountId(transferEdit.accountSourceId);
       setBudgetId(transferEdit.budgetId ?? 0);
@@ -400,7 +400,7 @@ function AddExpense({ transferEdit = null, handleSaveTransfer = null, isEdit = f
             <DatePicker
               label={translations[language].lbl_transferDate}
               value={transferDate ?? AdapterDayjs.date()}
-              onChange={(newDate) => setTransferDate(newDate)}
+              onChange={(newDate) => setTransferDate(newDate).startOf('day')}
             />
           </LocalizationProvider>
           <Button variant="outlined" onClick={handleAddTransferButtonClick}>

@@ -42,28 +42,220 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
   const handleBackClick = () => {
     onBack();
   };
-  
+
+  const validateNotEmpty = (value) => {
+    if (typeof value === "string") {
+      return value.trim() !== "";
+    } else {
+      return value !== undefined && value !== null;
+    }
+  };
+
+  const validateGreaterThanZero = (value) => {
+    return parseFloat(value) > 0;
+  };
+
+  const isOneDayGreater = (dateFirst, dateSecond) => {
+    if (!dateFirst || !dateSecond) return false;
+
+    const date1 = new Date(dateFirst);
+    const date2 = new Date(dateSecond);
+
+    return date2 - date1 >= 86400000;
+  };
 
   const validateBudget = (budget) => {
     const errors = [];
-    
-    console.log(budget);
 
-    errors.push('testowy błąd');
-    errors.push('testowy błąd2');
-    errors.push('testowy błąd3');
-    
+    if (!validateNotEmpty(budget.name)) {
+      errors.push("budget name is empty");
+    }
+
+    if (!isOneDayGreater(budget.validFrom, budget.validTo)) {
+      errors.push(
+        "budget validTo must be minimum one day greather than budget validFrom"
+      );
+    }
+
+    const activeBudgetCategories = budget.budgetCategories.filter(
+      (category) => category.isActive
+    );
+    if (
+      !budget.budgetCategories ||
+      !Array.isArray(budget.budgetCategories) ||
+      activeBudgetCategories.length === 0
+    ) {
+      errors.push(
+        "budget categories cannot be empty and must contain at least one element"
+      );
+    } else {
+      for (let index = 0; index < budget.budgetCategories.length; index++) {
+        const category = budget.budgetCategories[index];
+        if (category.isActive && !validateGreaterThanZero(category.maxValue)) {
+          errors.push(`budget category ${index + 1} has maxValue = 0`);
+        }
+      }
+
+      for (let index = 0; index < budget.budgetCategories.length; index++) {
+        const category = budget.budgetCategories[index];
+        if (
+          category.isActive &&
+          !validateGreaterThanZero(category.categoryId)
+        ) {
+          errors.push(`budget category ${index + 1} has no selected category`);
+        }
+      }
+    }
+
+    const activeBudgetPeriods = budget.budgetPeriods.filter(
+      (period) => period.isActive
+    );
+    if (
+      !budget.budgetPeriods ||
+      !Array.isArray(budget.budgetPeriods) ||
+      activeBudgetPeriods.length === 0
+    ) {
+      errors.push(
+        "budget periods cannot be empty and must contain at least one element"
+      );
+    } else {
+      for (let index = 0; index < budget.budgetPeriods.length; index++) {
+        const period = budget.budgetPeriods[index];
+        if (
+          period.isActive &&
+          !isOneDayGreater(period.validFrom, period.validTo)
+        ) {
+          errors.push(
+            `budget period ${
+              index + 1
+            } validTo must be minimum one day greather than validFrom`
+          );
+        }
+        if (period.isActive && period.validFrom < budget.validFrom) {
+          errors.push(
+            `budget period ${
+              index + 1
+            } validFrom is lower than budget validFrom`
+          );
+        }
+        if (period.isActive && period.validTo > budget.validTo) {
+          errors.push(
+            `budget period ${index + 1} validTo is greather than budget validTo`
+          );
+        }
+      }
+
+      const indexedBudgetPeriods = budget.budgetPeriods.map(
+        (period, index) => ({
+          ...period,
+          innerIndex: index,
+        })
+      );
+
+      const sortedBudgetPeriods = indexedBudgetPeriods
+        .filter((period) => period.isActive)
+        .sort((a, b) => new Date(a.validFrom) - new Date(b.validFrom));
+
+      for (let i = 0; i < sortedBudgetPeriods.length - 1; i++) {
+        const currentPeriod = sortedBudgetPeriods[i];
+        const nextPeriod = sortedBudgetPeriods[i + 1];
+
+        if (currentPeriod.validTo !== nextPeriod.validFrom) {
+          errors.push(
+            `budget period ${
+              currentPeriod.innerIndex + 1
+            } validTo does not match the validFrom of the next period (${
+              nextPeriod.innerIndex + 1
+            })`
+          );
+        }
+      }
+
+      if (sortedBudgetPeriods[0].validFrom !== budget.validFrom) {
+        errors.push(
+          `The first budget period's validFrom (${sortedBudgetPeriods[0].validFrom}) does not match the budget's validFrom (${budget.validFrom})`
+        );
+      }
+      if (
+        sortedBudgetPeriods[sortedBudgetPeriods.length - 1].validTo !==
+        budget.validTo
+      ) {
+        errors.push(
+          `The last budget period's validTo (${
+            sortedBudgetPeriods[sortedBudgetPeriods.length - 1].validTo
+          }) does not match the budget's validTo (${budget.validTo})`
+        );
+      }
+
+      sortedBudgetPeriods.forEach((period, index) => {
+        const activePeriodCategories = period.budgetPeriodCategories
+          .filter((category) => category.isActive)
+          .map((category) => category.categoryId);
+  
+        if (activePeriodCategories.length !== activeBudgetCategories.length) {
+          errors.push(
+            `budget period ${
+              period.innerIndex + 1
+            } does not have the same number of active categories as the budget`
+          );
+        } else {
+          const isSameCategories =
+            activePeriodCategories.every((catId) =>
+              activeBudgetCategories.includes(catId)
+            ) &&
+            activeBudgetCategories.every((catId) =>
+              activePeriodCategories.includes(catId)
+            );
+  
+          if (!isSameCategories) {
+            errors.push(
+              `budget period ${
+                period.innerIndex + 1
+              } does not have the exact same active categoryIds as the budget`
+            );
+          }
+        }
+      })
+      
+      const maxValueSums = new Map();
+  
+      activeBudgetCategories.forEach((category) => {
+        maxValueSums.set(category.categoryId, 0);
+      });
+  
+      sortedBudgetPeriods.forEach((period) => {
+        period.budgetPeriodCategories
+          .filter((category) => category.isActive)
+          .forEach((category) => {
+            if (maxValueSums.has(category.categoryId)) {
+              maxValueSums.set(
+                category.categoryId,
+                maxValueSums.get(category.categoryId) +
+                  parseFloat(category.maxValue)
+              );
+            }
+          });
+      });
+  
+      activeBudgetCategories.forEach((category) => {
+        if (maxValueSums.get(category.categoryId) !== category.maxValue) {
+          errors.push(
+            `The total maxValue for category ID ${category.categoryId} across all budget periods does not match the budget category maxValue (${category.maxValue})`
+          );
+        }
+      });
+    }
+
     return { isValid: errors.length === 0, errors };
   };
 
   const handleBudgetSave = async () => {
-
     const validateResult = validateBudget(budget);
     setIsValid(validateResult);
     if (!isValid.isValid) return;
 
     try {
-      const response = await axios.put(
+       await axios.put(
         `${config.API_BASE_URL}${config.API_ENDPOINTS.BUDGETS}`,
         budget,
         {
@@ -74,7 +266,17 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
       );
       onSuccess(translations[language].toast_updateBudgetsSuccess);
     } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.length > 0
+      ) {
+        setIsValid({ isValid: false, errors: error.response.data });
+      } else {
+        setIsValid({ isValid: false, errors: [error.message] });
+      }
       onError(translations[language].toast_updateBudgetsError);
+
     }
   };
 
@@ -86,17 +288,17 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
         }
         return period;
       });
-  
+
       return { ...prevBudget, budgetPeriods: updatedBudgetPeriods };
     });
-  
+
     setEditingBudgetPeriod(null);
   };
 
   const editBudgetPeriod = (record) => {
     setEditingBudgetPeriod(record);
   };
-  
+
   const handleAddBudgetCategoryRecord = () => {
     if (budget) {
       const newBudgetCategory = {
@@ -129,13 +331,12 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
     }
   };
 
-
   const handleBudgetChange = (name, value) => {
     if (budget) {
       let updatedBudget = { ...budget };
-        updatedBudget[name] = value;
-        setBudget(updatedBudget);
-      }
+      updatedBudget[name] = value;
+      setBudget(updatedBudget);
+    }
   };
 
   const handleBudgetCategoryChange = (index, name, value) => {
@@ -167,8 +368,9 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
         if (updatedBudget.budgetPeriods[index].id > 0) {
           updatedBudget.budgetPeriods[index][name] = value;
         } else {
-          updatedBudget.budgetPeriods =
-            updatedBudget.budgetPeriods.filter((_, i) => i !== index);
+          updatedBudget.budgetPeriods = updatedBudget.budgetPeriods.filter(
+            (_, i) => i !== index
+          );
         }
       } else {
         if (updatedBudget.budgetPeriods[index]) {
@@ -254,8 +456,7 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
                 label={translations[language].txt_name}
                 variant="outlined"
                 value={budget.name}
-                onChange={(e) =>
-                  handleBudgetChange("name", e.target.value)}
+                onChange={(e) => handleBudgetChange("name", e.target.value)}
               />
               <TextField
                 id="budgetDescription"
@@ -263,26 +464,28 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
                 variant="outlined"
                 value={budget.description}
                 onChange={(e) =>
-                  handleBudgetChange("description", e.target.value)}
+                  handleBudgetChange("description", e.target.value)
+                }
               />
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label={translations[language].lbl_budgetValidFromDate}
-                  value={dayjs(budget.validFrom)}
-                  onChange={(newDate) => handleBudgetChange('validFrom', newDate)}
+                  value={dayjs(budget.validFrom).startOf('day')}
+                  onChange={(newDate) =>
+                    handleBudgetChange("validFrom", newDate)
+                  }
                 />
               </LocalizationProvider>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label={translations[language].lbl_budgetValidToDate}
-                  value={dayjs(budget.validTo)}
-                  onChange={(newDate) => handleBudgetChange('validTo', newDate)}
+                  value={dayjs(budget.validTo).startOf('day')}
+                  onChange={(newDate) => handleBudgetChange("validTo", newDate)}
                 />
               </LocalizationProvider>
               <Button onClick={handleBudgetSave} variant="outlined">
                 ZAPISZ
-              </Button>     
-
+              </Button>
             </Box>
           </Paper>
 
@@ -535,9 +738,9 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                           label={translations[language].lbl_budgetValidFromDate}
-                          value={dayjs(record.validFrom)}
+                          value={dayjs(record.validFrom).startOf('day')}
                           onChange={(newDate) =>
-                            handleBudgetPeriodChange('validFrom', newDate)
+                            handleBudgetPeriodChange("validFrom", newDate)
                           }
                           sx={{ m: 1 }}
                         />
@@ -545,9 +748,9 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                           label={translations[language].lbl_budgetValidToDate}
-                          value={dayjs(record.validTo)}
+                          value={dayjs(record.validTo).startOf('day')}
                           onChange={(newDate) =>
-                            handleBudgetPeriodChange('validTo', newDate)
+                            handleBudgetPeriodChange("validTo", newDate)
                           }
                         />
                       </LocalizationProvider>

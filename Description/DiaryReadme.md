@@ -195,6 +195,8 @@
 ### Day 42
 * Budget Configuration - manipulation of Budget Period Categories
 
+### Day 43
+* Budget Validation (FE) before Insert, Update - not ready
 
 
 
