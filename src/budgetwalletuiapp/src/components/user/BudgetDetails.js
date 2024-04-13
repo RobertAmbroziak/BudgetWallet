@@ -60,7 +60,6 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
       setIsValid({ isValid: true, errors: []});
       onSuccess(translations[language].toast_updateBudgetsSuccess);
     } catch (error) {
-      console.log(error);
       if (
         error.response &&
         error.response.data &&
@@ -94,7 +93,6 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
   };
 
   const handleAddBudgetCategoryRecord = () => {
-    console.log(categories);
     if (budget) {
       const newBudgetCategory = {
         id: 0,
@@ -154,9 +152,6 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
             updatedBudget.budgetCategories.filter((_, i) => i !== index);
         }
       } else {
-        console.log(categories);
-        console.log(name);
-        console.log(value);
         if (updatedBudget.budgetCategories[index]) {
           updatedBudget.budgetCategories[index][name] = value;
         }
