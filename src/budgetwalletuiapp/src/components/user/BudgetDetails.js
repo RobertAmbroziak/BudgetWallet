@@ -154,6 +154,9 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
             updatedBudget.budgetCategories.filter((_, i) => i !== index);
         }
       } else {
+        console.log(categories);
+        console.log(name);
+        console.log(value);
         if (updatedBudget.budgetCategories[index]) {
           updatedBudget.budgetCategories[index][name] = value;
         }
