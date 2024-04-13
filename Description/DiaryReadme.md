@@ -198,6 +198,11 @@
 ### Day 43
 * Budget Validation (FE) before Insert, Update - not ready
 
+### Day 44
+* Budget Validation (BE) before Insert, Update  and Save in DB
+* Delete Budget Validation (FE)
+* Fix refresh data in CategoriesContext after czhange
+
 
 
 

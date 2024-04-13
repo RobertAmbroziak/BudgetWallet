@@ -542,6 +542,75 @@ namespace BusinessLogic.Services
             return _budgetMapper.Map(budget);
         }
 
+        public async Task UpdateBudget(Budget budget)
+        {
+            var user = await _identityService.GetCurrentUser();
+
+            if (budget.Id > 0)
+            {
+                var budgetDto = await _applicationRepository.GetBudget(budget.Id);
+
+                budgetDto.Name = budget.Name;
+                budgetDto.Description = budget.Description;
+                budgetDto.ValidFrom = budget.ValidFrom;
+                budgetDto.ValidTo = budget.ValidTo;
+                budgetDto.IsActive = budget.IsActive;
+
+                foreach (var budgetCategory in budget.BudgetCategories)
+                {
+                    if (budgetCategory.Id > 0)
+                    {
+                        var budgetCategoryDto = budgetDto.BudgetCategories.FirstOrDefault(x => x.Id == budgetCategory.Id);
+                        if (budgetCategoryDto != null)
+                        {
+                            budgetCategoryDto.CategoryId = budgetCategory.CategoryId;
+                            budgetCategoryDto.MaxValue = budgetCategory.MaxValue;
+                            budgetCategoryDto.IsActive = budgetCategory.IsActive;
+                        }
+                    }
+                    else
+                    {
+                        await _applicationRepository.InsertAsync(new BudgetCategoryDto
+                        {
+                            BudgetId = budgetDto.Id,
+                            CategoryId = budgetCategory.CategoryId,
+                            MaxValue = budgetCategory.MaxValue,
+                            IsActive = budgetCategory.IsActive
+                        });
+                    }
+                }
+
+                foreach (var budgetPeriod in  budget.BudgetPeriods)
+                {
+                    if (budgetPeriod.Id > 0)
+                    {
+                        var budgetPeriodDto = budgetDto.BudgetPeriods.FirstOrDefault(x => x.Id == budgetPeriod.Id);
+                        if (budgetPeriodDto != null)
+                        {
+                            budgetPeriodDto.ValidFrom = budgetPeriod.ValidFrom;
+                            budgetPeriodDto.ValidTo = budgetPeriod.ValidTo;
+                            budgetPeriodDto.IsActive = budgetPeriod.IsActive;
+                            await UpdateBudgetPeriodCategories(budgetPeriodDto, budgetPeriod);
+                        }
+                    }
+                    else
+                    {
+                        var budgetPeriodCategories = GetBudgetPeriodCategories(budgetPeriod.BudgetPeriodCategories).ToList();
+                        await _applicationRepository.InsertAsync(new BudgetPeriodDto
+                        {
+                            BudgetId = budgetDto.Id,
+                            ValidFrom = budgetPeriod.ValidFrom,
+                            ValidTo = budgetPeriod.ValidTo,
+                            IsActive = budgetPeriod.IsActive,
+                            BudgetPeriodCategories = budgetPeriodCategories
+                        }); ;
+                    }
+                }
+            }
+            
+            await _applicationRepository.SaveChangesAsync();
+        }
+
         #region private
 
         private Dictionary<int, DateOnly> SetAxisX(DateTime startDate, DateTime endDate)
@@ -604,6 +673,49 @@ namespace BusinessLogic.Services
             }
 
             return result;
+        }
+
+        private IEnumerable<BudgetPeriodCategoryDto> GetBudgetPeriodCategories(IEnumerable<BudgetPeriodCategory> budgetPeriodCategories)
+        {
+            var result = new List<BudgetPeriodCategoryDto>();
+
+            foreach (var budgetPeriodCategory in budgetPeriodCategories)
+            {
+                result.Add(new BudgetPeriodCategoryDto
+                {
+                    CategoryId = budgetPeriodCategory.Id,
+                    MaxValue = budgetPeriodCategory.MaxValue
+                });
+            }
+
+            return result;
+        }
+
+        private async Task UpdateBudgetPeriodCategories(BudgetPeriodDto budgetPeriodDto, BudgetPeriod budgetPeriod)
+        {
+            foreach (var budgetPeriodCategory in budgetPeriod.BudgetPeriodCategories)
+            {
+                if (budgetPeriodCategory.Id > 0)
+                {
+                    var budgetPeriodCategoryDto = budgetPeriodDto.BudgetPeriodCategories.FirstOrDefault(x => x.Id == budgetPeriodCategory.Id);
+                    if (budgetPeriodCategoryDto != null)
+                    {
+                        budgetPeriodCategoryDto.CategoryId = budgetPeriodCategory.CategoryId;
+                        budgetPeriodCategoryDto.MaxValue = budgetPeriodCategory.MaxValue;
+                        budgetPeriodCategoryDto.IsActive = budgetPeriodCategory.IsActive;
+                    }
+                }
+                else
+                {
+                    await _applicationRepository.InsertAsync(new BudgetPeriodCategoryDto
+                    {
+                        BudgetPeriodId = budgetPeriodDto.Id,
+                        CategoryId = budgetPeriodCategory.CategoryId,
+                        MaxValue = budgetPeriodCategory.MaxValue,
+                        IsActive = budgetPeriodCategory.IsActive
+                    });
+                }
+            }
         }
 
         #endregion

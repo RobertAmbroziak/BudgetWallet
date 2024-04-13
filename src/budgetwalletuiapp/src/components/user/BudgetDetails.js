@@ -29,6 +29,9 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import BudgetPeriodCategories from "./BudgetPeriodCategories";
 import { useCategories } from "./CategoriesContext";
 import { useUser } from "../../UserContext";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
   const [isValid, setIsValid] = useState({ isValid: true, errors: [] });
@@ -43,219 +46,9 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
     onBack();
   };
 
-  const validateNotEmpty = (value) => {
-    if (typeof value === "string") {
-      return value.trim() !== "";
-    } else {
-      return value !== undefined && value !== null;
-    }
-  };
-
-  const validateGreaterThanZero = (value) => {
-    return parseFloat(value) > 0;
-  };
-
-  const isOneDayGreater = (dateFirst, dateSecond) => {
-    if (!dateFirst || !dateSecond) return false;
-
-    const date1 = new Date(dateFirst);
-    const date2 = new Date(dateSecond);
-
-    return date2 - date1 >= 86400000;
-  };
-
-  const validateBudget = (budget) => {
-    const errors = [];
-
-    if (!validateNotEmpty(budget.name)) {
-      errors.push("budget name is empty");
-    }
-
-    if (!isOneDayGreater(budget.validFrom, budget.validTo)) {
-      errors.push(
-        "budget validTo must be minimum one day greather than budget validFrom"
-      );
-    }
-
-    const activeBudgetCategories = budget.budgetCategories.filter(
-      (category) => category.isActive
-    );
-    if (
-      !budget.budgetCategories ||
-      !Array.isArray(budget.budgetCategories) ||
-      activeBudgetCategories.length === 0
-    ) {
-      errors.push(
-        "budget categories cannot be empty and must contain at least one element"
-      );
-    } else {
-      for (let index = 0; index < budget.budgetCategories.length; index++) {
-        const category = budget.budgetCategories[index];
-        if (category.isActive && !validateGreaterThanZero(category.maxValue)) {
-          errors.push(`budget category ${index + 1} has maxValue = 0`);
-        }
-      }
-
-      for (let index = 0; index < budget.budgetCategories.length; index++) {
-        const category = budget.budgetCategories[index];
-        if (
-          category.isActive &&
-          !validateGreaterThanZero(category.categoryId)
-        ) {
-          errors.push(`budget category ${index + 1} has no selected category`);
-        }
-      }
-    }
-
-    const activeBudgetPeriods = budget.budgetPeriods.filter(
-      (period) => period.isActive
-    );
-    if (
-      !budget.budgetPeriods ||
-      !Array.isArray(budget.budgetPeriods) ||
-      activeBudgetPeriods.length === 0
-    ) {
-      errors.push(
-        "budget periods cannot be empty and must contain at least one element"
-      );
-    } else {
-      for (let index = 0; index < budget.budgetPeriods.length; index++) {
-        const period = budget.budgetPeriods[index];
-        if (
-          period.isActive &&
-          !isOneDayGreater(period.validFrom, period.validTo)
-        ) {
-          errors.push(
-            `budget period ${
-              index + 1
-            } validTo must be minimum one day greather than validFrom`
-          );
-        }
-        if (period.isActive && period.validFrom < budget.validFrom) {
-          errors.push(
-            `budget period ${
-              index + 1
-            } validFrom is lower than budget validFrom`
-          );
-        }
-        if (period.isActive && period.validTo > budget.validTo) {
-          errors.push(
-            `budget period ${index + 1} validTo is greather than budget validTo`
-          );
-        }
-      }
-
-      const indexedBudgetPeriods = budget.budgetPeriods.map(
-        (period, index) => ({
-          ...period,
-          innerIndex: index,
-        })
-      );
-
-      const sortedBudgetPeriods = indexedBudgetPeriods
-        .filter((period) => period.isActive)
-        .sort((a, b) => new Date(a.validFrom) - new Date(b.validFrom));
-
-      for (let i = 0; i < sortedBudgetPeriods.length - 1; i++) {
-        const currentPeriod = sortedBudgetPeriods[i];
-        const nextPeriod = sortedBudgetPeriods[i + 1];
-
-        if (currentPeriod.validTo !== nextPeriod.validFrom) {
-          errors.push(
-            `budget period ${
-              currentPeriod.innerIndex + 1
-            } validTo does not match the validFrom of the next period (${
-              nextPeriod.innerIndex + 1
-            })`
-          );
-        }
-      }
-
-      if (sortedBudgetPeriods[0].validFrom !== budget.validFrom) {
-        errors.push(
-          `The first budget period's validFrom (${sortedBudgetPeriods[0].validFrom}) does not match the budget's validFrom (${budget.validFrom})`
-        );
-      }
-      if (
-        sortedBudgetPeriods[sortedBudgetPeriods.length - 1].validTo !==
-        budget.validTo
-      ) {
-        errors.push(
-          `The last budget period's validTo (${
-            sortedBudgetPeriods[sortedBudgetPeriods.length - 1].validTo
-          }) does not match the budget's validTo (${budget.validTo})`
-        );
-      }
-
-      sortedBudgetPeriods.forEach((period, index) => {
-        const activePeriodCategories = period.budgetPeriodCategories
-          .filter((category) => category.isActive)
-          .map((category) => category.categoryId);
-  
-        if (activePeriodCategories.length !== activeBudgetCategories.length) {
-          errors.push(
-            `budget period ${
-              period.innerIndex + 1
-            } does not have the same number of active categories as the budget`
-          );
-        } else {
-          const isSameCategories =
-            activePeriodCategories.every((catId) =>
-              activeBudgetCategories.includes(catId)
-            ) &&
-            activeBudgetCategories.every((catId) =>
-              activePeriodCategories.includes(catId)
-            );
-  
-          if (!isSameCategories) {
-            errors.push(
-              `budget period ${
-                period.innerIndex + 1
-              } does not have the exact same active categoryIds as the budget`
-            );
-          }
-        }
-      })
-      
-      const maxValueSums = new Map();
-  
-      activeBudgetCategories.forEach((category) => {
-        maxValueSums.set(category.categoryId, 0);
-      });
-  
-      sortedBudgetPeriods.forEach((period) => {
-        period.budgetPeriodCategories
-          .filter((category) => category.isActive)
-          .forEach((category) => {
-            if (maxValueSums.has(category.categoryId)) {
-              maxValueSums.set(
-                category.categoryId,
-                maxValueSums.get(category.categoryId) +
-                  parseFloat(category.maxValue)
-              );
-            }
-          });
-      });
-  
-      activeBudgetCategories.forEach((category) => {
-        if (maxValueSums.get(category.categoryId) !== category.maxValue) {
-          errors.push(
-            `The total maxValue for category ID ${category.categoryId} across all budget periods does not match the budget category maxValue (${category.maxValue})`
-          );
-        }
-      });
-    }
-
-    return { isValid: errors.length === 0, errors };
-  };
-
   const handleBudgetSave = async () => {
-    const validateResult = validateBudget(budget);
-    setIsValid(validateResult);
-    if (!isValid.isValid) return;
-
     try {
-       await axios.put(
+      const response = await axios.put(
         `${config.API_BASE_URL}${config.API_ENDPOINTS.BUDGETS}`,
         budget,
         {
@@ -264,8 +57,10 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
           },
         }
       );
+      setIsValid({ isValid: true, errors: []});
       onSuccess(translations[language].toast_updateBudgetsSuccess);
     } catch (error) {
+      console.log(error);
       if (
         error.response &&
         error.response.data &&
@@ -276,7 +71,6 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
         setIsValid({ isValid: false, errors: [error.message] });
       }
       onError(translations[language].toast_updateBudgetsError);
-
     }
   };
 
@@ -300,9 +94,11 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
   };
 
   const handleAddBudgetCategoryRecord = () => {
+    console.log(categories);
     if (budget) {
       const newBudgetCategory = {
         id: 0,
+        budgetId: budget.id,
         categoryId: "",
         maxValue: "",
         isActive: true,
@@ -332,10 +128,17 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
   };
 
   const handleBudgetChange = (name, value) => {
-    if (budget) {
-      let updatedBudget = { ...budget };
-      updatedBudget[name] = value;
-      setBudget(updatedBudget);
+    if (name === "validFrom" || name === "validTo") {
+      const utcDate = value ? dayjs(value).utc().startOf("day").toDate() : null;
+      setBudget((prevBudget) => ({
+        ...prevBudget,
+        [name]: utcDate,
+      }));
+    } else {
+      setBudget((prevBudget) => ({
+        ...prevBudget,
+        [name]: value,
+      }));
     }
   };
 
@@ -373,8 +176,15 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
           );
         }
       } else {
-        if (updatedBudget.budgetPeriods[index]) {
-          updatedBudget.budgetPeriods[index][name] = value;
+        if (name === "validFrom" || name === "validTo") {
+          const utcDate = value ? dayjs(value).utc().startOf("day").toDate() : null;
+          if (updatedBudget.budgetPeriods[index]) {
+            updatedBudget.budgetPeriods[index][name] = utcDate;
+          }
+        } else {
+          if (updatedBudget.budgetPeriods[index]) {
+            updatedBudget.budgetPeriods[index][name] = value;
+          }
         }
       }
 
@@ -470,7 +280,7 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label={translations[language].lbl_budgetValidFromDate}
-                  value={dayjs(budget.validFrom).startOf('day')}
+                  value={dayjs.utc(budget.validFrom).startOf("day")}
                   onChange={(newDate) =>
                     handleBudgetChange("validFrom", newDate)
                   }
@@ -479,7 +289,7 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label={translations[language].lbl_budgetValidToDate}
-                  value={dayjs(budget.validTo).startOf('day')}
+                  value={dayjs.utc(budget.validTo).startOf('day')}
                   onChange={(newDate) => handleBudgetChange("validTo", newDate)}
                 />
               </LocalizationProvider>
@@ -738,7 +548,7 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                           label={translations[language].lbl_budgetValidFromDate}
-                          value={dayjs(record.validFrom).startOf('day')}
+                          value={dayjs.utc(record.validFrom).startOf("day")}
                           onChange={(newDate) =>
                             handleBudgetPeriodChange("validFrom", newDate)
                           }
@@ -748,7 +558,7 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                           label={translations[language].lbl_budgetValidToDate}
-                          value={dayjs(record.validTo).startOf('day')}
+                          value={dayjs.utc(record.validTo).startOf("day")}
                           onChange={(newDate) =>
                             handleBudgetPeriodChange("validTo", newDate)
                           }

@@ -20,6 +20,7 @@ namespace BusinessLogic.Abstractions
         Task<IEnumerable<Category>> GetDefaultCategories(IEnumerable<Category> currentCategories);
         Task UpdateCategories(IEnumerable<Category> categories);
         Task<Budget> GetBudget(int budgetId);
+        Task UpdateBudget(Budget budget);
 
         Task<bool> IsAccountIdsBelongToUser(int userId, IEnumerable<int> accountIds, bool onlyActive = false);
         Task<bool> IsBudgetIdsBelongToUser(int userId, IEnumerable<int> budgetIds, bool onlyActive = false);
