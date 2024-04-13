@@ -13,13 +13,15 @@ namespace WebApi.Controllers
     {
         private readonly IIdentityService _identityService;
         private readonly IApplicationService _applicationService;
-        private readonly IValidator<PostTransfer> _validator;
+        private readonly IValidator<PostTransfer> _postTransferValidator;
+        private readonly IValidator<Budget> _budgetValidator;
 
-        public ApplicationController(IIdentityService identityService, IApplicationService applicationService, IValidator<PostTransfer> validator)
+        public ApplicationController(IIdentityService identityService, IApplicationService applicationService, IValidator<PostTransfer> postTransferValidator, IValidator<Budget> budgetValidator)
         {
             _identityService = identityService;
             _applicationService = applicationService;
-            _validator = validator;
+            _postTransferValidator = postTransferValidator;
+            _budgetValidator = budgetValidator;
         }
 
         [HttpGet("UserPanel")]
@@ -70,6 +72,21 @@ namespace WebApi.Controllers
             return Ok(result);
         }
 
+        [HttpPut("budgets")]
+        public async Task<ActionResult> UpdateBudget(Budget budget)
+        {
+            var validationResult = await _budgetValidator.ValidateAsync(budget);
+
+            if (!validationResult.IsValid)
+            {
+                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                return BadRequest(errors);
+            }
+
+            await _applicationService.UpdateBudget(budget);
+            return Accepted();
+        }
+
         [HttpGet("budgets/{budgetId}")]
         public async Task<ActionResult<Budget>> GetBudgets([FromRoute] int budgetId)
         {
@@ -94,7 +111,7 @@ namespace WebApi.Controllers
         [HttpPost("transfers")]
         public async Task<ActionResult> AddTransfer([FromBody] PostTransfer postTransfer)
         {
-            var validationResult = await _validator.ValidateAsync(postTransfer);
+            var validationResult = await _postTransferValidator.ValidateAsync(postTransfer);
 
             if (!validationResult.IsValid)
             {
@@ -107,7 +124,7 @@ namespace WebApi.Controllers
         [HttpPut("transfers")]
         public async Task<ActionResult> UpdateTransfer([FromBody] PostTransfer postTransfer)
         {
-            var validationResult = await _validator.ValidateAsync(postTransfer);
+            var validationResult = await _postTransferValidator.ValidateAsync(postTransfer);
 
             if (!validationResult.IsValid)
             {

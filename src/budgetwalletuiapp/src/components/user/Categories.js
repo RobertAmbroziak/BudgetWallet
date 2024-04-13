@@ -17,7 +17,7 @@ import { useUser } from '../../UserContext';
 function Categories({ onSuccess, onError }) {
   const { jwtToken } = useUser(); 
   const { language } = useLanguage();
-  const { categories: globalCategories, updateCategories: updateGlobalCategories } = useCategories();
+  const { categories: globalCategories, updateCategories: updateGlobalCategories, fetchCategories: fetchCategories } = useCategories();
   const [localCategories, setLocalCategories] = useState([]);
   const [showInactive, setShowInactive] = useState(false);
   
@@ -60,6 +60,7 @@ function Categories({ onSuccess, onError }) {
         { headers: { Authorization: `Bearer ${jwtToken}` } }
       );
       updateGlobalCategories(localCategories);
+      await fetchCategories();
       onSuccess(translations[language].toast_updateCategoriesSuccess);
     } catch (error) {
       console.error("Failed to save categories:", error);
