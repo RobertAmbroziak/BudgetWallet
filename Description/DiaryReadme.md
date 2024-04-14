@@ -203,6 +203,9 @@
 * Delete Budget Validation (FE)
 * Fix refresh data in CategoriesContext after czhange
 
+### Day 45
+* Tests of Configuration Process
+
 
 
 
