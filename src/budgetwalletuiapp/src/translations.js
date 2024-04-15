@@ -86,6 +86,11 @@ const translations = {
     btn_addBudgetPeriodCategory: "Add New",
     toast_updateBudgetsSuccess: "Budget has been modified",
     toast_updateBudgetsError: "Modification of budget has failed",
+    lbl_budgetDetails: " Budget Details",
+    btn_back: "Back",
+    lbl_budgetCategoryList: "Budget Categories",
+    lbl_budgetPeriodList: "Budget  Periods",
+
   },
   pl: {
     btn_logout: "Wyloguj",
@@ -174,6 +179,10 @@ const translations = {
     btn_addBudgetPeriodCategory: "Dodaj",
     toast_updateBudgetsSuccess: "Budżet został zmodyfikowany",
     toast_updateBudgetsError: "Modyfikacja budgetu się nie powiodła",
+    lbl_budgetDetails: "Szczegóły budżetu",
+    btn_back: "Powrót",
+    lbl_budgetCategoryList: "Lista budżet kategorii",
+    lbl_budgetPeriodList: "Lista budżet okresów",
   },
 };
 

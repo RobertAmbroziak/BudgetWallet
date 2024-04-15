@@ -135,11 +135,41 @@
   <data name="rule_budgetCannotBeNull" xml:space="preserve">
     <value>Budżet musi być wybrany.</value>
   </data>
+  <data name="rule_budgetDescMaxLong" xml:space="preserve">
+    <value>Maksymalna długość opisu budżetu to 200 znaków</value>
+  </data>
   <data name="rule_budgetIdBelongsToUser" xml:space="preserve">
     <value>BudgetId nie należy do użytkownika.</value>
   </data>
+  <data name="rule_budgetMustHaveAtLeastOneActivePeriod" xml:space="preserve">
+    <value>Budżet musi posiadać minimum 1 aktywny okres</value>
+  </data>
+  <data name="rule_budgetMustHaveAtLeastOneCategory" xml:space="preserve">
+    <value>Budżet musi posiadać minimuj jedną budżet kategorię</value>
+  </data>
+  <data name="rule_budgetNameMaxLong" xml:space="preserve">
+    <value>Maksymalna długość nazwy budżetu to 50 znaków</value>
+  </data>
+  <data name="rule_budgetNameRequired" xml:space="preserve">
+    <value>Nazwa budżetu nie może być pusta</value>
+  </data>
+  <data name="rule_budgetValidToDateMustBeGreaterThanValidFromDate" xml:space="preserve">
+    <value>Data końcowa budżetu musi być większa o minimum 1 dzień od daty startu</value>
+  </data>
+  <data name="rule_categoryIdMustBeValidAndBelongToUser" xml:space="preserve">
+    <value>Id kategorii musi należec do danego użytkownika i być prawidłowe</value>
+  </data>
   <data name="rule_categoryIdsBelongToBudget" xml:space="preserve">
     <value>Jeden lub więcej CategoryId nie należy do budżetu.</value>
+  </data>
+  <data name="rule_categoryMaxValueMustBePositive" xml:space="preserve">
+    <value>Wartość budżet kategorii musi być dodatnia</value>
+  </data>
+  <data name="rule_categoryMustBelongToUser" xml:space="preserve">
+    <value>Kategorie muszą należeć do aktualnego użytkownika</value>
+  </data>
+  <data name="rule_categoryValuesMustMatch" xml:space="preserve">
+    <value>Wartość kategorii dla okresu musi być podana</value>
   </data>
   <data name="rule_emailIsRequired" xml:space="preserve">
     <value>Email jest wymagany.</value>
@@ -153,14 +183,29 @@
   <data name="rule_emailTaken" xml:space="preserve">
     <value>Adres email jest już zajęty.</value>
   </data>
+  <data name="rule_firstPeriodMustMatchBudgetStart" xml:space="preserve">
+    <value>Pierwszy okres musi mieć datę startu taką jak budżet</value>
+  </data>
   <data name="rule_invalid EmailFormat" xml:space="preserve">
     <value>Nieprawidłowy format adresu email.</value>
+  </data>
+  <data name="rule_lastPeriodMustMatchBudgetEnd" xml:space="preserve">
+    <value>Ostatni okres musi mieć datę końca taką jak budżet</value>
   </data>
   <data name="rule_passwordFormat" xml:space="preserve">
     <value>Hasło musi zawierać co najmniej 8 znaków, w tym co najmniej jedną małą literę, jedną dużą literę, jedną cyfrę oraz jeden znak specjalny.</value>
   </data>
   <data name="rule_passwordRequired" xml:space="preserve">
     <value>Hasło jest wymagane.</value>
+  </data>
+  <data name="rule_periodCategoriesMustMatchBudgetCategories" xml:space="preserve">
+    <value>Suma wartości kategorii okresów musi być równa wartości na danej budżet kategorii</value>
+  </data>
+  <data name="rule_periodMustBeAtLeastOneDay" xml:space="preserve">
+    <value>Okres budżetowy musi mieć długość minimum 1 dzień</value>
+  </data>
+  <data name="rule_periodsMustBeSequential" xml:space="preserve">
+    <value>Okresy w budżecie muszą mieć zachowaną ciągłość</value>
   </data>
   <data name="rule_splitValuePositive" xml:space="preserve">
     <value>Wartości podziałów powinny być dodatnie.</value>

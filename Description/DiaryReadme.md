@@ -206,6 +206,9 @@
 ### Day 45
 * Tests of Configuration Process
 
+### Day 46
+* Translations for budget configuration and budget validation
+
 
 
 

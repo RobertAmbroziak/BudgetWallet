@@ -57,7 +57,7 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
           },
         }
       );
-      setIsValid({ isValid: true, errors: []});
+      setIsValid({ isValid: true, errors: [] });
       onSuccess(translations[language].toast_updateBudgetsSuccess);
     } catch (error) {
       if (
@@ -175,7 +175,9 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
         }
       } else {
         if (name === "validFrom" || name === "validTo") {
-          const utcDate = value ? dayjs(value).utc().startOf("day").toDate() : null;
+          const utcDate = value
+            ? dayjs(value).utc().startOf("day").toDate()
+            : null;
           if (updatedBudget.budgetPeriods[index]) {
             updatedBudget.budgetPeriods[index][name] = utcDate;
           }
@@ -220,9 +222,9 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
 
   return (
     <div>
-      Detale budżetu: {budgetId}
+      {translations[language].lbl_budgetDetails}
       <Button onClick={handleBackClick} variant="outlined">
-        Powrót
+        {translations[language].btn_back}
       </Button>
       {!isValid.isValid && (
         <Paper elevation={3} sx={{ margin: "20px", color: "red" }}>
@@ -257,7 +259,7 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
                 component="h2"
                 sx={{ marginBottom: "20px" }}
               >
-                Szczegóły budżetu
+                {translations[language].lbl_budgetDetails}
               </Typography>
               <TextField
                 id="budgetName"
@@ -287,12 +289,12 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label={translations[language].lbl_budgetValidToDate}
-                  value={dayjs.utc(budget.validTo).startOf('day')}
+                  value={dayjs.utc(budget.validTo).startOf("day")}
                   onChange={(newDate) => handleBudgetChange("validTo", newDate)}
                 />
               </LocalizationProvider>
               <Button onClick={handleBudgetSave} variant="outlined">
-                ZAPISZ
+                {translations[language].btn_save}
               </Button>
             </Box>
           </Paper>
@@ -318,7 +320,7 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
                   component="h2"
                   sx={{ marginBottom: "10px" }}
                 >
-                  Lista Budget Categories
+                  {translations[language].lbl_budgetCategoryList}
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
@@ -458,7 +460,7 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
                   component="h2"
                   sx={{ marginBottom: "10px" }}
                 >
-                  Lista Budget Periods
+                  {translations[language].lbl_budgetPeriodList}
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>

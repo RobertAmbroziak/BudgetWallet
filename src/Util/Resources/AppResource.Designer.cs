@@ -115,6 +115,15 @@ namespace Util.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Maximum length of the budget description is 200 characters..
+        /// </summary>
+        public static string rule_budgetDescMaxLong {
+            get {
+                return ResourceManager.GetString("rule_budgetDescMaxLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to BudgetId doesn&apos;t belong to user..
         /// </summary>
         public static string rule_budgetIdBelongsToUser {
@@ -124,11 +133,92 @@ namespace Util.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Budget must have at least one active period..
+        /// </summary>
+        public static string rule_budgetMustHaveAtLeastOneActivePeriod {
+            get {
+                return ResourceManager.GetString("rule_budgetMustHaveAtLeastOneActivePeriod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Budget must have at least one category..
+        /// </summary>
+        public static string rule_budgetMustHaveAtLeastOneCategory {
+            get {
+                return ResourceManager.GetString("rule_budgetMustHaveAtLeastOneCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum length of the budget name is 50 characters..
+        /// </summary>
+        public static string rule_budgetNameMaxLong {
+            get {
+                return ResourceManager.GetString("rule_budgetNameMaxLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Budget name cannot be empty..
+        /// </summary>
+        public static string rule_budgetNameRequired {
+            get {
+                return ResourceManager.GetString("rule_budgetNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bbudget&apos;s end date must be at least one day greater than the start date..
+        /// </summary>
+        public static string rule_budgetValidToDateMustBeGreaterThanValidFromDate {
+            get {
+                return ResourceManager.GetString("rule_budgetValidToDateMustBeGreaterThanValidFromDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category ID must belong to the given user and be valid..
+        /// </summary>
+        public static string rule_categoryIdMustBeValidAndBelongToUser {
+            get {
+                return ResourceManager.GetString("rule_categoryIdMustBeValidAndBelongToUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to One or more categoryId doesn&apos;t belong to budget..
         /// </summary>
         public static string rule_categoryIdsBelongToBudget {
             get {
                 return ResourceManager.GetString("rule_categoryIdsBelongToBudget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Budget category value must be positive..
+        /// </summary>
+        public static string rule_categoryMaxValueMustBePositive {
+            get {
+                return ResourceManager.GetString("rule_categoryMaxValueMustBePositive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Categories must belong to the current user..
+        /// </summary>
+        public static string rule_categoryMustBelongToUser {
+            get {
+                return ResourceManager.GetString("rule_categoryMustBelongToUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category value for the period must be specified..
+        /// </summary>
+        public static string rule_categoryValuesMustMatch {
+            get {
+                return ResourceManager.GetString("rule_categoryValuesMustMatch", resourceCulture);
             }
         }
         
@@ -169,11 +259,29 @@ namespace Util.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to First period must have a start date that matches the budget..
+        /// </summary>
+        public static string rule_firstPeriodMustMatchBudgetStart {
+            get {
+                return ResourceManager.GetString("rule_firstPeriodMustMatchBudgetStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid email address format..
         /// </summary>
         public static string rule_invalid_EmailFormat {
             get {
                 return ResourceManager.GetString("rule_invalid EmailFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last period must have an end date that matches the budget..
+        /// </summary>
+        public static string rule_lastPeriodMustMatchBudgetEnd {
+            get {
+                return ResourceManager.GetString("rule_lastPeriodMustMatchBudgetEnd", resourceCulture);
             }
         }
         
@@ -192,6 +300,33 @@ namespace Util.Resources {
         public static string rule_passwordRequired {
             get {
                 return ResourceManager.GetString("rule_passwordRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sum of the category values for periods must be equal to the value for the given budget category..
+        /// </summary>
+        public static string rule_periodCategoriesMustMatchBudgetCategories {
+            get {
+                return ResourceManager.GetString("rule_periodCategoriesMustMatchBudgetCategories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Budget period must be at least one day long..
+        /// </summary>
+        public static string rule_periodMustBeAtLeastOneDay {
+            get {
+                return ResourceManager.GetString("rule_periodMustBeAtLeastOneDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Periods in the budget must be sequential..
+        /// </summary>
+        public static string rule_periodsMustBeSequential {
+            get {
+                return ResourceManager.GetString("rule_periodsMustBeSequential", resourceCulture);
             }
         }
         

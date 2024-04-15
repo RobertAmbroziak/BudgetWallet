@@ -79,7 +79,7 @@ namespace WebApi.Controllers
 
             if (!validationResult.IsValid)
             {
-                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                var errors = validationResult.Errors.Select(e => e.ErrorMessage).Distinct().ToList();
                 return BadRequest(errors);
             }
 
