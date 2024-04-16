@@ -15,17 +15,20 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useLanguage } from "../../LanguageContext";
 import translations from "../../translations";
 import { useUser } from '../../UserContext';
 
+dayjs.extend(utc);
+
 function AddExpense({ transferEdit = null, handleSaveTransfer = null, isEdit = false }) {
   const { jwtToken } = useUser(); 
   const [budgets, setBudgets] = useState([]);
   const [accounts, setAccounts] = useState([]);
-  const [transferDate, setTransferDate] = useState(dayjs());
+  const [transferDate, setTransferDate] = useState(dayjs().utc().startOf("day"));
   const [categories, setCategories] = useState([]);
   const [budgetId, setBudgetId] = useState();
   const [transferId, setTransferId] = useState(0);
@@ -59,6 +62,7 @@ function AddExpense({ transferEdit = null, handleSaveTransfer = null, isEdit = f
   };
 
   const handleAddTransferButtonClick = async () => {
+    console.log(transferDate);
     const transfer = {
       id: transferId,
       isActive: true,
@@ -84,7 +88,6 @@ function AddExpense({ transferEdit = null, handleSaveTransfer = null, isEdit = f
         ).value,
       })),
     };
-    console.log(transfer);
     const validateNumber = (value) => {
       const regex = /^\d+(\.\d{1,2})?$/;
       return regex.test(value);
@@ -186,6 +189,7 @@ function AddExpense({ transferEdit = null, handleSaveTransfer = null, isEdit = f
         document.getElementById("transferName").value = "";
         document.getElementById("transferDescription").value = "";
         document.getElementById("transferValue").value = "";
+        setTransferDate(dayjs().utc().startOf("day")); 
         setAccountId();
         setIsValid({ isValid: true, errors: [] });
         setSplitRecords([
@@ -281,7 +285,7 @@ function AddExpense({ transferEdit = null, handleSaveTransfer = null, isEdit = f
         transferEdit.transferDescription;
       document.getElementById("transferValue").value =
         transferEdit.transferValue;
-      setTransferDate(dayjs(transferEdit.transferDate).startOf('day'));
+      setTransferDate(dayjs.utc(transferEdit.transferDate).startOf("day"));
       setAccounts(transferEdit.accounts);
       setAccountId(transferEdit.accountSourceId);
       setBudgetId(transferEdit.budgetId ?? 0);
@@ -400,7 +404,7 @@ function AddExpense({ transferEdit = null, handleSaveTransfer = null, isEdit = f
             <DatePicker
               label={translations[language].lbl_transferDate}
               value={transferDate ?? AdapterDayjs.date()}
-              onChange={(newDate) => setTransferDate(newDate).startOf('day')}
+              onChange={(newDate) => setTransferDate(newDate)}
             />
           </LocalizationProvider>
           <Button variant="outlined" onClick={handleAddTransferButtonClick}>

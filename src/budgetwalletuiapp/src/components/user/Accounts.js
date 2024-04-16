@@ -50,7 +50,6 @@ function Accounts({ onSuccess, onError }) {
   };
 
   const handleSaveChanges = async () => {
-    console.log(accounts);
     try {
       await axios.put(
         `${config.API_BASE_URL}${config.API_ENDPOINTS.ACCOUNTS}`,
@@ -64,7 +63,6 @@ function Accounts({ onSuccess, onError }) {
       onSuccess(translations[language].toast_updateAccountsSuccess);
 
     } catch (error) {
-      console.log(error);
       onError(translations[language].toast_updateAccountsError);
     }
   };

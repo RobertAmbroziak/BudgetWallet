@@ -49,7 +49,7 @@ function BudgetPeriodCategories({ budgetPeriod, onBack }) {
   };
 
   const handleAddBudgetPeriodCategoryRecord = () => {
-    console.log('dodaje nowy BPC');
+
     const newBudgetPeriodCategory = {
       id: 0,
       budgetPeriodId: budgetPeriod.id,
@@ -57,13 +57,11 @@ function BudgetPeriodCategories({ budgetPeriod, onBack }) {
       maxValue: "",
       isActive: true,
     };
-    console.log(newBudgetPeriodCategory);
+
     setBudgetPeriod((prevBudgetPeriod) => ({
       ...prevBudgetPeriod,
       budgetPeriodCategories: [...prevBudgetPeriod.budgetPeriodCategories, newBudgetPeriodCategory],
     }));
-    console.log(thisBudgetPeriod);
-    console.log(budgetPeriod);
   };
 
   return (

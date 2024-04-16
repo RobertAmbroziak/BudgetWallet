@@ -33,7 +33,7 @@ import utc from "dayjs/plugin/utc";
 
 dayjs.extend(utc);
 
-function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
+function BudgetDetails({ simpleBudget, onBack, onSuccess, onError }) {
   const [isValid, setIsValid] = useState({ isValid: true, errors: [] });
   const [showInactive, setShowInactive] = useState(false);
   const [showInactive2, setShowInactive2] = useState(false);
@@ -47,6 +47,7 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
   };
 
   const handleBudgetSave = async () => {
+    console.log(budget);
     try {
       const response = await axios.put(
         `${config.API_BASE_URL}${config.API_ENDPOINTS.BUDGETS}`,
@@ -116,6 +117,7 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
         validFrom: "",
         validTo: "",
         isActive: true,
+        budgetPeriodCategories: []
       };
 
       setBudget((prevBudget) => ({
@@ -187,7 +189,6 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
           }
         }
       }
-
       setBudget(updatedBudget);
     }
   };
@@ -196,7 +197,7 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
     const fetchBudgetDetails = async () => {
       try {
         const response = await axios.get(
-          `${config.API_BASE_URL}${config.API_ENDPOINTS.BUDGETS}/${budgetId}`,
+          `${config.API_BASE_URL}${config.API_ENDPOINTS.BUDGETS}/${simpleBudget.id}`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
@@ -208,8 +209,19 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
         console.error("Error fetching budget", error);
       }
     };
-    fetchBudgetDetails();
-  }, [budgetId, jwtToken]);
+    if (simpleBudget.id > 0){
+      fetchBudgetDetails();
+    }
+    else{
+      console.log(simpleBudget);
+      setBudget({
+        ...simpleBudget,
+        budgetCategories: [],
+        budgetPeriods: []
+      });
+    }
+    
+  }, [simpleBudget.id, jwtToken]);
 
   if (editingBudgetPeriod) {
     return (
@@ -550,7 +562,7 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
                           label={translations[language].lbl_budgetValidFromDate}
                           value={dayjs.utc(record.validFrom).startOf("day")}
                           onChange={(newDate) =>
-                            handleBudgetPeriodChange("validFrom", newDate)
+                            handleBudgetPeriodChange(index,"validFrom", newDate)
                           }
                           sx={{ m: 1 }}
                         />
@@ -560,7 +572,7 @@ function BudgetDetails({ budgetId, onBack, onSuccess, onError }) {
                           label={translations[language].lbl_budgetValidToDate}
                           value={dayjs.utc(record.validTo).startOf("day")}
                           onChange={(newDate) =>
-                            handleBudgetPeriodChange("validTo", newDate)
+                            handleBudgetPeriodChange(index, "validTo", newDate)
                           }
                         />
                       </LocalizationProvider>

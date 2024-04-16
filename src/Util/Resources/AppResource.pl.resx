@@ -169,7 +169,7 @@
     <value>Kategorie muszą należeć do aktualnego użytkownika</value>
   </data>
   <data name="rule_categoryValuesMustMatch" xml:space="preserve">
-    <value>Wartość kategorii dla okresu musi być podana</value>
+    <value>Suma wartość kategorii dla okresu musi być równa wartości kategorii dla budżetu</value>
   </data>
   <data name="rule_emailIsRequired" xml:space="preserve">
     <value>Email jest wymagany.</value>

@@ -12,7 +12,6 @@ export const CategoriesProvider = ({ children }) => {
   const [categories, setCategories] = useState([]);
 
   const fetchCategories = async () => {
-    console.log('wywołanie fetch bezpośrednio');
     if (!jwtToken) return;
     try {
       const response = await axios.get(
@@ -34,7 +33,6 @@ export const CategoriesProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    console.log('wywołuje fetch w cat context useEff');
     fetchCategories();
   }, []);
 

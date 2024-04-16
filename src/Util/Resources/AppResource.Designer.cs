@@ -214,7 +214,7 @@ namespace Util.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Category value for the period must be specified..
+        ///   Looks up a localized string similar to Sum of category values for the periods must be equal budget category value..
         /// </summary>
         public static string rule_categoryValuesMustMatch {
             get {

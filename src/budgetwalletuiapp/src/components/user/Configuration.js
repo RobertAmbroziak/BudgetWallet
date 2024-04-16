@@ -26,7 +26,6 @@ function Configuration() {
     });
   };
   const handleErrorToast = (message) => {
-    console.log(message);
     toast.error(message, {
       position: "top-right",
       autoClose: 4000,

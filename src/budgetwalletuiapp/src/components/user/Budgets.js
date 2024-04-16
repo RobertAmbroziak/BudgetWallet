@@ -15,13 +15,16 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
 import BudgetDetails from "./BudgetDetails";
 import { useUser } from '../../UserContext';
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 function Budgets({ onSuccess, onError }) {
   const { jwtToken } = useUser(); 
   const { language } = useLanguage();
   const [budgets, setBudgets] = useState([]);
   const [showInactive, setShowInactive] = useState(false);
-  const [selectedBudgetId, setSelectedBudgetId] = useState(null);
+  const [selectedBudget, setSelectedBudget] = useState(null);
 
   // const handleBudgetRecordChange = (index, field, value) => {
   //   const updatedRecords = [...budgets];
@@ -29,25 +32,34 @@ function Budgets({ onSuccess, onError }) {
   //   setBudgets(updatedRecords);
   // };
 
-  const handleEditBudgetRecord = (budgetId) => {
-    setSelectedBudgetId(budgetId);
+  const handleEditBudgetRecord = (budget) => {
+    setSelectedBudget(budget);
   };
 
   const handleAddBudgetRecord = () => {
     const exists = budgets.some((budget) => budget.id === 0);
 
     if (!exists) {
-      const currentDate = new Date();
-      const validFrom = new Date(
+      //const currentDate = new Date();
+      const currentDate = dayjs().utc().startOf("day").toDate();
+      console.log(currentDate);
+      //const validFrom  = dayjs.utc(currentDate.getFullYear(),currentDate.getMonth(), 1).startOf("day").toDate();
+      const validFrom = new Date(Date.UTC(
         currentDate.getFullYear(),
         currentDate.getMonth(),
-        1
+        1)
       );
-      const validTo = new Date(
+
+      // nawet jak zadziała to na przełom roku się nie nadaje
+      //const validTo  = dayjs.utc(currentDate.getFullYear(),currentDate.getMonth()+1, 1).startOf("day").toDate();
+      const validTo = new Date(Date.UTC(
         currentDate.getFullYear(),
         currentDate.getMonth() + 1,
-        1
+        1)
       );
+
+console.log(validFrom);
+console.log(validTo);
 
       const description = `${validFrom.getFullYear()}-${String(
         validFrom.getMonth() + 1
@@ -131,8 +143,8 @@ function Budgets({ onSuccess, onError }) {
     fetchBudgets();
   }, [jwtToken, onSuccess, onError]);
 
-  if (selectedBudgetId !== null) {
-    return <BudgetDetails budgetId={selectedBudgetId} onBack={() => setSelectedBudgetId(null)} onSuccess={onSuccess} onError={onError}/>;
+  if (selectedBudget !== null) {
+    return <BudgetDetails simpleBudget={selectedBudget} onBack={() => setSelectedBudget(null)} onSuccess={onSuccess} onError={onError}/>;
   }
 
   return (
@@ -174,7 +186,7 @@ function Budgets({ onSuccess, onError }) {
         >
           <IconButton
             aria-label="edit"
-            onClick={() => handleEditBudgetRecord(record.id)}
+            onClick={() => handleEditBudgetRecord(record)}
           >
             <EditIcon />
           </IconButton>
@@ -202,7 +214,7 @@ function Budgets({ onSuccess, onError }) {
               id={"budgetValidFrom_" + index}
               variant="outlined"
               label={translations[language].lbl_budgetValidFromDate}
-              value={dayjs(record.validFrom).format("YYYY-MM-DD")}
+              value={record.validTo ? dayjs.utc(record.validFrom).startOf("day").format('YYYY-MM-DD') : ''}
               InputProps={{
                 readOnly: true,
               }}
@@ -213,7 +225,7 @@ function Budgets({ onSuccess, onError }) {
               id={"budgetValidTo_" + index}
               variant="outlined"
               label={translations[language].lbl_budgetValidToDate}
-              value={dayjs(record.validTo).format("YYYY-MM-DD")}
+              value={record.validTo ? dayjs.utc(record.validTo).startOf("day").format('YYYY-MM-DD') : ''}
               InputProps={{
                 readOnly: true,
               }}
