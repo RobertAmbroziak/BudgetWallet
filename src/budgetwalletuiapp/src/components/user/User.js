@@ -6,10 +6,11 @@ import { useLanguage } from "../../LanguageContext";
 import translations from "../../translations";
 import Stats from "./Stats";
 import AddExpense from "./AddExpense";
+import AccountsState from "./AccountsState";
 import Configuration from "./Configuration";
 import { MDBBtn } from "mdb-react-ui-kit";
-import { CategoriesProvider } from './CategoriesContext'; 
-import { useUser } from '../../UserContext';
+import { CategoriesProvider } from "./CategoriesContext";
+import { useUser } from "../../UserContext";
 
 function User() {
   const { jwtToken } = useUser();
@@ -22,23 +23,35 @@ function User() {
     useState(false);
   const [isButtonConfigurationClicked, setIsButtonConfigurationClicked] =
     useState(false);
+  const [isButtonAccountsStateClicked, setIsButtonAccountsStateClicked] =
+    useState(false);
 
   const handleGetSplitsClick = () => {
     setIsButtonGetSplitsClicked(true);
     setIsButtonAdExpenseClicked(false);
     setIsButtonConfigurationClicked(false);
+    setIsButtonAccountsStateClicked(false);
   };
 
   const handleAddExpenseClick = () => {
     setIsButtonGetSplitsClicked(false);
     setIsButtonAdExpenseClicked(true);
     setIsButtonConfigurationClicked(false);
+    setIsButtonAccountsStateClicked(false);
   };
 
   const handleConfigurationClick = () => {
     setIsButtonGetSplitsClicked(false);
     setIsButtonAdExpenseClicked(false);
     setIsButtonConfigurationClicked(true);
+    setIsButtonAccountsStateClicked(false);
+  };
+
+  const handleAccountsStateClick = () => {
+    setIsButtonGetSplitsClicked(false);
+    setIsButtonAdExpenseClicked(false);
+    setIsButtonConfigurationClicked(false);
+    setIsButtonAccountsStateClicked(true);
   };
 
   useEffect(() => {
@@ -66,32 +79,36 @@ function User() {
 
   return (
     <CategoriesProvider>
-    <div>
-      {userData ? (
-        <div>
-          <h1>{translations[language].lbl_applicationPanel}</h1>
-          <p>{userData}</p>
-          <MDBBtn color="success" onClick={handleGetSplitsClick}>
-            {translations[language].btn_Expenses}
-          </MDBBtn>
-          <MDBBtn color="danger" onClick={handleAddExpenseClick}>
-            {translations[language].btn_Edit}
-          </MDBBtn>
-          <MDBBtn color="info"onClick={handleConfigurationClick}>
-            {translations[language].btn_Config}
-          </MDBBtn>
-          {isButtonGetSplitsClicked && <Stats />}
-          {isButtonAddExpenseClicked && <AddExpense  />}
-          {isButtonConfigurationClicked && <Configuration />}
-        </div>
-      ) : null}
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-    </div>
+      <div>
+        {userData ? (
+          <div>
+            <h1>{translations[language].lbl_applicationPanel}</h1>
+            <p>{userData}</p>
+            <MDBBtn className='me-1' color="success" onClick={handleGetSplitsClick}>
+              {translations[language].btn_Expenses}
+            </MDBBtn>
+            <MDBBtn className='me-1' color="danger" onClick={handleAddExpenseClick}>
+              {translations[language].btn_Edit}
+            </MDBBtn>
+            <MDBBtn className='me-1' color="info" onClick={handleConfigurationClick}>
+              {translations[language].btn_Config}
+            </MDBBtn>
+            <MDBBtn color="warning" onClick={handleAccountsStateClick}>
+              {translations[language].btn_AccountsState}
+            </MDBBtn>
+            {isButtonGetSplitsClicked && <Stats />}
+            {isButtonAddExpenseClicked && <AddExpense />}
+            {isButtonConfigurationClicked && <Configuration />}
+            {isButtonAccountsStateClicked && <AccountsState />}
+          </div>
+        ) : null}
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+      </div>
     </CategoriesProvider>
   );
 }

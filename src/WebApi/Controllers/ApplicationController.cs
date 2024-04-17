@@ -94,6 +94,13 @@ namespace WebApi.Controllers
             return Ok(result);
         }
 
+        [HttpPost("budgets/default")]
+        public async Task<ActionResult<Budget>> GetDefaultBudget()
+        {
+            var result = await _applicationService.GetDefaultBudget();
+            return Ok(result);
+        }
+
         [HttpGet("budgets/{budgetId}/categories")]
         public async Task<ActionResult<IEnumerable<Category>>> GetBudgetCategories([FromRoute] int budgetId)
         {

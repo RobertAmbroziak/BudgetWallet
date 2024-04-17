@@ -69,10 +69,11 @@ function Categories({ onSuccess, onError }) {
   };
 
   const handleGetDefault = async () => {
+
     try {
       const response = await axios.post(
         `${config.API_BASE_URL}${config.API_ENDPOINTS.CATEGORIES}/default`,
-        {},
+        localCategories,
         { headers: { Authorization: `Bearer ${jwtToken}` } }
       );
       setLocalCategories([...localCategories, ...response.data]);

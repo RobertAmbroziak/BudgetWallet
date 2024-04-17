@@ -607,8 +607,62 @@ namespace BusinessLogic.Services
                     }
                 }
             }
+            else
+            {
+                var budgetDto = new BudgetDto
+                {
+                    UserId = user.Id,
+                    Name = budget.Name,
+                    Description = budget.Description,
+                    ValidFrom = budget.ValidFrom,
+                    ValidTo = budget.ValidTo,
+                    IsActive = budget.IsActive,
+                    BudgetCategories = GetBudgetCategoryDtoListByBudgetCategories(budget.BudgetCategories).ToList(),
+                    BudgetPeriods = GetBudgetPeriodDtoListByBudgetPeriods(budget.BudgetPeriods).ToList()
+                };
+
+                await _applicationRepository.InsertAsync(budgetDto);
+            }
             
             await _applicationRepository.SaveChangesAsync();
+        }
+
+        public async Task<Budget> GetDefaultBudget()
+        {
+            const decimal valuePerBudgetCategory = 500;
+            var user = await _identityService.GetCurrentUser();
+            var budgetInfo = await GetUserBudgetsInfo();
+            var userCategories = budgetInfo.CurrentBudgetCategories.Where(x => x.IsActive);
+
+            if (!userCategories.Any())
+            {
+                throw new BadHttpRequestException(_localizer["rule_userDoesNotHaveAnyAvtiveCategories"].Value);
+            }
+
+            var currentDate = DateTime.UtcNow;
+
+            var validFrom = new DateTime(currentDate.Year, currentDate.Month, 1, 0, 0, 0);
+            var validTo = currentDate.Month == 12 ? new DateTime(currentDate.Year + 1,1,1, 0, 0, 0) : new DateTime(currentDate.Year, currentDate.Month + 1, 1, 0, 0, 0);
+
+            /* ustalenie name i description na takie jakiego nie ma */
+
+            var budgetCategories = new List<BudgetCategory>();
+            
+            foreach (var category in userCategories)
+            {
+                budgetCategories.Add(new BudgetCategory
+                {
+
+                });
+
+                /*
+                    ustal ilośc budget periodów tygodniowych
+                    podziel valuePerBudgetCategory na ilość periodów tygodniowych , zsumuj i do pierwszego dodaj różnicę między budgetCategory a ta sumą
+                 */
+            }
+
+
+            throw new NotImplementedException();
         }
 
         #region private
@@ -716,6 +770,58 @@ namespace BusinessLogic.Services
                     });
                 }
             }
+        }
+
+        private IEnumerable<BudgetCategoryDto> GetBudgetCategoryDtoListByBudgetCategories(IEnumerable<BudgetCategory> budgetCategories)
+        {
+            var result = new List<BudgetCategoryDto>();
+
+            foreach (var budgetCategory in budgetCategories)
+            {
+                result.Add(new BudgetCategoryDto
+                {
+                    CategoryId = budgetCategory.CategoryId,
+                    MaxValue = budgetCategory.MaxValue,
+                    IsActive = budgetCategory.IsActive
+                });
+            }
+
+            return result;
+        }
+
+        private IEnumerable<BudgetPeriodDto> GetBudgetPeriodDtoListByBudgetPeriods(IEnumerable<BudgetPeriod> budgetPeriods)
+        {
+            var result = new List<BudgetPeriodDto>();
+
+            foreach (var budgetPeriod in budgetPeriods)
+            {
+                result.Add(new BudgetPeriodDto
+                {
+                    ValidFrom = budgetPeriod.ValidFrom,
+                    ValidTo = budgetPeriod.ValidTo,
+                    IsActive = budgetPeriod.IsActive,
+                    BudgetPeriodCategories = GetBudgetPeriodCategoryDtoListByBudgetPeriodCategories(budgetPeriod.BudgetPeriodCategories).ToList()
+                });
+            }
+
+            return result;
+        }
+
+        private IEnumerable<BudgetPeriodCategoryDto> GetBudgetPeriodCategoryDtoListByBudgetPeriodCategories(IEnumerable<BudgetPeriodCategory> budgetPeriodCategories)
+        {
+            var result = new List<BudgetPeriodCategoryDto>();
+
+            foreach (var budgetPeriodCategory in budgetPeriodCategories)
+            {
+                result.Add(new BudgetPeriodCategoryDto
+                {
+                    CategoryId = budgetPeriodCategory.CategoryId,
+                    MaxValue = budgetPeriodCategory.MaxValue,
+                    IsActive = budgetPeriodCategory.IsActive
+                });
+            }
+
+            return result;
         }
 
         #endregion

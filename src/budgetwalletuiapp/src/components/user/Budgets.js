@@ -14,17 +14,18 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
 import BudgetDetails from "./BudgetDetails";
-import { useUser } from '../../UserContext';
+import { useUser } from "../../UserContext";
 import utc from "dayjs/plugin/utc";
 
 dayjs.extend(utc);
 
 function Budgets({ onSuccess, onError }) {
-  const { jwtToken } = useUser(); 
+  const { jwtToken } = useUser();
   const { language } = useLanguage();
   const [budgets, setBudgets] = useState([]);
   const [showInactive, setShowInactive] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState(null);
+  const [reload, setReload] = useState(false);
 
   // const handleBudgetRecordChange = (index, field, value) => {
   //   const updatedRecords = [...budgets];
@@ -44,22 +45,15 @@ function Budgets({ onSuccess, onError }) {
       const currentDate = dayjs().utc().startOf("day").toDate();
       console.log(currentDate);
       //const validFrom  = dayjs.utc(currentDate.getFullYear(),currentDate.getMonth(), 1).startOf("day").toDate();
-      const validFrom = new Date(Date.UTC(
-        currentDate.getFullYear(),
-        currentDate.getMonth(),
-        1)
+      const validFrom = new Date(
+        Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), 1)
       );
 
       // nawet jak zadziała to na przełom roku się nie nadaje
       //const validTo  = dayjs.utc(currentDate.getFullYear(),currentDate.getMonth()+1, 1).startOf("day").toDate();
-      const validTo = new Date(Date.UTC(
-        currentDate.getFullYear(),
-        currentDate.getMonth() + 1,
-        1)
+      const validTo = new Date(
+        Date.UTC(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
       );
-
-console.log(validFrom);
-console.log(validTo);
 
       const description = `${validFrom.getFullYear()}-${String(
         validFrom.getMonth() + 1
@@ -109,7 +103,7 @@ console.log(validTo);
   const handleGetDefault = async () => {
     try {
       const response = await axios.post(
-        `${config.API_BASE_URL}${config.API_ENDPOINTS.TODOBUDGETS}/default`,
+        `${config.API_BASE_URL}${config.API_ENDPOINTS.BUDGETS}/default`,
         budgets,
         {
           headers: {
@@ -141,10 +135,20 @@ console.log(validTo);
       }
     };
     fetchBudgets();
-  }, [jwtToken, onSuccess, onError]);
+  }, [jwtToken, onSuccess, onError, reload]);
 
   if (selectedBudget !== null) {
-    return <BudgetDetails simpleBudget={selectedBudget} onBack={() => setSelectedBudget(null)} onSuccess={onSuccess} onError={onError}/>;
+    return (
+      <BudgetDetails
+        simpleBudget={selectedBudget}
+        onBack={() => {
+          setSelectedBudget(null);
+          setReload((reload) => !reload);
+        }}
+        onSuccess={onSuccess}
+        onError={onError}
+      />
+    );
   }
 
   return (
@@ -214,7 +218,14 @@ console.log(validTo);
               id={"budgetValidFrom_" + index}
               variant="outlined"
               label={translations[language].lbl_budgetValidFromDate}
-              value={record.validTo ? dayjs.utc(record.validFrom).startOf("day").format('YYYY-MM-DD') : ''}
+              value={
+                record.validTo
+                  ? dayjs
+                      .utc(record.validFrom)
+                      .startOf("day")
+                      .format("YYYY-MM-DD")
+                  : ""
+              }
               InputProps={{
                 readOnly: true,
               }}
@@ -225,7 +236,14 @@ console.log(validTo);
               id={"budgetValidTo_" + index}
               variant="outlined"
               label={translations[language].lbl_budgetValidToDate}
-              value={record.validTo ? dayjs.utc(record.validTo).startOf("day").format('YYYY-MM-DD') : ''}
+              value={
+                record.validTo
+                  ? dayjs
+                      .utc(record.validTo)
+                      .startOf("day")
+                      .format("YYYY-MM-DD")
+                  : ""
+              }
               InputProps={{
                 readOnly: true,
               }}

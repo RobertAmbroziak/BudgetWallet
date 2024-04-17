@@ -212,7 +212,12 @@
 ### Day 47
 * So many successes with budget configuration and adding new ones, and just as many failures. Problems with UTC date. When I add a period with a date, e.g., 25-11, it changes to 24-11 (from 00:00 to 22:00). I ultimately fail to save the budget in the database. The view with the list of budgets does not refresh. It stays on the initially added budget, but it's not saved and with data before editing.
 
-
+### Day 48
+* Fixes for update existing Budget in Configuration
+* Get Default Accounts - fixes and tests
+* Get Default Categories - fixes and tests
+* AccountsState Component - first steps
+* Default Budget Creator - first Steps
 
 
 

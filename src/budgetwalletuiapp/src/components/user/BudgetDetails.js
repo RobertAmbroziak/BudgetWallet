@@ -112,10 +112,11 @@ function BudgetDetails({ simpleBudget, onBack, onSuccess, onError }) {
 
   const handleAddBudgetPeriodRecord = () => {
     if (budget) {
+      const utcNow = dayjs().utc().startOf('day').toDate();
       const newBudgetPeriod = {
         id: 0,
-        validFrom: "",
-        validTo: "",
+        validFrom: utcNow,
+        validTo: utcNow,
         isActive: true,
         budgetPeriodCategories: []
       };
