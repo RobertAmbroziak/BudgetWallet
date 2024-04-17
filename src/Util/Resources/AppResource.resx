@@ -225,6 +225,9 @@
   <data name="rule_transferValuePositive" xml:space="preserve">
     <value>Transfer value should be positive.</value>
   </data>
+  <data name="rule_userDoesNotHaveAnyAvtiveCategories" xml:space="preserve">
+    <value>User does not have any avtive categories</value>
+  </data>
   <data name="rule_usernameMaxLong" xml:space="preserve">
     <value>Username cannot exceed 50 characters.</value>
   </data>

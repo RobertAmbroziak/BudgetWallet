@@ -62,7 +62,6 @@ function AddExpense({ transferEdit = null, handleSaveTransfer = null, isEdit = f
   };
 
   const handleAddTransferButtonClick = async () => {
-    console.log(transferDate);
     const transfer = {
       id: transferId,
       isActive: true,

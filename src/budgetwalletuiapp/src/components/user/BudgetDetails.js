@@ -47,7 +47,6 @@ function BudgetDetails({ simpleBudget, onBack, onSuccess, onError }) {
   };
 
   const handleBudgetSave = async () => {
-    console.log(budget);
     try {
       const response = await axios.put(
         `${config.API_BASE_URL}${config.API_ENDPOINTS.BUDGETS}`,
@@ -214,11 +213,10 @@ function BudgetDetails({ simpleBudget, onBack, onSuccess, onError }) {
       fetchBudgetDetails();
     }
     else{
-      console.log(simpleBudget);
       setBudget({
         ...simpleBudget,
-        budgetCategories: [],
-        budgetPeriods: []
+        budgetCategories: simpleBudget.budgetCategories?.length > 0 ? simpleBudget.budgetCategories : [],
+        budgetPeriods: simpleBudget.budgetPeriods?.length > 0 ? simpleBudget.budgetPeriods : []
       });
     }
     

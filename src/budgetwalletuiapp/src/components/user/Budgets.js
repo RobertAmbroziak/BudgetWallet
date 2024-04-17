@@ -43,7 +43,6 @@ function Budgets({ onSuccess, onError }) {
     if (!exists) {
       //const currentDate = new Date();
       const currentDate = dayjs().utc().startOf("day").toDate();
-      console.log(currentDate);
       //const validFrom  = dayjs.utc(currentDate.getFullYear(),currentDate.getMonth(), 1).startOf("day").toDate();
       const validFrom = new Date(
         Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), 1)
@@ -104,14 +103,14 @@ function Budgets({ onSuccess, onError }) {
     try {
       const response = await axios.post(
         `${config.API_BASE_URL}${config.API_ENDPOINTS.BUDGETS}/default`,
-        budgets,
+        {},
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
           },
         }
       );
-      const updatedBudgets = [...budgets, ...response.data];
+      const updatedBudgets = [...budgets, response.data];
       setBudgets(updatedBudgets);
     } catch (error) {
       console.error("Error fetching default budgets:", error);

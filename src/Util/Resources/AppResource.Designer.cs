@@ -385,6 +385,15 @@ namespace Util.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User does not have any avtive categories.
+        /// </summary>
+        public static string rule_userDoesNotHaveAnyAvtiveCategories {
+            get {
+                return ResourceManager.GetString("rule_userDoesNotHaveAnyAvtiveCategories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Username cannot exceed 50 characters..
         /// </summary>
         public static string rule_usernameMaxLong {
