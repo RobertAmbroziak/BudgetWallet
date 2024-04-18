@@ -18,7 +18,7 @@ In my efforts to control expenses and manage the household budget, I have tried 
 ## Expected Technology
 
 * Web Api - Currently .NET 6, planned .NET 8
-* Entity Framework - CodeFirst, Migrations
+* Entity Framework - CodeFirst, Migrations, MSSQL, planned PostgreSQL
 * Clean architecture (onion) with separation of layers into separate projects
 * Front-end - Currently CRA + js files, planned Vite + tsx files
 * Ready-made controls from Material UI
@@ -45,18 +45,23 @@ In my efforts to control expenses and manage the household budget, I have tried 
   - :x: remember me
   - :x: forgot password
 - :white_square_button: Application (User Panel)
-  - :heavy_check_mark: buttons - expenses, add, administration
+  - :heavy_check_mark: buttons - expenses, add, administration, account state
   - :white_square_button: expenses
     - :heavy_check_mark: get expenses(splits)
     - :heavy_check_mark: filter for get expenses -> data for filter and filter manipulation
-    - :x: data for summary and presentation summary
-    - :x: data for chart and chart
-    - :x: more details of data row
+    - :heavy_check_mark: data for summary and presentation summary
+    - :heavy_check_mark: data for chart and chart
+    - :heavy_check_mark: more details of data row
+	- :heavy_check_mark: edit transfer
   - :heavy_check_mark: add (new expense)
-  - :x: administration
-    - :x: add/edit budget (with budgetCategories), budget period (with budgetPeriodCategories), category, account
+  - :white_square_button: configuration
+    - :heavy_check_mark: add/edit categories
+    - :heavy_check_mark: add/edit accounts
+    - :x: add/edit budget (with budgetCategories), budget period (with budgetPeriodCategories)
+  - :x: account state
     - :x: add/edit internal transfer or deposit
-   
+	- :x: account values
+	- :x: table of internal transfers and deposits
 
 ## Entities
 
