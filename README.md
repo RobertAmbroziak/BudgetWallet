@@ -2,7 +2,9 @@
 ### Web application for managing household budget
 The project developed as part of the [#100 commitów - DevMentors](https://100commitow.pl/) competition.
 
-<div style="text-align:center"><img src='./Description/Images/budget_wallet_icon_big.jpg' width='300'/></div>
+<div align="center">
+  <img src="Description/Images/budget_wallet_icon_big.jpg" width="400" class="logo"/>
+</div>
 
 ## Idea
 
