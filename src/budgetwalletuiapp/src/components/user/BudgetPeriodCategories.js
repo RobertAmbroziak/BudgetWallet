@@ -15,14 +15,15 @@ import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
-function BudgetPeriodCategories({ budgetPeriod, onBack }) {
+function BudgetPeriodCategories({ budgetPeriod, budgetPeriodIndex, onBack }) {
   const [thisBudgetPeriod, setBudgetPeriod] = useState(budgetPeriod);
+  const [thisBudgetPeriodIndex, setBudgetPeriodIndex] = useState(budgetPeriodIndex);
   const [showInactive, setShowInactive] = useState(false);
   const { categories } = useCategories();
   const { language } = useLanguage();
 
   const handleBack = () => {
-    onBack(thisBudgetPeriod);
+    onBack(thisBudgetPeriod, thisBudgetPeriodIndex);
   };
 
   const handleBudgetPeriodCategoryChange = (index, name, value) => {

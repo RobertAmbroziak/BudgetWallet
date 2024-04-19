@@ -42,6 +42,7 @@ function BudgetDetails({ simpleBudget, onBack, onSuccess, onError }) {
   const { language } = useLanguage();
   const [budget, setBudget] = useState();
   const [editingBudgetPeriod, setEditingBudgetPeriod] = useState(null);
+  const [editingBudgetPeriodIndex, setEditingBudgetPeriodIndex] = useState(null);
   const handleBackClick = () => {
     onBack();
   };
@@ -73,11 +74,14 @@ function BudgetDetails({ simpleBudget, onBack, onSuccess, onError }) {
     }
   };
 
-  const updateBudgetPeriod = (updatedPeriod) => {
+  const updateBudgetPeriod = (updatedPeriod, updatedPeriodIndex) => {
     setBudget((prevBudget) => {
-      const updatedBudgetPeriods = prevBudget.budgetPeriods.map((period) => {
-        if (period.id === updatedPeriod.id) {
+      const updatedBudgetPeriods = prevBudget.budgetPeriods.map((period, index) => {
+        if (period.id > 0 && period.id === updatedPeriod.id) {
           return updatedPeriod;
+        }
+        else if (period.id === 0 && index === updatedPeriodIndex) {
+            return updatedPeriod;
         }
         return period;
       });
@@ -86,10 +90,12 @@ function BudgetDetails({ simpleBudget, onBack, onSuccess, onError }) {
     });
 
     setEditingBudgetPeriod(null);
+    setEditingBudgetPeriodIndex(null);
   };
 
-  const editBudgetPeriod = (record) => {
+  const editBudgetPeriod = (record, index) => {
     setEditingBudgetPeriod(record);
+    setEditingBudgetPeriodIndex(index);
   };
 
   const handleAddBudgetCategoryRecord = () => {
@@ -226,6 +232,7 @@ function BudgetDetails({ simpleBudget, onBack, onSuccess, onError }) {
     return (
       <BudgetPeriodCategories
         budgetPeriod={editingBudgetPeriod}
+        budgetPeriodIndex={editingBudgetPeriodIndex}
         onBack={updateBudgetPeriod}
       />
     );
@@ -552,7 +559,7 @@ function BudgetDetails({ simpleBudget, onBack, onSuccess, onError }) {
                       )}
                       <IconButton
                         aria-label="edit"
-                        onClick={() => editBudgetPeriod(record)}
+                        onClick={() => editBudgetPeriod(record, index)}
                       >
                         <EditIcon />
                       </IconButton>
