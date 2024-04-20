@@ -13,6 +13,9 @@ In my efforts to control expenses and manage the household budget, I have tried 
 > [!NOTE]
 > [BudgetWallet Beta Version](https://budgetwallet.azurewebsites.net/)
 
+> [!TIP]
+> [Video about the project (Polish).](https://www.youtube.com/watch?v=drUR2k0tE9I)
+
 ## Challenges
 
 * Entire Front-End. Currently, I mainly work with backend. I have experience with MVC + jQuery, legacy webforms, and recently a bit of Blazor. I'm still learning React.

@@ -224,6 +224,13 @@
 * Tests - something wrong with isActive, sometimes shouldn't be visible unactive categories or categories not related to budget
 * More Tests :)
 
+### Day 50
+* Budget Default Creator - Fixes
+
+### Day 51
+* Readme Update (Added Video))
+
+
 
 
 
