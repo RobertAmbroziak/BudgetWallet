@@ -230,6 +230,9 @@
 ### Day 51
 * Readme Update (Added Video))
 
+### Day 52
+* List of categories in various places of the application - analysis
+
 
 
 
