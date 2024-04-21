@@ -43,6 +43,8 @@ function BudgetDetails({ simpleBudget, onBack, onSuccess, onError }) {
   const [budget, setBudget] = useState();
   const [editingBudgetPeriod, setEditingBudgetPeriod] = useState(null);
   const [editingBudgetPeriodIndex, setEditingBudgetPeriodIndex] = useState(null);
+  const [filteredCategories, setFilteredCategories] = useState([]);
+  
   const handleBackClick = () => {
     onBack();
   };
@@ -211,6 +213,22 @@ function BudgetDetails({ simpleBudget, onBack, onSuccess, onError }) {
           }
         );
         setBudget(response.data);
+
+        const activeCategories = categories.filter(cat => cat.isActive);
+        const additionalCategories = response.data.budgetCategories.reduce((acc, cat) => {
+          if (!activeCategories.concat(acc).some(c => c.id === cat.categoryId)) {
+            acc.push({
+              id: cat.categoryId,
+              name: cat.category.name,
+              description: cat.category.description,
+              isActive: cat.category.isActive
+            });
+          }
+          return acc;
+        }, []);
+
+        setFilteredCategories([...activeCategories, ...additionalCategories]);
+
       } catch (error) {
         console.error("Error fetching budget", error);
       }
@@ -219,6 +237,8 @@ function BudgetDetails({ simpleBudget, onBack, onSuccess, onError }) {
       fetchBudgetDetails();
     }
     else{
+      const activeCategories = categories.filter(cat => cat.isActive);
+      setFilteredCategories(activeCategories);
       setBudget({
         ...simpleBudget,
         budgetCategories: simpleBudget.budgetCategories?.length > 0 ? simpleBudget.budgetCategories : [],
@@ -226,13 +246,14 @@ function BudgetDetails({ simpleBudget, onBack, onSuccess, onError }) {
       });
     }
     
-  }, [simpleBudget.id, jwtToken]);
+  }, [simpleBudget.id, jwtToken, categories]);
 
   if (editingBudgetPeriod) {
     return (
       <BudgetPeriodCategories
         budgetPeriod={editingBudgetPeriod}
         budgetPeriodIndex={editingBudgetPeriodIndex}
+        categories ={filteredCategories}
         onBack={updateBudgetPeriod}
       />
     );
@@ -437,7 +458,7 @@ function BudgetDetails({ simpleBudget, onBack, onSuccess, onError }) {
                             )
                           }
                         >
-                          {categories.map((category) => (
+                          {filteredCategories.map((category) => (
                             <MenuItem key={category.id} value={category.id}>
                               {category.name}
                             </MenuItem>

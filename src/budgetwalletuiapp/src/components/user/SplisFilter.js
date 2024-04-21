@@ -71,8 +71,22 @@ function SplitsFilter({ onGetSplitsButtonClick }) {
 
     if (name === "budgetId") {
       try {
-        const response = await axios.get(
+        const responsePeriods = await axios.get(
           `${config.API_BASE_URL}${config.API_ENDPOINTS.FILTER_BUDGET_PERIODS}/${value}`,
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
+
+        const budgetCategoryUrl = config.API_ENDPOINTS.BUDGET_CATEGORIES.replace(
+          "{budgetId}",
+          value
+        );
+
+        const responseCategories = 
+          await axios.get(`${config.API_BASE_URL}${budgetCategoryUrl}`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
@@ -82,14 +96,17 @@ function SplitsFilter({ onGetSplitsButtonClick }) {
 
         setFilters((prevFilters) => ({
           ...prevFilters,
-          budgetPeriods: response.data,
+          budgetPeriods: responsePeriods.data,
+          categories: responseCategories.data, 
         }));
+
         setSelectedValues((prevValues) => ({
           ...prevValues,
           budgetPeriodId: null,
+          categoryId: null,
         }));
       } catch (error) {
-        console.error("Error fetching budget periods:", error);
+        console.error("Error fetching budget periods or budget categories:", error);
       }
     }
   };

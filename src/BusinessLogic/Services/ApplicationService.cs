@@ -195,12 +195,15 @@ namespace BusinessLogic.Services
             }
 
             IEnumerable<BudgetPeriodDto> budgetPeriods = new List<BudgetPeriodDto>();
+            IEnumerable<BudgetCategoryDto> budgetCategories= new List<BudgetCategoryDto>();
             if (currentBudget != null)
             {
-                budgetPeriods = await _applicationRepository.FilterAsync<BudgetPeriodDto>(x => x.BudgetId == currentBudget.Id);
+                budgetPeriods = await _applicationRepository.FilterAsync<BudgetPeriodDto>(x => x.BudgetId == currentBudget.Id && x.IsActive);
+                budgetCategories = await _applicationRepository.FilterAsync<BudgetCategoryDto>(x => x.BudgetId == currentBudget.Id && x.IsActive);
             }
-            
-            var categories = await _applicationRepository.FilterAsync<CategoryDto>(x => x.UserId == user.Id);
+
+            var categoryIds = budgetCategories.Select(x => x.CategoryId);
+            var categories = await _applicationRepository.FilterAsync<CategoryDto>(x => categoryIds.Contains(x.Id));
             var accounts = await _applicationRepository.FilterAsync<AccountDto>(x => x.UserId == user.Id);
 
             return new Filter
@@ -274,8 +277,6 @@ namespace BusinessLogic.Services
                 throw new BadHttpRequestException(_localizer["rule_budgetIdBelongsToUser"].Value);
             }
 
-            /* Testowo zastąpione przez wybór kategorii na podstawie obecnego budget i jego budgetCategories */
-            //var categories = await _applicationRepository.FilterAsync<CategoryDto>(x => x.UserId == user.Id);
             var categories = await _applicationRepository.GetCategoriesByBudgetId(budgetId);
             return _categoryMapper.Map(categories);
         }

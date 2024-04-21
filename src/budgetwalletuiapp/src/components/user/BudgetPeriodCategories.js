@@ -10,16 +10,14 @@ import TextField from "@mui/material/TextField";
 import { DataSaverOn } from "@mui/icons-material";
 import { useLanguage } from "../../LanguageContext";
 import translations from "../../translations";
-import { useCategories } from "./CategoriesContext";
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
-function BudgetPeriodCategories({ budgetPeriod, budgetPeriodIndex, onBack }) {
+function BudgetPeriodCategories({ budgetPeriod, budgetPeriodIndex, categories, onBack }) {
   const [thisBudgetPeriod, setBudgetPeriod] = useState(budgetPeriod);
   const [thisBudgetPeriodIndex, setBudgetPeriodIndex] = useState(budgetPeriodIndex);
   const [showInactive, setShowInactive] = useState(false);
-  const { categories } = useCategories();
   const { language } = useLanguage();
 
   const handleBack = () => {
