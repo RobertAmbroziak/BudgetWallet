@@ -234,6 +234,9 @@
 * List of categories in various places of the application - analysis
 * List of categories in various places of the application - changes and fixes
 
+### Day 53
+* Plan of Budget State Area
+
 
 
 

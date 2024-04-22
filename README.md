@@ -60,10 +60,10 @@ In my efforts to control expenses and manage the household budget, I have tried 
     - :heavy_check_mark: more details of data row
 	- :heavy_check_mark: edit transfer
   - :heavy_check_mark: add (new expense)
-  - :white_square_button: configuration
+  - :heavy_check_mark: configuration
     - :heavy_check_mark: add/edit categories
     - :heavy_check_mark: add/edit accounts
-    - :x: add/edit budget (with budgetCategories), budget period (with budgetPeriodCategories)
+    - :heavy_check_mark: add/edit budget (with budgetCategories), budget period (with budgetPeriodCategories)
   - :x: account state
     - :x: add/edit internal transfer or deposit
 	- :x: account values
