@@ -235,7 +235,10 @@
 * List of categories in various places of the application - changes and fixes
 
 ### Day 53
-* Plan of Budget State Area
+* Plan of Account State Area
+
+### Day 54
+* Init Api Method for Account State Area
 
 
 

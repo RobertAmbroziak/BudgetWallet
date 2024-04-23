@@ -183,5 +183,41 @@ namespace WebApi.Controllers
             await _applicationService.UpdateCategories(categories);
             return Accepted();
         }
+
+        [HttpPut("transfers/{transferId}/interal")]
+        public async Task<ActionResult> UpdateInternalTransfer([FromRoute] int transferId, PostTransfer transfer)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpPost("transfers/interal")]
+        public async Task<ActionResult> AddInternalTransfer(PostTransfer transfer)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet("transfers/interal")]
+        public async Task<ActionResult> GetInternalTransfers()
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet("transfers/{transferId}/interal")]
+        public async Task<ActionResult> GetInternalTransfer([FromRoute] int transferId)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet("transfers/outOfBudgets")]
+        public async Task<ActionResult> GetOutOfBudgetsTransfers()
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet("accounts/states")]
+        public async Task<ActionResult> GetAccountStates()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
