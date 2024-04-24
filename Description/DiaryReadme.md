@@ -240,8 +240,9 @@
 ### Day 54
 * Init Api Method for Account State Area
 
-
-
+### Day 55
+* Align values helper for budget configuration
+* Percent estimate in table of splits - fix
 
 
 

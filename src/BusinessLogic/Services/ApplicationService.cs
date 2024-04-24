@@ -74,7 +74,7 @@ namespace BusinessLogic.Services
                 }
                 else if (splitsRequest.BudgetPeriodId == null && splitsRequest.CategoryId != null)
                 {
-                    budgetFilterValue = (await _applicationRepository.FirstOrDefault<BudgetCategoryDto>(x => x.CategoryId == splitsRequest.CategoryId))?.MaxValue ?? 0;
+                    budgetFilterValue = (await _applicationRepository.FirstOrDefault<BudgetCategoryDto>(x => x.BudgetId == splitsRequest.BudgetId && x.CategoryId == splitsRequest.CategoryId))?.MaxValue ?? 0;
                 }
                 else if (splitsRequest.BudgetPeriodId != null && splitsRequest.CategoryId == null)
                 {

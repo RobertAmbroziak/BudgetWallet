@@ -42,9 +42,10 @@ function BudgetDetails({ simpleBudget, onBack, onSuccess, onError }) {
   const { language } = useLanguage();
   const [budget, setBudget] = useState();
   const [editingBudgetPeriod, setEditingBudgetPeriod] = useState(null);
-  const [editingBudgetPeriodIndex, setEditingBudgetPeriodIndex] = useState(null);
+  const [editingBudgetPeriodIndex, setEditingBudgetPeriodIndex] =
+    useState(null);
   const [filteredCategories, setFilteredCategories] = useState([]);
-  
+
   const handleBackClick = () => {
     onBack();
   };
@@ -78,15 +79,16 @@ function BudgetDetails({ simpleBudget, onBack, onSuccess, onError }) {
 
   const updateBudgetPeriod = (updatedPeriod, updatedPeriodIndex) => {
     setBudget((prevBudget) => {
-      const updatedBudgetPeriods = prevBudget.budgetPeriods.map((period, index) => {
-        if (period.id > 0 && period.id === updatedPeriod.id) {
-          return updatedPeriod;
-        }
-        else if (period.id === 0 && index === updatedPeriodIndex) {
+      const updatedBudgetPeriods = prevBudget.budgetPeriods.map(
+        (period, index) => {
+          if (period.id > 0 && period.id === updatedPeriod.id) {
             return updatedPeriod;
+          } else if (period.id === 0 && index === updatedPeriodIndex) {
+            return updatedPeriod;
+          }
+          return period;
         }
-        return period;
-      });
+      );
 
       return { ...prevBudget, budgetPeriods: updatedBudgetPeriods };
     });
@@ -117,15 +119,63 @@ function BudgetDetails({ simpleBudget, onBack, onSuccess, onError }) {
     }
   };
 
+  const handleAlignBudgetPeriods = () => {
+    if (!budget) return;
+
+    const updatedBudget = { ...budget };
+    updatedBudget.budgetPeriods = updatedBudget.budgetPeriods.map((period) => {
+      const newPeriodCategories = [...period.budgetPeriodCategories];
+
+      updatedBudget.budgetCategories.forEach((category) => {
+        let sameCategoryPeriods = newPeriodCategories.filter(
+          (pCat) => pCat.categoryId === category.categoryId
+        );
+
+        if (sameCategoryPeriods.length === 0 && category.isActive) {
+          newPeriodCategories.push({
+            id: 0,
+            budgetPeriodId: period.id,
+            categoryId: category.categoryId,
+            isActive: category.isActive,
+            maxValue: "0.00",
+          });
+          sameCategoryPeriods = newPeriodCategories.filter(
+            (pCat) => pCat.categoryId === category.categoryId
+          );
+        }
+
+        if (sameCategoryPeriods.length > 0) {
+          const eachValue = (
+            category.maxValue / sameCategoryPeriods.length
+          ).toFixed(2);
+          let totalAssigned = 0;
+
+          sameCategoryPeriods.forEach((pCat, index) => {
+            pCat.isActive = category.isActive;
+
+            if (index === sameCategoryPeriods.length - 1) {
+              pCat.maxValue = (category.maxValue - totalAssigned).toFixed(2);
+            } else {
+              pCat.maxValue = eachValue;
+              totalAssigned += parseFloat(eachValue);
+            }
+          });
+        }
+      });
+      return { ...period, budgetPeriodCategories: newPeriodCategories };
+    });
+    setBudget(updatedBudget);
+  };
+
   const handleAddBudgetPeriodRecord = () => {
     if (budget) {
-      const utcNow = dayjs().utc().startOf('day').toDate();
+      const utcNow = dayjs().utc().startOf("day").toDate();
       const newBudgetPeriod = {
         id: 0,
         validFrom: utcNow,
         validTo: utcNow,
         isActive: true,
-        budgetPeriodCategories: []
+        budgetPeriodCategories: [],
       };
 
       setBudget((prevBudget) => ({
@@ -214,38 +264,46 @@ function BudgetDetails({ simpleBudget, onBack, onSuccess, onError }) {
         );
         setBudget(response.data);
 
-        const activeCategories = categories.filter(cat => cat.isActive);
-        const additionalCategories = response.data.budgetCategories.reduce((acc, cat) => {
-          if (!activeCategories.concat(acc).some(c => c.id === cat.categoryId)) {
-            acc.push({
-              id: cat.categoryId,
-              name: cat.category.name,
-              description: cat.category.description,
-              isActive: cat.category.isActive
-            });
-          }
-          return acc;
-        }, []);
+        const activeCategories = categories.filter((cat) => cat.isActive);
+        const additionalCategories = response.data.budgetCategories.reduce(
+          (acc, cat) => {
+            if (
+              !activeCategories.concat(acc).some((c) => c.id === cat.categoryId)
+            ) {
+              acc.push({
+                id: cat.categoryId,
+                name: cat.category.name,
+                description: cat.category.description,
+                isActive: cat.category.isActive,
+              });
+            }
+            return acc;
+          },
+          []
+        );
 
         setFilteredCategories([...activeCategories, ...additionalCategories]);
-
       } catch (error) {
         console.error("Error fetching budget", error);
       }
     };
-    if (simpleBudget.id > 0){
+    if (simpleBudget.id > 0) {
       fetchBudgetDetails();
-    }
-    else{
-      const activeCategories = categories.filter(cat => cat.isActive);
+    } else {
+      const activeCategories = categories.filter((cat) => cat.isActive);
       setFilteredCategories(activeCategories);
       setBudget({
         ...simpleBudget,
-        budgetCategories: simpleBudget.budgetCategories?.length > 0 ? simpleBudget.budgetCategories : [],
-        budgetPeriods: simpleBudget.budgetPeriods?.length > 0 ? simpleBudget.budgetPeriods : []
+        budgetCategories:
+          simpleBudget.budgetCategories?.length > 0
+            ? simpleBudget.budgetCategories
+            : [],
+        budgetPeriods:
+          simpleBudget.budgetPeriods?.length > 0
+            ? simpleBudget.budgetPeriods
+            : [],
       });
     }
-    
   }, [simpleBudget.id, jwtToken, categories]);
 
   if (editingBudgetPeriod) {
@@ -253,7 +311,7 @@ function BudgetDetails({ simpleBudget, onBack, onSuccess, onError }) {
       <BudgetPeriodCategories
         budgetPeriod={editingBudgetPeriod}
         budgetPeriodIndex={editingBudgetPeriodIndex}
-        categories ={filteredCategories}
+        categories={filteredCategories}
         onBack={updateBudgetPeriod}
       />
     );
@@ -527,6 +585,9 @@ function BudgetDetails({ simpleBudget, onBack, onSuccess, onError }) {
                     }
                     label={translations[language].cbx_ShowInactive}
                   />
+                  <Button variant="outlined" onClick={handleAlignBudgetPeriods}>
+                    {translations[language].btn_alignBudgetPeriods}
+                  </Button>
                   {budget.budgetPeriods.map((record, index) => (
                     <Box
                       key={"key_budgetPeriodBox_" + index}
@@ -589,7 +650,11 @@ function BudgetDetails({ simpleBudget, onBack, onSuccess, onError }) {
                           label={translations[language].lbl_budgetValidFromDate}
                           value={dayjs.utc(record.validFrom).startOf("day")}
                           onChange={(newDate) =>
-                            handleBudgetPeriodChange(index,"validFrom", newDate)
+                            handleBudgetPeriodChange(
+                              index,
+                              "validFrom",
+                              newDate
+                            )
                           }
                           sx={{ m: 1 }}
                         />

@@ -91,6 +91,7 @@ const translations = {
     lbl_budgetCategoryList: "Budget Categories",
     lbl_budgetPeriodList: "Budget  Periods",
     btn_AccountsState: "Accounts State",
+    btn_alignBudgetPeriods: "Align",
   },
   pl: {
     btn_logout: "Wyloguj",
@@ -184,6 +185,7 @@ const translations = {
     lbl_budgetCategoryList: "Lista budżet kategorii",
     lbl_budgetPeriodList: "Lista budżet okresów",
     btn_AccountsState: "Stan Kont",
+    btn_alignBudgetPeriods: "Wyrównaj",
   },
 };
 
