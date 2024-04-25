@@ -20,22 +20,35 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useLanguage } from "../../LanguageContext";
 import translations from "../../translations";
-import { useUser } from '../../UserContext';
+import { useUser } from "../../UserContext";
 
 dayjs.extend(utc);
 
-function AddExpense({ transferEdit = null, handleSaveTransfer = null, isEdit = false }) {
-  const { jwtToken } = useUser(); 
+function AddExpense({
+  transferEdit = null,
+  handleSaveTransfer = null,
+  isEdit = false,
+}) {
+  const { jwtToken } = useUser();
   const [budgets, setBudgets] = useState([]);
   const [accounts, setAccounts] = useState([]);
-  const [transferDate, setTransferDate] = useState(dayjs().utc().startOf("day"));
+  const [transferDate, setTransferDate] = useState(
+    dayjs().utc().startOf("day")
+  );
   const [categories, setCategories] = useState([]);
   const [budgetId, setBudgetId] = useState();
   const [transferId, setTransferId] = useState(0);
   const [accountId, setAccountId] = useState("");
   const [isValid, setIsValid] = useState({ isValid: true, errors: [] });
   const [splitRecords, setSplitRecords] = useState([
-    { id: 0, categoryId: "", name: "", description: "", value: "", isActive: true },
+    {
+      id: 0,
+      categoryId: "",
+      name: "",
+      description: "",
+      value: "",
+      isActive: true,
+    },
   ]);
 
   const { language } = useLanguage();
@@ -43,7 +56,14 @@ function AddExpense({ transferEdit = null, handleSaveTransfer = null, isEdit = f
   const handleAddSplitRecord = () => {
     setSplitRecords([
       ...splitRecords,
-      { id: 0, categoryId: "", name: "", description: "", value: "", isActive: true },
+      {
+        id: 0,
+        categoryId: "",
+        name: "",
+        description: "",
+        value: "",
+        isActive: true,
+      },
     ]);
   };
 
@@ -188,11 +208,18 @@ function AddExpense({ transferEdit = null, handleSaveTransfer = null, isEdit = f
         document.getElementById("transferName").value = "";
         document.getElementById("transferDescription").value = "";
         document.getElementById("transferValue").value = "";
-        setTransferDate(dayjs().utc().startOf("day")); 
+        setTransferDate(dayjs().utc().startOf("day"));
         setAccountId();
         setIsValid({ isValid: true, errors: [] });
         setSplitRecords([
-          { id: "", categoryId: "", name: "", description: "", value: "", isActive: true },
+          {
+            id: "",
+            categoryId: "",
+            name: "",
+            description: "",
+            value: "",
+            isActive: true,
+          },
         ]);
         addTransferSuccessToast();
       } catch (error) {

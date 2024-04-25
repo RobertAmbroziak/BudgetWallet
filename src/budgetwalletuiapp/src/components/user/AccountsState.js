@@ -1,22 +1,42 @@
 import React, { useState, useEffect } from "react";
 import config from "../../config";
 import axios from "axios";
-import { useLanguage } from "../../LanguageContext";
-import translations from "../../translations";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { DataSaverOn } from "@mui/icons-material";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import { useUser } from '../../UserContext';
+import Paper from "@mui/material/Paper";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useLanguage } from "../../LanguageContext";
+import translations from "../../translations";
+import { useUser } from "../../UserContext";
+
+dayjs.extend(utc);
 
 function AccountsState() {
-  const { jwtToken } = useUser(); 
+  const { jwtToken } = useUser();
   const { language } = useLanguage();
+  const [accounts, setAccounts] = useState([]);
+  const [isValid, setIsValid] = useState({ isValid: true, errors: [] });
+  const [accountId, setAccountId] = useState("");
+  const [transferDate, setTransferDate] = useState(
+    dayjs().utc().startOf("day")
+  );
 
+  const handleAddTransferButtonClick = async () => {};
+  const handleDropdownAccountSourceChange = async () => {};
+  const handleDropdownAccountDestinationChange = async () => {};
   /*
     w tym widoku będzie lista aktywnych kont bez możliwości ich edycji ,ale pokaże się  ich nazwa opis, minValue i aktualny stan
     wyliczany z sumy transferów wydatków, przychodów i transferów pomiędzy kontami - tylko aktywne transfery - bez splitów, bo sa zbędne
@@ -28,15 +48,94 @@ function AccountsState() {
 
     można będzie wyedytować istniejący transfer: nazwa , opis, data, wartość, sourceAccountId, DestinationAccountId
 
+  */
 
-
-  
-  */  
   return (
     <>
-    <div>
-    Stan Kont i operacje na nich (oprócz wydatków) 
-    </div>
+      <ToastContainer />
+      {!isValid.isValid && (
+        <Paper elevation={3} sx={{ margin: "20px", color: "red" }}>
+          <ul>
+            {isValid.errors.map((error, index) => (
+              <li key={index}>{error}</li>
+            ))}
+          </ul>
+        </Paper>
+      )}
+      <Paper elevation={3} sx={{ margin: { xs: "5px", sm: "20px" } }}>
+        <Box
+          component="form"
+          sx={{
+            "& > :not(style)": { m: 1, width: "25ch" },
+          }}
+          noValidate
+          autoComplete="off"
+        >
+          <FormControl sx={{ m: 1, minWidth: 120 }}>
+            <InputLabel id="accountSourceSelect">
+              {translations[language].lbl_sourceAccount}
+            </InputLabel>
+            <Select
+              labelId="accountSourceSelect"
+              id="accountSourceSelect"
+              value={accountId ?? ""}
+              label={translations[language].lbl_sourceAccount}
+              name="accountSourceId"
+              onChange={handleDropdownAccountSourceChange}
+            >
+              {accounts.map((account) => (
+                <MenuItem key={account.id} value={account.id}>
+                  {account.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl sx={{ m: 1, minWidth: 120 }}>
+            <InputLabel id="accountDestinationSelect">
+              {translations[language].lbl_destinationAccount}
+            </InputLabel>
+            <Select
+              labelId="accountDestinationSelect"
+              id="accountDestinationSelect"
+              value={accountId ?? ""}
+              label={translations[language].lbl_destinationAccount}
+              name="accountDestinationId"
+              onChange={handleDropdownAccountDestinationChange}
+            >
+              {accounts.map((account) => (
+                <MenuItem key={account.id} value={account.id}>
+                  {account.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <TextField
+            id="transferName"
+            label={translations[language].txt_name}
+            variant="outlined"
+          />
+          <TextField
+            id="transferDescription"
+            label={translations[language].txt_description}
+            variant="outlined"
+          />
+          <TextField
+            id="transferValue"
+            label={translations[language].txt_value}
+            variant="outlined"
+          />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label={translations[language].lbl_transferDate}
+              value={transferDate ?? AdapterDayjs.date()}
+              onChange={(newDate) => setTransferDate(newDate)}
+            />
+          </LocalizationProvider>
+          <Button variant="outlined" onClick={handleAddTransferButtonClick}>
+            {translations[language].btn_save}
+          </Button>
+        </Box>
+      </Paper>
     </>
   );
 }

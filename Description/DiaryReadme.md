@@ -244,5 +244,8 @@
 * Align values helper for budget configuration
 * Percent estimate in table of splits - fix
 
+### Day 56
+* Init View for add transfer (internal or deposit) in AccountsState
+
 
 
