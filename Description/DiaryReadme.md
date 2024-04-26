@@ -247,5 +247,9 @@
 ### Day 56
 * Init View for add transfer (internal or deposit) in AccountsState
 
+### Day 57
+* Init new UI Project (Vite + React + TS/TSX) - not pushed
+* Init 5 new empty conrollers (Category,Account,Budget,Transfer,DefaultCreator) to replace ApplicationController
+
 
 
