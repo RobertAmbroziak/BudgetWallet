@@ -251,5 +251,9 @@
 * Init new UI Project (Vite + React + TS/TSX) - not pushed
 * Init 5 new empty conrollers (Category,Account,Budget,Transfer,DefaultCreator) to replace ApplicationController
 
+### Day 58
+* Refactoring - controlers Category and Account with summary description - not yet used 
+* Refactoring of new UI Project (Vite + React + TS/TSX) - not pushed
+
 
 
