@@ -59,7 +59,7 @@ function User() {
       try {
         if (jwtToken) {
           const response = await axios.get(
-            `${config.API_BASE_URL}${config.API_ENDPOINTS.USER}`,
+            `${config.API_BASE_URL}${config.API_ENDPOINTS.APPLICATION}`,
             {
               headers: {
                 Authorization: `Bearer ${jwtToken}`,
@@ -84,13 +84,25 @@ function User() {
           <div>
             <h1>{translations[language].lbl_applicationPanel}</h1>
             <p>{userData}</p>
-            <MDBBtn className='me-1' color="success" onClick={handleGetSplitsClick}>
+            <MDBBtn
+              className="me-1"
+              color="success"
+              onClick={handleGetSplitsClick}
+            >
               {translations[language].btn_Expenses}
             </MDBBtn>
-            <MDBBtn className='me-1' color="danger" onClick={handleAddExpenseClick}>
+            <MDBBtn
+              className="me-1"
+              color="danger"
+              onClick={handleAddExpenseClick}
+            >
               {translations[language].btn_Edit}
             </MDBBtn>
-            <MDBBtn className='me-1' color="info" onClick={handleConfigurationClick}>
+            <MDBBtn
+              className="me-1"
+              color="info"
+              onClick={handleConfigurationClick}
+            >
               {translations[language].btn_Config}
             </MDBBtn>
             <MDBBtn color="warning" onClick={handleAccountsStateClick}>

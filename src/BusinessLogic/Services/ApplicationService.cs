@@ -154,36 +154,7 @@ namespace BusinessLogic.Services
             return splitsResponse;
         }
 
-        public async Task AddMockData()
-        {
-            var user = await _identityService.GetCurrentUser();
-
-            var isUserAccountsExist = await _applicationRepository.Any<AccountDto>(x => x.UserId == user.Id);
-            var isUserBudgetsExist = await _applicationRepository.Any<BudgetDto>(x => x.UserId == user.Id);
-
-            if (isUserAccountsExist && isUserBudgetsExist)
-            {
-                throw new Exception("Istnieją już konta i budżety dla tego użytkownika");
-            }
-
-            IEnumerable<AccountDto> accountMock = null;
-            IEnumerable<BudgetDto> budgetMock = null;
-
-            if (!isUserAccountsExist)
-            {
-                accountMock = AccountMockCreator.CreateAccounts(user.Id);
-            }
-
-            if (!isUserBudgetsExist)
-            {
-                var budgetMockCreator = new BudgetMockCreator(DateTime.Now);
-                budgetMock = budgetMockCreator.CreateBudgets(user.Id);
-            }
-
-            await _applicationRepository.AddMockData(budgetMock, accountMock);
-        }
-
-        public async Task<Filter> GetFilter()
+        public async Task<TransferFilter> GetTransferFilter()
         {
             var user = await _identityService.GetCurrentUser();
 
@@ -206,7 +177,7 @@ namespace BusinessLogic.Services
             var categories = await _applicationRepository.FilterAsync<CategoryDto>(x => categoryIds.Contains(x.Id));
             var accounts = await _applicationRepository.FilterAsync<AccountDto>(x => x.UserId == user.Id);
 
-            return new Filter
+            return new TransferFilter
             {
                 CurrentBudgetId = currentBudget?.Id ?? 0,
                 Budgets = _budgetMapper.Map(budgets),
@@ -230,7 +201,7 @@ namespace BusinessLogic.Services
                 throw new BadHttpRequestException(_localizer["rule_budgetIdBelongsToUser"].Value);
             }
 
-            var budgetPeriods = await _applicationRepository.FilterAsync<BudgetPeriodDto>(x => x.BudgetId == budgetId);
+            var budgetPeriods = await _applicationRepository.FilterAsync<BudgetPeriodDto>(x => x.BudgetId == budgetId && x.IsActive);
             return _budgetPeriodMapper.Map(budgetPeriods);
         }
 

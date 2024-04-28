@@ -68,7 +68,6 @@ namespace WebApi.Controllers
         }
 
         /// <summary>
-        /// TODO: Check this. it does not make sense
         /// Get user accounts (only active) by budget id
         /// </summary>
         /// <param name="budgetId">Budget id</param>

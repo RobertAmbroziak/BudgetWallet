@@ -256,7 +256,4 @@
 * Refactoring of new UI Project (Vite + React + TS/TSX) - not pushed
 
 ### Day 59
-* Refactoring - controler Transfer without summary description - not yet used
-
-
-
+* Refactoring - all controllers with changing endpoints in front-end ui app

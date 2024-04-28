@@ -8,11 +8,11 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Button from "@mui/material/Button";
-import { useUser } from '../../UserContext';
+import { useUser } from "../../UserContext";
 
 function SplitsFilter({ onGetSplitsButtonClick }) {
   const { language } = useLanguage();
-  const { jwtToken } = useUser(); 
+  const { jwtToken } = useUser();
 
   const [filters, setFilters] = useState({
     budgets: [],
@@ -71,8 +71,13 @@ function SplitsFilter({ onGetSplitsButtonClick }) {
 
     if (name === "budgetId") {
       try {
+        const url = config.API_ENDPOINTS.BUDGET_PERIODS.replace(
+          "{budgetId}",
+          value
+        );
+
         const responsePeriods = await axios.get(
-          `${config.API_BASE_URL}${config.API_ENDPOINTS.FILTER_BUDGET_PERIODS}/${value}`,
+          `${config.API_BASE_URL}${url}`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
@@ -80,13 +85,11 @@ function SplitsFilter({ onGetSplitsButtonClick }) {
           }
         );
 
-        const budgetCategoryUrl = config.API_ENDPOINTS.BUDGET_CATEGORIES.replace(
-          "{budgetId}",
-          value
-        );
+        const budgetCategoryUrl =
+          config.API_ENDPOINTS.BUDGET_CATEGORIES.replace("{budgetId}", value);
 
-        const responseCategories = 
-          await axios.get(`${config.API_BASE_URL}${budgetCategoryUrl}`,
+        const responseCategories = await axios.get(
+          `${config.API_BASE_URL}${budgetCategoryUrl}`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
@@ -97,7 +100,7 @@ function SplitsFilter({ onGetSplitsButtonClick }) {
         setFilters((prevFilters) => ({
           ...prevFilters,
           budgetPeriods: responsePeriods.data,
-          categories: responseCategories.data, 
+          categories: responseCategories.data,
         }));
 
         setSelectedValues((prevValues) => ({
@@ -106,7 +109,10 @@ function SplitsFilter({ onGetSplitsButtonClick }) {
           categoryId: null,
         }));
       } catch (error) {
-        console.error("Error fetching budget periods or budget categories:", error);
+        console.error(
+          "Error fetching budget periods or budget categories:",
+          error
+        );
       }
     }
   };

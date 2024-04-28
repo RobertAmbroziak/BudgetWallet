@@ -100,10 +100,6 @@ This database schema emerged after the initial analysis:
 * Note: Filtering by accounts applies when selecting a specific account instead of ALL in the Account filter. In that case, the summarization may not make complete sense. This needs to be addressed somehow. 
 * The colorful buttons next to CATEGORY are a helper to facilitate selecting one of the 5 most popular categories without a dropdown.
 
-
-Plans regarding the direction of application development, which emerged after 17 days of coding. Unfortunately, it's a complicated jumble of loose thoughts, so I'm leaving it in Polish.
-[Project Plans](/Description/ProjectPlan.md)
-
 > [!NOTE]
 > [Diary](/Description/DiaryReadme.md) Activity and code change log
 

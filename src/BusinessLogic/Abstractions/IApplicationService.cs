@@ -5,8 +5,7 @@ namespace BusinessLogic.Abstractions
     public interface IApplicationService
     {
         Task<SplitsResponse> GetSplitsResponse(SplitsRequest splitsRequest);
-        Task AddMockData();
-        Task<Filter> GetFilter();
+        Task<TransferFilter> GetTransferFilter();
         Task<IEnumerable<BudgetPeriod>> GetBudgetPeriodsByBudgetId(int budgetId);
         Task<UserBudgetsInfo> GetUserBudgetsInfo();
         Task<IEnumerable<Category>> GetBudgetCategories(int budgetId);

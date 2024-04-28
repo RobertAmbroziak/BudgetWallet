@@ -1,6 +1,6 @@
 ﻿namespace Model.Application
 {
-    public class Filter
+    public class TransferFilter
     {
         public IEnumerable<Budget> Budgets { get; set; }
         public IEnumerable<BudgetPeriod> BudgetPeriods { get; set; }

@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
+    /// <summary>
+    /// Universal Controller for administration panel area
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AdministrationController : ControllerBase
@@ -15,7 +18,11 @@ namespace WebApi.Controllers
             _identityService = identityService;
         }
 
-        [HttpGet("AdminPanel")]
+        /// <summary>
+        /// Get temporary content for adminPanel module
+        /// </summary>
+        /// <returns>content</returns>
+        [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AdminPanel()
         {
