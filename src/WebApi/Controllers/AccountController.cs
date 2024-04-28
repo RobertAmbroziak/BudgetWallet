@@ -66,5 +66,18 @@ namespace WebApi.Controllers
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// TODO: Check this. it does not make sense
+        /// Get user accounts (only active) by budget id
+        /// </summary>
+        /// <param name="budgetId">Budget id</param>
+        /// <returns>List of accounts</returns>
+        [HttpGet("budgets/{budgetId}")]
+        public async Task<ActionResult<IEnumerable<Account>>> GetBudgetAccounts([FromRoute] int budgetId)
+        {
+            var result = await _applicationService.GetBudgetAccounts(budgetId);
+            return Ok(result);
+        }
     }
 }

@@ -255,5 +255,8 @@
 * Refactoring - controlers Category and Account with summary description - not yet used 
 * Refactoring of new UI Project (Vite + React + TS/TSX) - not pushed
 
+### Day 59
+* Refactoring - controler Transfer without summary description - not yet used
+
 
 
