@@ -69,6 +69,82 @@ In my efforts to control expenses and manage the household budget, I have tried 
 	- :x: account values
 	- :x: table of internal transfers and deposits
 
+## Information about installation, startup, and deployment of the application
+
+### Setting Google Client Id
+
+Change the value in file `.\BudgetWallet\src\budgetwalletuiapp\src\config.js` GOOGLE_CLIENT_ID: ADD_YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com to your Google Client Id. If you don't do this, you will still be able to use the application, but without logging in with your Google account.
+How to configure Google and obtain this ID will be shown shortly
+
+### Running by dotnet, npm  independently and and use an existing MS SQL database
+
+In a very classic scenario. If you are using Visual Studio (which by default comes with MS SQL Express) and/or Visual Studio Code, and you have added MSSQL Express,
+Change the connection string to the database in file .\BudgetWallet\src\WebApi\appsettings.json.  For example, like this:
+
+```json
+"ConnectionStrings": {
+    "DefaultConnection": "Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=BudgetWalletDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
+  },
+```
+
+Change Issuer and Audience in this file:
+
+```json
+"ConnectionStrings": {
+	"Issuer": "https://localhost:7006",
+	"Audience": "https://localhost:7006"
+  },
+```
+
+And change endpoint in file `.\BudgetWallet\src\budgetwalletuiapp\src\config.js`
+
+```json
+ API_BASE_URL: "https://localhost:7006",
+```
+
+Now run applications:
+
+While in the `.\BudgetWallet\src\budgetwalletuiapp\src` folder, you can run npm command:
+
+```json
+npm start
+```
+
+While in the `.\BudgetWallet\src\WebApi` folder, you can run dotnet command:
+
+```powershell
+dotnet run
+```
+
+Api now listening on: `http://localhost:5006` and `https://localhost:7006`
+UI (React) application is running at address `http://localhost:3000`
+
+
+### Running in Docker (example on Windows, but I'm confident the process will work on macOS and Linux)
+
+"In my case, I use PowerShell. While in the `.\BudgetWallet\src` folder, you can run the Docker-compose command:"
+
+```powershell
+docker-compose up --build -d
+```
+This is how it looks:
+
+<div align="center">
+
+<img src="Description/Images/dc1.PNG" alt="Image dc 1" height="300px" style="width:auto;">
+ <img src="Description/Images/dc2.PNG" alt="Image dc 2" height="300px" style="width:auto;">	
+
+</div>
+
+The application has started on port 3000.
+
+<div align="center">
+
+<img src="Description/Images/dc3.PNG" alt="Image dc 3" height="300px" style="width:auto;">
+
+</div>
+
+
 ## Entities
 
 This database schema emerged after the initial analysis:
