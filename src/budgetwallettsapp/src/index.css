@@ -1,0 +1,14 @@
+body {
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+  min-width: 320px;
+  margin: 0;
+  background-color: #fff;
+  color: #333;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #333;
+    color: #fff;
+  }
+}

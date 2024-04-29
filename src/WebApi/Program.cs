@@ -12,6 +12,7 @@ using Model.Application;
 using Model.Identity;
 using Model.Tables;
 using System.Globalization;
+using System.Reflection;
 using System.Text;
 using WebApi.Middlewares;
 using WebApi.Validators;
@@ -45,6 +46,10 @@ builder.Services.AddSwaggerGen(c =>
             Array.Empty<string>()
         }
     });
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
 });
 builder.Services.AddCors(options =>
 {
