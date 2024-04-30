@@ -7,6 +7,7 @@ using Mocks.MockData;
 using Microsoft.Extensions.Localization;
 using Util.Resources;
 using Mocks.DefaultData;
+using Util.Helpers;
 
 namespace BusinessLogic.Services
 {
@@ -20,6 +21,7 @@ namespace BusinessLogic.Services
         private readonly IMapperService<CategoryDto, Category> _categoryMapper;
         private readonly IMapperService<AccountDto, Account> _accountMapper;
         private readonly IMapperService<PostTransfer, TransferDto> _postTransferMapper;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
         public ApplicationService
         (
@@ -30,7 +32,8 @@ namespace BusinessLogic.Services
             IMapperService<BudgetPeriodDto, BudgetPeriod> budgetPeriodMapper,
             IMapperService<CategoryDto, Category> categoryMapper,
             IMapperService<AccountDto, Account> accountMapper,
-            IMapperService<PostTransfer, TransferDto> postTransferMapper
+            IMapperService<PostTransfer, TransferDto> postTransferMapper,
+            IDateTimeProvider dateTimeProvider
         )
         {
             _applicationRepository = applicationRepository;
@@ -41,6 +44,7 @@ namespace BusinessLogic.Services
             _categoryMapper = categoryMapper;
             _accountMapper = accountMapper;
             _postTransferMapper = postTransferMapper;
+            _dateTimeProvider = dateTimeProvider;
         }
 
         public async Task<SplitsResponse> GetSplitsResponse(SplitsRequest splitsRequest)
@@ -159,7 +163,7 @@ namespace BusinessLogic.Services
             var user = await _identityService.GetCurrentUser();
 
             var budgets = await _applicationRepository.FilterAsync<BudgetDto>(x => x.UserId == user.Id);
-            var currentBudget = budgets.FirstOrDefault(x => x.ValidFrom <= DateTime.Now && x.ValidTo > DateTime.Now);
+            var currentBudget = budgets.FirstOrDefault(x => x.ValidFrom <= _dateTimeProvider.Now && x.ValidTo > _dateTimeProvider.Now);
             if (currentBudget == null)
             {
                 currentBudget = budgets.FirstOrDefault();
@@ -210,7 +214,7 @@ namespace BusinessLogic.Services
             var user = await _identityService.GetCurrentUser();
 
             var budgets = await _applicationRepository.FilterAsync<BudgetDto>(x => x.UserId == user.Id);
-            var currentBudget = budgets.FirstOrDefault(x => x.ValidFrom <= DateTime.Now && x.ValidTo > DateTime.Now);
+            var currentBudget = budgets.FirstOrDefault(x => x.ValidFrom <= _dateTimeProvider.Now && x.ValidTo > _dateTimeProvider.Now);
             if (currentBudget == null)
             {
                 currentBudget = budgets.FirstOrDefault();

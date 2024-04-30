@@ -261,3 +261,7 @@
 
 ### Day 60
 * Add new Vite React TS App
+
+### Day 61
+* DateTimeProvider
+* Init EmailService and use it in registration process

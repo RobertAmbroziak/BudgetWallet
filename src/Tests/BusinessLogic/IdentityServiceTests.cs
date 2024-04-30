@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using DataAccessLayer;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using BusinessLogic.Abstractions;
+using Util.Helpers;
 
 namespace Tests.BusinessLogic
 {
@@ -26,6 +28,9 @@ namespace Tests.BusinessLogic
             var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
             var configurationMock = new Mock<IConfiguration>();
             var applicationRepositoryMock = new Mock<IApplicationRepository>();
+            var emailServiceMock = new Mock<IEmailService>();
+            var dateTimeProviderMock = new Mock<IDateTimeProvider>();
+            dateTimeProviderMock.Setup(provider => provider.Now).Returns(DateTime.Now);
 
             var fakeJwtKey = Fixture.Create<string>();
             var fakeIssuer = Fixture.Create<string>();
@@ -35,7 +40,7 @@ namespace Tests.BusinessLogic
             configurationMock.SetupGet(x => x["Jwt:Issuer"]).Returns(fakeIssuer);
             configurationMock.SetupGet(x => x["Jwt:Audience"]).Returns(fakeAudience);
 
-            var identityService = new IdentityService(httpContextAccessorMock.Object, configurationMock.Object, applicationRepositoryMock.Object);
+            var identityService = new IdentityService(httpContextAccessorMock.Object, configurationMock.Object, applicationRepositoryMock.Object, emailServiceMock.Object, dateTimeProviderMock.Object);
 
             // Act
             var token = await identityService.GenerateToken(user);

@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
 using Model.Tables;
 using Model.Tables.Abstractions;
+using Util.Helpers;
 
 namespace DataAccessLayer
 {
@@ -11,21 +11,25 @@ namespace DataAccessLayer
     {
         private readonly bool _isInMemory;
         private readonly string _InMemoryDatabaseName;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
         public IDbContextTransaction BeginTransaction() => Database.BeginTransaction();
 
-        public ApplicationDbContext()
+        public ApplicationDbContext(IDateTimeProvider dateTimeProvider)
         {
+            _dateTimeProvider = dateTimeProvider;
         }
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IDateTimeProvider dateTimeProvider) : base(options)
         {
+            _dateTimeProvider = dateTimeProvider;
         }
 
-        public ApplicationDbContext(bool isInMemory, string inMemoryDatabaseName)
+        public ApplicationDbContext(bool isInMemory, string inMemoryDatabaseName, IDateTimeProvider dateTimeProvider)
         {
             _isInMemory = isInMemory;
             _InMemoryDatabaseName = inMemoryDatabaseName;
+            _dateTimeProvider = dateTimeProvider;
         }
 
         public DbSet<UserDto> Users { get; set; }
@@ -280,13 +284,13 @@ namespace DataAccessLayer
             {
                 if (entityEntry.State == EntityState.Modified)
                 {
-                    ((BaseDto)entityEntry.Entity).LastModifiedDate = DateTime.Now;
+                    ((BaseDto)entityEntry.Entity).LastModifiedDate = _dateTimeProvider.Now;
                 }
 
                 if (entityEntry.State == EntityState.Added)
                 {
-                    ((BaseDto)entityEntry.Entity).CreatedDate = DateTime.Now;
-                    ((BaseDto)entityEntry.Entity).LastModifiedDate = DateTime.Now;
+                    ((BaseDto)entityEntry.Entity).CreatedDate = _dateTimeProvider.Now;
+                    ((BaseDto)entityEntry.Entity).LastModifiedDate = _dateTimeProvider.Now;
                 }
             }
         }

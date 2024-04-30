@@ -14,6 +14,7 @@ using Model.Tables;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
+using Util.Helpers;
 using WebApi.Middlewares;
 using WebApi.Validators;
 
@@ -101,6 +102,7 @@ builder.Services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddScoped<IValidator<UserRegisterRequest>, UserRegisterRequestValidator>();
 builder.Services.AddScoped<IValidator<PostTransfer>, PostTransferValidator>();
@@ -111,6 +113,8 @@ builder.Services.AddSingleton<IMapperService<BudgetPeriodDto, BudgetPeriod>, Bud
 builder.Services.AddSingleton<IMapperService<CategoryDto, Category>, CategoryMapper>();
 builder.Services.AddSingleton<IMapperService<AccountDto, Account>, AccountMapper>();
 builder.Services.AddSingleton<IMapperService<PostTransfer, TransferDto>, PostTransferMapper>();
+
+builder.Services.AddScoped<IDateTimeProvider, DateTimeProvider>();
 
 var app = builder.Build();
 

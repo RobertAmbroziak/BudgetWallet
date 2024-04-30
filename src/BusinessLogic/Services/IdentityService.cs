@@ -11,6 +11,8 @@ using Model.Tables;
 using Util.Enums;
 using DataAccessLayer;
 using System.Security.Cryptography;
+using Model.Email;
+using Util.Helpers;
 
 namespace BusinessLogic.Services
 {
@@ -19,12 +21,23 @@ namespace BusinessLogic.Services
         private readonly IConfiguration _config;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IApplicationRepository _applicationRepository;
+        private readonly IEmailService _emailService;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
-        public IdentityService(IHttpContextAccessor httpContextAccessor, IConfiguration config, IApplicationRepository applicationRepository)
+        public IdentityService
+        (
+            IHttpContextAccessor httpContextAccessor,
+            IConfiguration config,
+            IApplicationRepository applicationRepository,
+            IEmailService emailService,
+            IDateTimeProvider dateTimeProvider
+        )
         {
             _httpContextAccessor = httpContextAccessor;
             _config = config;
             _applicationRepository = applicationRepository;
+            _emailService = emailService;
+            _dateTimeProvider = dateTimeProvider;
         }
         public async Task<UserDto> Authenticate(UserLoginRequest userLogin)
         {
@@ -42,26 +55,46 @@ namespace BusinessLogic.Services
 
         public async Task<UserDto> RegisterUser(UserRegisterRequest userRegister)
         {
-            /*
-                dodanie do bazy ale z polem isActive False
-                wygenerowanie kodu i zapis do tabeli Register Confirmation
-                wysłanie maila z prośbą o aktywację
-             */
-
-            var user = new UserDto
+            try
             {
-                UserName = userRegister.UserName,
-                Email = userRegister.Email,
-                HashedPassword = GetHashedPassword(userRegister.Password),
-                IsActive = true,
-                UserRole = UserRole.User,
-                Provider = Provider.Application
-            };
+                var user = new UserDto
+                {
+                    UserName = userRegister.UserName,
+                    Email = userRegister.Email,
+                    HashedPassword = GetHashedPassword(userRegister.Password),
+                    IsActive = true, // TODO: eventually change to false
+                    UserRole = UserRole.User,
+                    Provider = Provider.Application
+                };
 
-            await _applicationRepository.InsertAsync(user);
-            await _applicationRepository.SaveChangesAsync();
+                var registerConfirmation = new RegisterConfirmationDto
+                {
+                    UserId = 0,
+                    Code = GenerateRegisterConfirmationCode(),
+                    IsUsed = false,
+                    ValidTo = _dateTimeProvider.Now.AddDays(30),
+                    User = user
+                };
 
-            return user;
+                await _applicationRepository.InsertAsync(registerConfirmation);
+                await _applicationRepository.SaveChangesAsync();
+
+                var emailRequest = new EmailRequest
+                {
+                    From = "BudgetWallet",
+                    To = userRegister.Email,
+                    Subject = "Budget Wallet Registration",
+                    Body = $" Testowy kod do rejestracji: {registerConfirmation.Code}"  // TODO: buduj endpoint i to chyba do Frontu, bo przecież Api blokują CORS
+                };
+
+                var emailResponse = await _emailService.SendAsync(emailRequest);
+
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
         public async Task<UserDto> AuthenticateWithGoogle(string googleToken)
         {
@@ -131,7 +164,7 @@ namespace BusinessLogic.Services
                 _config["Jwt:Issuer"],
                 _config["Jwt:Audience"],
                 claims,
-                expires: DateTime.Now.AddMinutes(480),
+                expires: _dateTimeProvider.Now.AddMinutes(480),
                 signingCredentials: credentials);
 
             var result = new JwtSecurityTokenHandler().WriteToken(token);
@@ -161,7 +194,7 @@ namespace BusinessLogic.Services
 
         public async Task<UserDto> Activate(string code)
         {
-            var registerConfirmation = (await _applicationRepository.FilterAsync<RegisterConfirmationDto>(x => x.Code == code && x.ValidTo >= DateTime.Now)).SingleOrDefault();
+            var registerConfirmation = (await _applicationRepository.FilterAsync<RegisterConfirmationDto>(x => x.Code == code && x.ValidTo >= _dateTimeProvider.Now)).SingleOrDefault();
             if (registerConfirmation != null)
             {
                 var user = await _applicationRepository.GetByIdAsync<UserDto>(registerConfirmation.UserId);
@@ -195,6 +228,11 @@ namespace BusinessLogic.Services
                 }
                 return builder.ToString();
             }
+        }
+
+        private string GenerateRegisterConfirmationCode()
+        {
+            return Guid.NewGuid().ToString();
         }
     }
 }
