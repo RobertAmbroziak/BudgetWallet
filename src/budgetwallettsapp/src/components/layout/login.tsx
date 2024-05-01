@@ -35,6 +35,11 @@ const Login: React.FC<LoginProps> = ({
 }) => {
   const [emailOrUserName, setEmailOrUserName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [registerUserName, setRegisterUserName] = useState<string>("");
+  const [registerEmail, setRegisterEmail] = useState<string>("");
+  const [registerPassword, setRegisterPassword] = useState<string>("");
+  const [registerRepeatPassword, setRegisterRepeatPassword] =
+    useState<string>("");
   const { language } = useLanguage();
   const navigate = useNavigate();
   const { registerSuccessToast } = useContext(ToastContext);
@@ -127,7 +132,7 @@ const Login: React.FC<LoginProps> = ({
   };
 
   const register = async () => {
-    if (password !== password) {
+    if (registerPassword !== registerRepeatPassword) {
       const passwordMismatchError = translations[language].err_passwordMismatch;
       setRegisterAlerts([
         <Alert severity="error" key="passwordMismatch">
@@ -140,8 +145,9 @@ const Login: React.FC<LoginProps> = ({
       const response = await axios.post(
         `${config.API_BASE_URL}${config.API_ENDPOINTS.REGISTER}`,
         {
-          email: emailOrUserName,
-          password: password,
+          userName: registerUserName,
+          email: registerEmail,
+          password: registerPassword,
         }
       );
       onSetToken(response.data);
@@ -150,21 +156,36 @@ const Login: React.FC<LoginProps> = ({
       navigate("/");
       registerSuccessToast();
     } catch (error) {
-      console.error(error);
       handleError(error);
     }
   };
 
-  const handleError = (error: unknown) => {
-    let errorMessage = "An unexpected error occurred";
-    if (error instanceof Error) {
-      errorMessage = error.message;
+  const handleError = (error: any) => {
+    let alerts: JSX.Element[] = [];
+
+    if (error.response) {
+      const errors = error.response.data;
+      alerts.push(
+        <Alert severity="error" key="errorList">
+          {errors.join("\n")}
+        </Alert>
+      );
+    } else if (error.request) {
+      const errors = translations[language].err_noServerResponse;
+      alerts.push(
+        <Alert severity="error" key="noServerResponse">
+          {errors}
+        </Alert>
+      );
+    } else {
+      const errors = translations[language].err_error + error.message;
+      alerts.push(
+        <Alert severity="error" key="otherError">
+          {errors}
+        </Alert>
+      );
     }
-    setRegisterAlerts([
-      <Alert severity="error" key="registerFail">
-        Registration failed: {errorMessage}
-      </Alert>,
-    ]);
+    setRegisterAlerts(alerts);
   };
 
   return (
@@ -217,24 +238,32 @@ const Login: React.FC<LoginProps> = ({
             label={translations[language].lbl_userName}
             fullWidth
             margin="normal"
-            value={emailOrUserName}
-            onChange={(e) => setEmailOrUserName(e.target.value)}
+            value={registerUserName}
+            onChange={(e) => setRegisterUserName(e.target.value)}
           />
           <TextField
             label={translations[language].lbl_email}
             type="email"
             fullWidth
             margin="normal"
-            value={emailOrUserName}
-            onChange={(e) => setEmailOrUserName(e.target.value)}
+            value={registerEmail}
+            onChange={(e) => setRegisterEmail(e.target.value)}
           />
           <TextField
             label={translations[language].lbl_password}
             type="password"
             fullWidth
             margin="normal"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={registerPassword}
+            onChange={(e) => setRegisterPassword(e.target.value)}
+          />
+          <TextField
+            label={translations[language].lbl_repeatPassword}
+            type="password"
+            fullWidth
+            margin="normal"
+            value={registerRepeatPassword}
+            onChange={(e) => setRegisterRepeatPassword(e.target.value)}
           />
           <Button onClick={register} variant="contained" color="primary">
             {translations[language].lbl_register}

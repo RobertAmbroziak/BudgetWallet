@@ -34,7 +34,6 @@ export const LanguageProvider: FC<LanguageProviderProps> = ({ children }) => {
   const [language, setLanguage] = useState<string>("en");
 
   useEffect(() => {
-    console.log("rekurencja w LC");
     const userLanguage = navigator.language.split("-")[0];
     if (userLanguage in translations) {
       setLanguage(userLanguage);

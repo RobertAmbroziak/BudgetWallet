@@ -9,6 +9,9 @@ using Util.Resources;
 
 namespace WebApi.Controllers
 {
+    /// <summary>
+    /// Manages login register and user accounts
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class IdentityController : ControllerBase
@@ -24,6 +27,11 @@ namespace WebApi.Controllers
             _localizer = localizer;
         }
 
+        /// <summary>
+        /// Log in using the application account
+        /// </summary>
+        /// <param name="userLogin">UserName or email and password</param>
+        /// <returns>Authentication token</returns>
         [AllowAnonymous]
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] UserLoginRequest userLogin)
@@ -43,8 +51,13 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-		
-		[AllowAnonymous]
+
+        /// <summary>
+        /// Register a new application account
+        /// </summary>
+        /// <param name="userRegister">UserName, email and password</param>
+        /// <returns>Code 200 Ok</returns>
+        [AllowAnonymous]
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterRequest userRegister)
         {
@@ -65,6 +78,11 @@ namespace WebApi.Controllers
             return StatusCode(500, $"{_localizer["err_errorAt"].Value} {nameof(Register)}");
         }
 
+        /// <summary>
+        /// Activate the registered application account
+        /// </summary>
+        /// <param name="code">Registered configuration code</param>
+        /// <returns>Code 200 OK</returns>
         [AllowAnonymous]
         [HttpGet("Activate/{code}")]
         public async Task<IActionResult> Activate([FromRoute] string code)
@@ -78,6 +96,11 @@ namespace WebApi.Controllers
             return BadRequest(_localizer["err_codeDoesnottExistsOrExpired"].Value);
         }
 
+        /// <summary>
+        /// Log in using Google account
+        /// </summary>
+        /// <param name="googleToken">Google Token</param>
+        /// <returns>Authentication token<</returns>
         [AllowAnonymous]
         [HttpPost("GoogleLogin")]
         public async Task<IActionResult> GoogleLogin([FromBody] GoogleToken googleToken)

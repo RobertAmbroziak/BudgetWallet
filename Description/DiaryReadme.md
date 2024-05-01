@@ -265,3 +265,6 @@
 ### Day 61
 * DateTimeProvider
 * Init EmailService and use it in registration process
+
+### Day 62
+* Vite TS React Login/Register area fix

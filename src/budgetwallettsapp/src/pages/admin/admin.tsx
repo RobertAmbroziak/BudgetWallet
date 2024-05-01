@@ -13,7 +13,6 @@ function Admin() {
   const { language } = useLanguage();
 
   useEffect(() => {
-    console.log("rekurencja admin");
     const fetchData = async () => {
       try {
         if (jwtToken) {
