@@ -271,3 +271,10 @@
 
 ### Day 63
 * Vite TS React Login/Register area another fixes
+
+### Day 64
+* Design Fix
+* Screens from the new frontend based only on React MUI.
+
+<img src="Images/sc15.PNG" alt="Image 15" height="200px" style="width:auto;">
+ <img src="Images/sc16.PNG" alt="Image 16" height="200px" style="width:auto;">

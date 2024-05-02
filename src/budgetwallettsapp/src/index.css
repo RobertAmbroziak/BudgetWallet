@@ -1,9 +1,16 @@
-body {
-  font-family: Roboto, Helvetica, Arial, sans-serif;
+html {
   min-width: 320px;
+}
+
+body {
+  font-family: Helvetica, Arial, sans-serif !important;
   margin: 0;
   background-color: #fff;
   color: #333;
+}
+
+.MuiTypography-root {
+  font-family: Helvetica, Arial, sans-serif !important;
 }
 
 @media (prefers-color-scheme: dark) {

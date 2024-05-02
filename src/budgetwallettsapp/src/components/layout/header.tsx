@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FC } from "react";
-import { useNavigate, useLocation, NavLink } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { googleLogout } from "@react-oauth/google";
 import AppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
@@ -27,7 +27,6 @@ const Header: FC = () => {
   const { jwtToken, handleSetToken, handleRemoveToken } = useUser();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
   const { language } = useLanguage();
 
   const pages = [
@@ -81,7 +80,10 @@ const Header: FC = () => {
 
   return (
     <>
-      <AppBar position="static">
+      <AppBar
+        position="static"
+        sx={{ background: "linear-gradient(to right, #35424a, #a7b6bd)" }}
+      >
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <Typography
@@ -93,6 +95,11 @@ const Header: FC = () => {
                 fontWeight: 700,
               }}
             >
+              <img
+                src="/wallet_icon.png"
+                alt="Budget Wallet"
+                style={{ width: "30px", height: "30px", marginRight: "5px" }}
+              />
               BUDGET WALLET
             </Typography>
 
@@ -131,6 +138,9 @@ const Header: FC = () => {
                       to={page.path}
                       style={({ isActive }) => ({
                         color: isActive ? "orange" : "inherit",
+                        background: isActive
+                          ? "linear-gradient(to right, #35424a, #a7b6bd)"
+                          : "inherit",
                         textDecoration: "none",
                         width: "100%",
                         display: "block",
@@ -142,25 +152,33 @@ const Header: FC = () => {
                     </NavLink>
                   </MenuItem>
                 ))}
-                <Box sx={{ display: "flex", width: "auto" }}>
-                  {jwtToken && isValidToken(jwtToken) ? (
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      onClick={handleLogout}
-                    >
-                      {translations[language].btn_logout}
-                    </Button>
-                  ) : (
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      onClick={openLoginModal}
-                    >
-                      {translations[language].btn_login}
-                    </Button>
-                  )}
-                </Box>
+                <MenuItem key={"loginButton"} onClick={handleCloseNavMenu}>
+                  <Box
+                    sx={{
+                      display: { xs: "flex", md: "none" },
+                      justifyContent: "center",
+                      width: "100%",
+                    }}
+                  >
+                    {jwtToken && isValidToken(jwtToken) ? (
+                      <Button
+                        color="primary"
+                        variant="contained"
+                        onClick={handleLogout}
+                      >
+                        {translations[language].btn_logout}
+                      </Button>
+                    ) : (
+                      <Button
+                        color="primary"
+                        variant="contained"
+                        onClick={openLoginModal}
+                      >
+                        {translations[language].btn_login}
+                      </Button>
+                    )}
+                  </Box>
+                </MenuItem>
               </Menu>
             </Box>
             <Typography
@@ -173,6 +191,11 @@ const Header: FC = () => {
                 fontWeight: 700,
               }}
             >
+              <img
+                src="/wallet_icon.png"
+                alt="Budget Wallet"
+                style={{ width: "30px", height: "30px", marginRight: "5px" }}
+              />
               BUDGET WALLET
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
@@ -193,7 +216,13 @@ const Header: FC = () => {
                   </NavLink>
                 </MenuItem>
               ))}
-              <Box sx={{ display: "flex", width: "auto" }}>
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  display: { xs: "none", md: "flex" },
+                  justifyContent: "flex-end",
+                }}
+              >
                 {jwtToken && isValidToken(jwtToken) ? (
                   <Button
                     color="primary"

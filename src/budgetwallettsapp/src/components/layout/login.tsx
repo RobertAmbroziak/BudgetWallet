@@ -4,13 +4,14 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import config from "../../config";
 import { useLanguage } from "../../contexts/languageContext";
-import { useSnackbar } from "../../contexts/toastContext";
 import translations from "../../translations";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import { IconButton } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
 import Register from "./register";
 
@@ -37,14 +38,8 @@ const Login: React.FC<LoginProps> = ({
 }) => {
   const [emailOrUserName, setEmailOrUserName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [registerUserName, setRegisterUserName] = useState<string>("");
-  const [registerEmail, setRegisterEmail] = useState<string>("");
-  const [registerPassword, setRegisterPassword] = useState<string>("");
-  const [registerRepeatPassword, setRegisterRepeatPassword] =
-    useState<string>("");
   const { language } = useLanguage();
   const navigate = useNavigate();
-  const { openSnackbar } = useSnackbar();
   const [alerts, setAlerts] = useState<JSX.Element[]>([]);
 
   const handleRegisterClick = () => {
@@ -98,36 +93,6 @@ const Login: React.FC<LoginProps> = ({
     }
   };
 
-  const register = async () => {
-    if (registerPassword !== registerRepeatPassword) {
-      const passwordMismatchError = translations[language].err_passwordMismatch;
-      setRegisterAlerts([
-        <Alert severity="error" key="passwordMismatch">
-          {passwordMismatchError}
-        </Alert>,
-      ]);
-      return;
-    }
-    try {
-      const response = await axios.post(
-        `${config.API_BASE_URL}${config.API_ENDPOINTS.REGISTER}`,
-        {
-          userName: registerUserName,
-          email: registerEmail,
-          password: registerPassword,
-        }
-      );
-      onSetToken(response.data);
-      onClose();
-      setShowRegister(false);
-      navigate("/");
-      openSnackbar("Zarejestrowano");
-    } catch (error) {
-      handleError(error);
-      setRegisterAlerts(alerts);
-    }
-  };
-
   const handleError = (error: any) => {
     let alerts: JSX.Element[] = [];
 
@@ -167,8 +132,8 @@ const Login: React.FC<LoginProps> = ({
       <div>
         <Typography variant="h6" gutterBottom style={{ color: "black" }}>
           {showRegister
-            ? translations[language].lbl_register
-            : translations[language].lbl_signIn}
+            ? translations[language].lbl_registerModule
+            : translations[language].lbl_signInModule}
         </Typography>
       </div>
       {!showRegister ? (
@@ -213,16 +178,11 @@ const Login: React.FC<LoginProps> = ({
             <Typography variant="body1" style={{ color: "black" }}>
               {translations[language].lbl_signUpWith}
             </Typography>
-            <div className="d-flex justify-content-center">
-              <Button
-                variant="outlined"
-                className="m-1"
-                onClick={() => googleLogin()}
-                style={{ display: "block", margin: "auto" }}
-              >
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
+              <IconButton onClick={() => googleLogin()} className="m-1">
                 <GoogleIcon />
-              </Button>
-            </div>
+              </IconButton>
+            </Box>
           </div>
         </>
       ) : (

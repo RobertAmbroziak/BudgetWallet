@@ -17,9 +17,15 @@ const Footer: FC = () => {
         bottom: 0,
         width: "100%",
         zIndex: 1000,
+        background: "linear-gradient(to right, #35424a, #a7b6bd)",
       }}
     >
-      <Container maxWidth="sm" style={{ textAlign: "center" }}>
+      <Container
+        maxWidth="sm"
+        style={{
+          textAlign: "center",
+        }}
+      >
         <IconButton aria-label="facebook" href="#">
           <FacebookIcon />
         </IconButton>

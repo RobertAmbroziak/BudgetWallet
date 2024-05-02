@@ -41,7 +41,10 @@ const LoginModal: FC<LoginModalProps> = ({
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 280,
+    width: "90%",
+    "@media (min-width: 500px)": {
+      width: 400,
+    },
     maxHeight: 750,
     bgcolor: "background.paper",
     border: "2px solid #000",
@@ -69,7 +72,7 @@ const LoginModal: FC<LoginModalProps> = ({
               top: 0,
             }}
           >
-            <CloseIcon />
+            <CloseIcon onClick={toggleOpen} />
           </Button>
         </Typography>
         <Box mt={2}>

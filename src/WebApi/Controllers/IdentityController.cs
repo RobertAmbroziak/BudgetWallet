@@ -100,7 +100,7 @@ namespace WebApi.Controllers
         /// Log in using Google account
         /// </summary>
         /// <param name="googleToken">Google Token</param>
-        /// <returns>Authentication token<</returns>
+        /// <returns>Authentication token</returns>
         [AllowAnonymous]
         [HttpPost("GoogleLogin")]
         public async Task<IActionResult> GoogleLogin([FromBody] GoogleToken googleToken)

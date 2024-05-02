@@ -11,6 +11,8 @@ import translations from "../../translations";
 import Button from "@mui/material/Button";
 //import { CategoriesProvider } from "./CategoriesContext";
 import { useUser } from "../../contexts/userContext";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 const Application: FC = () => {
   const { jwtToken } = useUser();
@@ -77,39 +79,52 @@ const Application: FC = () => {
 
   return (
     // <CategoriesProvider>
-    <div>
+    <div className="application-container">
       {userData ? (
         <div>
-          <h1>{translations[language].lbl_applicationPanel}</h1>
-          <p>{userData}</p>
-          <Button
-            variant="contained"
-            color="success"
-            onClick={handleGetSplitsClick}
+          <Typography variant="h6" sx={{ marginLeft: 2, marginTop: 1 }}>
+            {translations[language].lbl_applicationPanel}
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "center",
+            }}
           >
-            {translations[language].btn_Expenses}
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={handleAddExpenseClick}
-          >
-            {translations[language].btn_Edit}
-          </Button>
-          <Button
-            variant="contained"
-            color="info"
-            onClick={handleConfigurationClick}
-          >
-            {translations[language].btn_Config}
-          </Button>
-          <Button
-            variant="contained"
-            color="warning"
-            onClick={handleAccountsStateClick}
-          >
-            {translations[language].btn_AccountsState}
-          </Button>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={handleGetSplitsClick}
+              sx={{ margin: 1 }}
+            >
+              {translations[language].btn_Expenses}
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={handleAddExpenseClick}
+              sx={{ margin: 1 }}
+            >
+              {translations[language].btn_Edit}
+            </Button>
+            <Button
+              variant="contained"
+              color="info"
+              onClick={handleConfigurationClick}
+              sx={{ margin: 1 }}
+            >
+              {translations[language].btn_Config}
+            </Button>
+            <Button
+              variant="contained"
+              color="warning"
+              onClick={handleAccountsStateClick}
+              sx={{ margin: 1 }}
+            >
+              {translations[language].btn_AccountsState}
+            </Button>
+          </Box>
           {/* {isButtonGetSplitsClicked && <Stats />}
             {isButtonAddExpenseClicked && <AddExpense />}
             {isButtonConfigurationClicked && <Configuration />}
