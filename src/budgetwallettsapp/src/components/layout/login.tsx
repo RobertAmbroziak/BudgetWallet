@@ -1,16 +1,18 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import config from "../../config";
 import { useLanguage } from "../../contexts/languageContext";
+import { useSnackbar } from "../../contexts/toastContext";
 import translations from "../../translations";
-import ToastContext from "../../contexts/toastContext";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
+import GoogleIcon from "@mui/icons-material/Google";
+import Register from "./register";
 
 interface LoginProps {
   onClose: () => void;
@@ -42,7 +44,8 @@ const Login: React.FC<LoginProps> = ({
     useState<string>("");
   const { language } = useLanguage();
   const navigate = useNavigate();
-  const { registerSuccessToast } = useContext(ToastContext);
+  const { openSnackbar } = useSnackbar();
+  const [alerts, setAlerts] = useState<JSX.Element[]>([]);
 
   const handleRegisterClick = () => {
     setShowRegister(true);
@@ -90,44 +93,8 @@ const Login: React.FC<LoginProps> = ({
       onClose();
       navigate("/user");
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response) {
-          const errorMsg = error.response.data;
-          setLoginAlerts([
-            <div
-              key="loginError"
-              className="p-2 mb-2 bg-danger bg-gradient text-white rounded-5"
-              style={{ fontSize: "smaller" }}
-            >
-              {errorMsg}
-            </div>,
-          ]);
-        } else if (error.request) {
-          const errorMsg = translations[language].err_noServerResponse;
-          setLoginAlerts([
-            <div
-              key="loginError"
-              className="p-2 mb-2 bg-danger bg-gradient text-white rounded-5"
-              style={{ fontSize: "smaller" }}
-            >
-              {errorMsg}
-            </div>,
-          ]);
-        } else {
-          const errorMsg = translations[language].err_error + error.message;
-          setLoginAlerts([
-            <div
-              key="loginError"
-              className="p-2 mb-2 bg-danger bg-gradient text-white rounded-5"
-              style={{ fontSize: "smaller" }}
-            >
-              {errorMsg}
-            </div>,
-          ]);
-        }
-      } else {
-        console.error(error);
-      }
+      handleError(error);
+      setLoginAlerts(alerts);
     }
   };
 
@@ -154,9 +121,10 @@ const Login: React.FC<LoginProps> = ({
       onClose();
       setShowRegister(false);
       navigate("/");
-      registerSuccessToast();
+      openSnackbar("Zarejestrowano");
     } catch (error) {
       handleError(error);
+      setRegisterAlerts(alerts);
     }
   };
 
@@ -164,10 +132,16 @@ const Login: React.FC<LoginProps> = ({
     let alerts: JSX.Element[] = [];
 
     if (error.response) {
-      const errors = error.response.data;
+      const errors: string | string[] = error.response.data;
+      let errorMessage: string;
+      if (Array.isArray(errors)) {
+        errorMessage = errors.join(" ");
+      } else {
+        errorMessage = errors;
+      }
       alerts.push(
         <Alert severity="error" key="errorList">
-          {errors.join("\n")}
+          {errorMessage}
         </Alert>
       );
     } else if (error.request) {
@@ -185,16 +159,18 @@ const Login: React.FC<LoginProps> = ({
         </Alert>
       );
     }
-    setRegisterAlerts(alerts);
+    setAlerts(alerts);
   };
 
   return (
     <Container maxWidth="sm">
-      <Typography variant="h6" gutterBottom>
-        {showRegister
-          ? translations[language].lbl_register
-          : translations[language].lbl_signIn}
-      </Typography>
+      <div>
+        <Typography variant="h6" gutterBottom style={{ color: "black" }}>
+          {showRegister
+            ? translations[language].lbl_register
+            : translations[language].lbl_signIn}
+        </Typography>
+      </div>
       {!showRegister ? (
         <>
           <TextField
@@ -217,59 +193,44 @@ const Login: React.FC<LoginProps> = ({
           </Button>
           <div>{loginAlerts}</div>
           <div className="text-center" style={{ marginTop: "20px" }}>
-            <Button onClick={handleRegisterClick}>
-              {translations[language].lbl_register}
-            </Button>
-            <p>{translations[language].lbl_signUpWith}</p>
+            <Typography
+              variant="body1"
+              style={{
+                color: "black",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {translations[language].lbl_notMember}
+              <Button
+                onClick={handleRegisterClick}
+                variant="contained"
+                color="primary"
+                style={{ display: "block", margin: "auto" }}
+              >
+                {translations[language].lbl_register}
+              </Button>
+            </Typography>
+            <Typography variant="body1" style={{ color: "black" }}>
+              {translations[language].lbl_signUpWith}
+            </Typography>
             <div className="d-flex justify-content-center">
               <Button
                 variant="outlined"
-                className="m-1 custom-google-button"
+                className="m-1"
                 onClick={() => googleLogin()}
+                style={{ display: "block", margin: "auto" }}
               >
-                Google
+                <GoogleIcon />
               </Button>
             </div>
           </div>
         </>
       ) : (
-        <>
-          <TextField
-            label={translations[language].lbl_userName}
-            fullWidth
-            margin="normal"
-            value={registerUserName}
-            onChange={(e) => setRegisterUserName(e.target.value)}
-          />
-          <TextField
-            label={translations[language].lbl_email}
-            type="email"
-            fullWidth
-            margin="normal"
-            value={registerEmail}
-            onChange={(e) => setRegisterEmail(e.target.value)}
-          />
-          <TextField
-            label={translations[language].lbl_password}
-            type="password"
-            fullWidth
-            margin="normal"
-            value={registerPassword}
-            onChange={(e) => setRegisterPassword(e.target.value)}
-          />
-          <TextField
-            label={translations[language].lbl_repeatPassword}
-            type="password"
-            fullWidth
-            margin="normal"
-            value={registerRepeatPassword}
-            onChange={(e) => setRegisterRepeatPassword(e.target.value)}
-          />
-          <Button onClick={register} variant="contained" color="primary">
-            {translations[language].lbl_register}
-          </Button>
-          <div>{registerAlerts}</div>
-        </>
+        <Register
+          setShowRegister={setShowRegister}
+          setRegisterAlerts={setRegisterAlerts}
+          registerAlerts={registerAlerts}
+        />
       )}
     </Container>
   );

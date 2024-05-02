@@ -87,7 +87,7 @@ namespace BusinessLogic.Services
                     Body = $" Testowy kod do rejestracji: {registerConfirmation.Code}"  // TODO: buduj endpoint i to chyba do Frontu, bo przecież Api blokują CORS
                 };
 
-                var emailResponse = await _emailService.SendAsync(emailRequest);
+                //var emailResponse = await _emailService.SendAsync(emailRequest);
 
                 return user;
             }

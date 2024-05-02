@@ -268,3 +268,6 @@
 
 ### Day 62
 * Vite TS React Login/Register area fix
+
+### Day 63
+* Vite TS React Login/Register area another fixes

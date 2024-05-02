@@ -12,7 +12,7 @@ const Footer: FC = () => {
       component="footer"
       sx={{
         bgcolor: "background.paper",
-        py: 3,
+        py: 1,
         position: "fixed",
         bottom: 0,
         width: "100%",
@@ -29,7 +29,7 @@ const Footer: FC = () => {
         <IconButton aria-label="github" href="#">
           <GitHubIcon />
         </IconButton>
-        <Box sx={{ pt: 3 }}>
+        <Box sx={{ pt: 1, pb: 1, color: "black" }}>
           &copy; {new Date().getFullYear()} Budget Wallet by AmbroDev
         </Box>
       </Container>

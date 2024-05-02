@@ -17,7 +17,7 @@ const LoginModal: FC<LoginModalProps> = ({
   onSetToken,
 }) => {
   const { language } = useLanguage();
-  const [showRegister, setShowRegister] = useState(false);
+  const [showRegister, setShowRegister] = useState<boolean>(false);
   const [registerAlerts, setRegisterAlerts] = useState<JSX.Element[]>([]);
   const [loginAlerts, setLoginAlerts] = useState<JSX.Element[]>([]);
 
@@ -41,11 +41,14 @@ const LoginModal: FC<LoginModalProps> = ({
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 400,
+    width: 280,
+    maxHeight: 750,
     bgcolor: "background.paper",
     border: "2px solid #000",
     boxShadow: 24,
-    p: 4,
+    p: 1,
+    overflow: "auto",
+    color: "black",
   };
 
   return (

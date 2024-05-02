@@ -6,7 +6,7 @@ import Home from "./pages/home/home";
 import Admin from "./pages/admin/admin";
 import User from "./pages/application/application";
 import { LanguageProvider } from "./contexts/languageContext";
-//import { ToastProvider } from "./contexts/toastContext";
+import { ToastProvider } from "./contexts/toastContext";
 import { UserProvider } from "./contexts/userContext";
 
 const App: FC = () => {
@@ -18,21 +18,21 @@ const App: FC = () => {
 
   return (
     <UserProvider>
-      {/* <ToastProvider> */}
-      <LanguageProvider value={{ language, handleLanguageChange }}>
-        <Router>
-          <div>
-            <Header />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/user" element={<User />} />
-            </Routes>
-            <Footer />
-          </div>
-        </Router>
-      </LanguageProvider>
-      {/* </ToastProvider> */}
+      <ToastProvider>
+        <LanguageProvider value={{ language, handleLanguageChange }}>
+          <Router>
+            <div>
+              <Header />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/user" element={<User />} />
+              </Routes>
+              <Footer />
+            </div>
+          </Router>
+        </LanguageProvider>
+      </ToastProvider>
     </UserProvider>
   );
 };

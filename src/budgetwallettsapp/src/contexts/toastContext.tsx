@@ -1,41 +1,57 @@
-import React, {
-  createContext,
-  useState,
-  ReactNode,
-  Dispatch,
-  SetStateAction,
-} from "react";
+import React, { createContext, useContext, useState, ReactNode } from "react";
+import { Snackbar } from "@mui/material";
+import Alert from "@mui/material/Alert";
 
-type ToastContextType = {
-  registerSuccessToast: () => void;
-  setRegisterSuccessToast: Dispatch<SetStateAction<() => void>>;
-};
+interface SnackbarContextType {
+  openSnackbar: (message: string) => void;
+  closeSnackbar: () => void;
+}
 
-const defaultToastContext: ToastContextType = {
-  registerSuccessToast: () => {
-    console.log("Default toast executed");
-  },
-  setRegisterSuccessToast: () => {},
-};
+const ToastContext = createContext<SnackbarContextType | undefined>(undefined);
 
-const ToastContext = createContext<ToastContextType>(defaultToastContext);
+export const ToastProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>("");
 
-type ToastProviderProps = {
-  children: ReactNode;
-};
+  const openSnackbar = (message: string) => {
+    setSnackbarMessage(message);
+    setSnackbarOpen(true);
+  };
 
-export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
-  const [registerSuccessToast, setRegisterSuccessToast] = useState<() => void>(
-    () => () => console.log("Toast!")
-  );
+  const closeSnackbar = () => {
+    setSnackbarOpen(false);
+  };
 
   return (
-    <ToastContext.Provider
-      value={{ registerSuccessToast, setRegisterSuccessToast }}
-    >
+    <ToastContext.Provider value={{ openSnackbar, closeSnackbar }}>
       {children}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={5000}
+        onClose={closeSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={closeSnackbar}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </ToastContext.Provider>
   );
+};
+
+export const useSnackbar = () => {
+  const context = useContext(ToastContext);
+  if (!context) {
+    throw new Error("useSnackbar must be used within a SnackbarProvider");
+  }
+  return context;
 };
 
 export default ToastContext;
