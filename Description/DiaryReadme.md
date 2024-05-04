@@ -278,3 +278,6 @@
 
 <img src="Images/sc15.PNG" alt="Image 15" height="200px" style="width:auto;">
  <img src="Images/sc16.PNG" alt="Image 16" height="200px" style="width:auto;">
+ 
+ ### Day 65
+ * Rewriting the application from JavaScript to TypeScript is a very time-consuming process. This is the next stage of that process

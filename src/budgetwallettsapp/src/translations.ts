@@ -39,7 +39,7 @@ const translations: Translations = {
     hdr_Value: "Value",
     hdr_Percentage: "Percentage",
     btn_Expenses: "Expenses",
-    btn_Edit: "Edit",
+    btn_Edit: "New Expense",
     btn_Config: "Configure",
     btn_search: "Search",
     itm_all: "All",

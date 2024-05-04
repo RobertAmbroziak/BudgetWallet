@@ -1,4 +1,4 @@
-import React, { useState, FC } from "react";
+import { useState, FC } from "react";
 import { Modal, Box, Typography, Button } from "@mui/material";
 import { useLanguage } from "../../contexts/languageContext";
 import translations from "../../translations";
@@ -51,7 +51,6 @@ const LoginModal: FC<LoginModalProps> = ({
     boxShadow: 24,
     p: 1,
     overflow: "auto",
-    color: "black",
   };
 
   return (

@@ -1,0 +1,23 @@
+.bwtable {
+    border: 2px solid black;
+    max-width: 90%;
+    margin: 0 auto;
+}
+.bwtable th {
+    border: 1px solid black;
+    padding: 8px;
+}
+.bwtable td {
+  border: 1px solid black;
+  padding: 8px;
+}
+
+.bwtable .shaded {
+  background-color: #d6d7d1;
+}
+
+.bwtable .editColumn {
+  width: 1%;
+  white-space: nowrap;
+  max-width: 100px;
+}

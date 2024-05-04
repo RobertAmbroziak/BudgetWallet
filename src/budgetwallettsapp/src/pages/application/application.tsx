@@ -1,15 +1,15 @@
-import React, { useState, useEffect, FC } from "react";
+import { useState, useEffect, FC } from "react";
 import config from "../../config";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../contexts/languageContext";
 import translations from "../../translations";
-//import Stats from "./Stats";
-//import AddExpense from "./AddExpense";
-//import AccountsState from "./AccountsState";
-//import Configuration from "./Configuration";
+//import Expense from "../../components/expense/expense";
+import Expenses from "../../components/expenses/expenses";
+//import Account from "../../components/account/account";
+//import Configuration from "../../components/configuration/configuration";
 import Button from "@mui/material/Button";
-//import { CategoriesProvider } from "./CategoriesContext";
+import { CategoryProvider } from "../../contexts/categoryContext";
 import { useUser } from "../../contexts/userContext";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -19,41 +19,41 @@ const Application: FC = () => {
   const [userData, setData] = useState<any>(null);
   const navigate = useNavigate();
   const { language } = useLanguage();
-  const [isButtonGetSplitsClicked, setIsButtonGetSplitsClicked] =
-    useState(false);
-  const [isButtonAddExpenseClicked, setIsButtonAddExpenseClicked] =
-    useState(false);
+  const [isButtonExpensesClicked, setIsButtonExpensesClicked] =
+    useState<boolean>(false);
+  const [isButtonExpenseClicked, setIsButtonExpenseClicked] =
+    useState<boolean>(false);
   const [isButtonConfigurationClicked, setIsButtonConfigurationClicked] =
-    useState(false);
-  const [isButtonAccountsStateClicked, setIsButtonAccountsStateClicked] =
-    useState(false);
+    useState<boolean>(false);
+  const [isButtonAccountClicked, setIsButtonAccountClicked] =
+    useState<boolean>(false);
 
-  const handleGetSplitsClick = () => {
-    setIsButtonGetSplitsClicked(true);
-    setIsButtonAddExpenseClicked(false);
+  const handleExpensesClick = () => {
+    setIsButtonExpensesClicked(true);
+    setIsButtonExpenseClicked(false);
     setIsButtonConfigurationClicked(false);
-    setIsButtonAccountsStateClicked(false);
+    setIsButtonAccountClicked(false);
   };
 
-  const handleAddExpenseClick = () => {
-    setIsButtonGetSplitsClicked(false);
-    setIsButtonAddExpenseClicked(true);
+  const handleExpenseClick = () => {
+    setIsButtonExpensesClicked(false);
+    setIsButtonExpenseClicked(true);
     setIsButtonConfigurationClicked(false);
-    setIsButtonAccountsStateClicked(false);
+    setIsButtonAccountClicked(false);
   };
 
   const handleConfigurationClick = () => {
-    setIsButtonGetSplitsClicked(false);
-    setIsButtonAddExpenseClicked(false);
+    setIsButtonExpensesClicked(false);
+    setIsButtonExpenseClicked(false);
     setIsButtonConfigurationClicked(true);
-    setIsButtonAccountsStateClicked(false);
+    setIsButtonAccountClicked(false);
   };
 
-  const handleAccountsStateClick = () => {
-    setIsButtonGetSplitsClicked(false);
-    setIsButtonAddExpenseClicked(false);
+  const handleAccountClick = () => {
+    setIsButtonExpensesClicked(false);
+    setIsButtonExpenseClicked(false);
     setIsButtonConfigurationClicked(false);
-    setIsButtonAccountsStateClicked(true);
+    setIsButtonAccountClicked(true);
   };
 
   useEffect(() => {
@@ -78,61 +78,61 @@ const Application: FC = () => {
   }, [navigate, jwtToken]);
 
   return (
-    // <CategoriesProvider>
-    <div className="application-container">
-      {userData ? (
-        <div>
-          <Typography variant="h6" sx={{ marginLeft: 2, marginTop: 1 }}>
-            {translations[language].lbl_applicationPanel}
-          </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "center",
-            }}
-          >
-            <Button
-              variant="contained"
-              color="success"
-              onClick={handleGetSplitsClick}
-              sx={{ margin: 1 }}
+    <CategoryProvider>
+      <div className="application-container">
+        {userData ? (
+          <div>
+            <Typography variant="h6" sx={{ marginLeft: 2, marginTop: 1 }}>
+              {translations[language].lbl_applicationPanel}
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+              }}
             >
-              {translations[language].btn_Expenses}
-            </Button>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={handleAddExpenseClick}
-              sx={{ margin: 1 }}
-            >
-              {translations[language].btn_Edit}
-            </Button>
-            <Button
-              variant="contained"
-              color="info"
-              onClick={handleConfigurationClick}
-              sx={{ margin: 1 }}
-            >
-              {translations[language].btn_Config}
-            </Button>
-            <Button
-              variant="contained"
-              color="warning"
-              onClick={handleAccountsStateClick}
-              sx={{ margin: 1 }}
-            >
-              {translations[language].btn_AccountsState}
-            </Button>
-          </Box>
-          {/* {isButtonGetSplitsClicked && <Stats />}
-            {isButtonAddExpenseClicked && <AddExpense />}
+              <Button
+                variant="contained"
+                color="success"
+                onClick={handleExpensesClick}
+                sx={{ margin: 1 }}
+              >
+                {translations[language].btn_Expenses}
+              </Button>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleExpenseClick}
+                sx={{ margin: 1 }}
+              >
+                {translations[language].btn_Edit}
+              </Button>
+              <Button
+                variant="contained"
+                color="info"
+                onClick={handleConfigurationClick}
+                sx={{ margin: 1 }}
+              >
+                {translations[language].btn_Config}
+              </Button>
+              <Button
+                variant="contained"
+                color="warning"
+                onClick={handleAccountClick}
+                sx={{ margin: 1 }}
+              >
+                {translations[language].btn_AccountsState}
+              </Button>
+            </Box>
+            {isButtonExpensesClicked && <Expenses />}
+            {/* {isButtonExpenseClicked && <Expense />}
             {isButtonConfigurationClicked && <Configuration />}
-            {isButtonAccountsStateClicked && <AccountsState />} */}
-        </div>
-      ) : null}
-    </div>
-    // </CategoriesProvider>
+            {isButtonAccountClicked && <Account />} */}
+          </div>
+        ) : null}
+      </div>
+    </CategoryProvider>
   );
 };
 

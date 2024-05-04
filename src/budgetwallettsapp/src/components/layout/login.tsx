@@ -130,7 +130,7 @@ const Login: React.FC<LoginProps> = ({
   return (
     <Container maxWidth="sm">
       <div>
-        <Typography variant="h6" gutterBottom style={{ color: "black" }}>
+        <Typography variant="h6" gutterBottom>
           {showRegister
             ? translations[language].lbl_registerModule
             : translations[language].lbl_signInModule}
@@ -161,7 +161,6 @@ const Login: React.FC<LoginProps> = ({
             <Typography
               variant="body1"
               style={{
-                color: "black",
                 whiteSpace: "nowrap",
               }}
             >
@@ -175,7 +174,7 @@ const Login: React.FC<LoginProps> = ({
                 {translations[language].lbl_register}
               </Button>
             </Typography>
-            <Typography variant="body1" style={{ color: "black" }}>
+            <Typography variant="body1">
               {translations[language].lbl_signUpWith}
             </Typography>
             <Box sx={{ display: "flex", justifyContent: "center" }}>
