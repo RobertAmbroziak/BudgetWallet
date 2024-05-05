@@ -22,6 +22,8 @@ import { ExpenseFilterData } from "../../types/expenseFilterData";
 import { SplitRequest } from "../../types/splitRequest";
 
 import { Split, SplitResponse, Transfer, ChartData } from "../../types/split";
+import SplitChart from "./splitChart";
+import SplitSummary from "./splitSummary";
 
 interface Props {
   splitRequest: SplitRequest | null;
@@ -196,7 +198,7 @@ const SplitTable: React.FC<Props> = ({ splitRequest, expenseFilterData }) => {
                     {translations[language].lbl_Summary}
                   </AccordionSummary>
                   <AccordionDetails>
-                    {/* <Summary splitsSummary={splitResponse.splitSummary} /> */}
+                    <SplitSummary splitSummary={splitResponse.splitSummary} />
                   </AccordionDetails>
                 </Accordion>
                 <Accordion sx={{ my: 1, mx: 2 }}>
@@ -208,12 +210,13 @@ const SplitTable: React.FC<Props> = ({ splitRequest, expenseFilterData }) => {
                     {translations[language].lbl_Chart}
                   </AccordionSummary>
                   <AccordionDetails>
-                    <LineChart
+                    {/* <LineChart
                       xAxis={chartData.xAxis}
                       series={chartData.series}
                       height={200}
                       margin={{ top: 10, bottom: 20 }}
-                    />
+                    /> */}
+                    <SplitChart chartData={chartData} />
                   </AccordionDetails>
                 </Accordion>
                 <br />

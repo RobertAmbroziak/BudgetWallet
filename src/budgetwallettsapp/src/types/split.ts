@@ -50,7 +50,9 @@ export interface Split {
   export interface SplitResponse {
     splits: Split[];
     splitSummary: {
+      splitsValue: number;
       budgetValue: number;
+      percentage: number;
     };
     splitChartItems: SplitChartItem[];
   }

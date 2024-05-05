@@ -79,7 +79,8 @@ const SplitFilter: React.FC<Props> = ({ onGetSplitsButtonClick }) => {
   }, [jwtToken]);
 
   const handleDropdownChange = async (
-    event: ChangeEvent<{ name?: string; value: any }>
+    event: any
+    //event: ChangeEvent<{ name?: string; value: any }>
   ) => {
     const { name, value } = event.target;
     setSelectedValues({
@@ -174,7 +175,7 @@ const SplitFilter: React.FC<Props> = ({ onGetSplitsButtonClick }) => {
           value={selectedValues.budgetId}
           label="Budget"
           name="budgetId"
-          onChange={() => handleDropdownChange}
+          onChange={handleDropdownChange}
         >
           {filters.budgets?.map((budget: Budget) => (
             <MenuItem key={budget.id} value={budget.id}>
@@ -193,7 +194,7 @@ const SplitFilter: React.FC<Props> = ({ onGetSplitsButtonClick }) => {
           value={selectedValues.budgetPeriodId ?? 0}
           label="BudgetPeriod"
           name="budgetPeriodId"
-          onChange={() => handleDropdownChange}
+          onChange={handleDropdownChange}
         >
           <MenuItem key={0} value="">
             {translations[language].itm_all}
@@ -215,7 +216,7 @@ const SplitFilter: React.FC<Props> = ({ onGetSplitsButtonClick }) => {
           value={selectedValues.categoryId ?? 0}
           label="Category"
           name="categoryId"
-          onChange={() => handleDropdownChange}
+          onChange={handleDropdownChange}
         >
           <MenuItem key={0} value="">
             {translations[language].itm_all}
@@ -237,7 +238,7 @@ const SplitFilter: React.FC<Props> = ({ onGetSplitsButtonClick }) => {
           value={selectedValues.accountId ?? 0}
           label="Account"
           name="accountId"
-          onChange={() => handleDropdownChange}
+          onChange={handleDropdownChange}
         >
           <MenuItem key={0} value="">
             {translations[language].itm_all}

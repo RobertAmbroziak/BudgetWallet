@@ -131,6 +131,11 @@ const Application: FC = () => {
             {isButtonAccountClicked && <Account />} */}
           </div>
         ) : null}
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
       </div>
     </CategoryProvider>
   );

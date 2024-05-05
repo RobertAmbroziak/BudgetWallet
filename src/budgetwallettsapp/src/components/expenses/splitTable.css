@@ -16,6 +16,12 @@
   background-color: #d6d7d1;
 }
 
+@media (prefers-color-scheme: dark) {
+  .bwtable .shaded {
+    background-color: #1d1d1d;
+  }
+}
+
 .bwtable .editColumn {
   width: 1%;
   white-space: nowrap;
