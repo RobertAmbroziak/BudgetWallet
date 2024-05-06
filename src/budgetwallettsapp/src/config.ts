@@ -18,7 +18,7 @@ const config = {
     ACCOUNTS: "/api/account",
     CATEGORIES: "/api/category",
   },
-  GOOGLE_CLIENT_ID: "ADD_YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com",
+  GOOGLE_CLIENT_ID: "793238167799-sqpsattu44mdhq726f2tfpi8a9c70r0q.apps.googleusercontent.com",
 };
 
 export default config;

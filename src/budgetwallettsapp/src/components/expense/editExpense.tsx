@@ -3,17 +3,16 @@ import { useLanguage } from "../../contexts/languageContext";
 import translations from "../../translations";
 import { Modal, Box, Typography, Button } from "@mui/material";
 import AddExpense from "./addExpense";
+import { Transfer } from "../../types/internal/transfer";
 
 interface TransferEditProps {
   openModal: boolean;
   handleCloseModal: () => void;
   handleSaveTransfer: () => void;
-  currentTransfer: {
-    transferName: string;
-  } | null;
+  currentTransfer: Transfer;
 }
 
-const TransferEdit: React.FC<TransferEditProps> = ({
+const EditExpense: React.FC<TransferEditProps> = ({
   openModal,
   handleCloseModal,
   handleSaveTransfer,
@@ -65,4 +64,4 @@ const TransferEdit: React.FC<TransferEditProps> = ({
   );
 };
 
-export default TransferEdit;
+export default EditExpense;

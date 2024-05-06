@@ -282,5 +282,8 @@
  ### Day 65
  * Rewriting the application from JavaScript to TypeScript is a very time-consuming process. This is the next stage of that process
  
-  ### Day 66
+ ### Day 66
  * JS to TS conversion
+ 
+ ### Day 67
+ * JS to TS conversion 2

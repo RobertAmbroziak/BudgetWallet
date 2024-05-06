@@ -8,7 +8,7 @@ import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import "./splitTable.css";
 //import Summary from "../../components/expenses/splitSummary";
 //import EditExpenseModal from "../../components/expense/editExpenseModal";
-import { LineChart } from "@mui/x-charts/LineChart";
+//import { LineChart } from "@mui/x-charts/LineChart";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -18,22 +18,26 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Button } from "@mui/material";
 //import "react-toastify/dist/ReactToastify.css";
 import { useUser } from "../../contexts/userContext";
-import { ExpenseFilterData } from "../../types/expenseFilterData";
-import { SplitRequest } from "../../types/splitRequest";
+import { TransferFilter } from "../../types/api/transferFilter";
+import { SplitRequest } from "../../types/api/splitRequest";
 
-import { Split, SplitResponse, Transfer, ChartData } from "../../types/split";
+import { Split } from "../../types/api/split";
 import SplitChart from "./splitChart";
 import SplitSummary from "./splitSummary";
+import { SplitsResponse } from "../../types/api/splitsResponse";
+import { ChartData } from "../../types/internal/chartData";
+import { Transfer } from "../../types/internal/transfer";
+import EditExpense from "../expense/editExpense";
 
 interface Props {
   splitRequest: SplitRequest | null;
-  expenseFilterData: ExpenseFilterData;
+  expenseFilterData: TransferFilter;
 }
 
 const SplitTable: React.FC<Props> = ({ splitRequest, expenseFilterData }) => {
   const { jwtToken } = useUser();
   const [refreshData, setRefreshData] = useState<boolean>(false);
-  const [splitResponse, setSplitResponse] = useState<SplitResponse | null>(
+  const [splitResponse, setSplitResponse] = useState<SplitsResponse | null>(
     null
   );
   const { language } = useLanguage();
@@ -79,7 +83,7 @@ const SplitTable: React.FC<Props> = ({ splitRequest, expenseFilterData }) => {
       transferName: split.transferName,
       transferDescription: split.transferDescription,
       transferValue: split.transferValue,
-      transferDate: split.transferDateFormated,
+      transferDate: split.transferDate,
       budgetId: splitRequest?.budgetId ?? 0,
       accountSourceId: split.accountSourceId,
       accountSourceName: split.accountSourceName,
@@ -118,7 +122,7 @@ const SplitTable: React.FC<Props> = ({ splitRequest, expenseFilterData }) => {
     const fetchData = async () => {
       try {
         if (jwtToken) {
-          const response = await axios.get<SplitResponse>(
+          const response = await axios.get<SplitsResponse>(
             `${config.API_BASE_URL}${config.API_ENDPOINTS.SPLITS}`,
             {
               headers: {
@@ -135,7 +139,7 @@ const SplitTable: React.FC<Props> = ({ splitRequest, expenseFilterData }) => {
             (item) => item.budgetPartSumValue
           );
           const splitPartSeries = response.data.splitChartItems.map(
-            (item) => item.spltPartSumValue
+            (item) => item.splitPartSumValue
           );
 
           setChartData({
@@ -145,7 +149,7 @@ const SplitTable: React.FC<Props> = ({ splitRequest, expenseFilterData }) => {
                 showMark: false,
                 name: translations[language].lbl_budget,
                 data: budgetPartSeries,
-                valueFormatter: (value) =>
+                valueFormatter: (value: number) =>
                   value == null ? "NaN" : value.toString(),
               },
               {
@@ -210,12 +214,6 @@ const SplitTable: React.FC<Props> = ({ splitRequest, expenseFilterData }) => {
                     {translations[language].lbl_Chart}
                   </AccordionSummary>
                   <AccordionDetails>
-                    {/* <LineChart
-                      xAxis={chartData.xAxis}
-                      series={chartData.series}
-                      height={200}
-                      margin={{ top: 10, bottom: 20 }}
-                    /> */}
                     <SplitChart chartData={chartData} />
                   </AccordionDetails>
                 </Accordion>
@@ -280,12 +278,14 @@ const SplitTable: React.FC<Props> = ({ splitRequest, expenseFilterData }) => {
                 ))}
               </Tbody>
             </Table>
-            {/* <TransferEdit
-              openModal={openModal}
-              handleCloseModal={handleCloseModal}
-              handleSaveTransfer={handleSaveTransfer}
-              currentTransfer={currentTransfer}
-            /> */}
+            {currentTransfer && (
+              <EditExpense
+                openModal={openModal}
+                handleCloseModal={handleCloseModal}
+                handleSaveTransfer={handleSaveTransfer}
+                currentTransfer={currentTransfer}
+              />
+            )}
           </div>
         ) : null}
       </div>

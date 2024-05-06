@@ -10,17 +10,17 @@ import Select from "@mui/material/Select";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import { useUser } from "../../contexts/userContext";
-import { ExpenseFilterData } from "../../types/expenseFilterData";
-import { SplitRequest } from "../../types/splitRequest";
-import { Budget } from "../../types/budget";
-import { BudgetPeriod } from "../../types/budgetPeriod";
-import { Category } from "../../types/category";
-import { Account } from "../../types/account";
+import { TransferFilter } from "../../types/api/transferFilter";
+import { SplitRequest } from "../../types/api/splitRequest";
+import { Budget } from "../../types/api/budget";
+import { BudgetPeriod } from "../../types/api/budgetPeriod";
+import { Category } from "../../types/api/category";
+import { Account } from "../../types/api/account";
 
 interface Props {
   onGetSplitsButtonClick: (
     request: SplitRequest,
-    filterData: ExpenseFilterData
+    filterData: TransferFilter
   ) => void;
 }
 
@@ -28,7 +28,7 @@ const SplitFilter: React.FC<Props> = ({ onGetSplitsButtonClick }) => {
   const { language } = useLanguage();
   const { jwtToken } = useUser();
 
-  const [filters, setFilters] = useState<ExpenseFilterData>({
+  const [filters, setFilters] = useState<TransferFilter>({
     budgets: null,
     budgetPeriods: null,
     accounts: [],

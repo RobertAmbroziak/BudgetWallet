@@ -1,6 +1,6 @@
 import React from "react";
 import { LineChart } from "@mui/x-charts/LineChart";
-import { ChartData } from "../../types/split";
+import { ChartData } from "../../types/internal/chartData";
 
 interface Props {
   chartData: ChartData;

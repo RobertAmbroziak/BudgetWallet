@@ -17,15 +17,15 @@ import InputLabel from "@mui/material/InputLabel";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 //import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+//import "react-toastify/dist/ReactToastify.css";
 import { useLanguage } from "../../contexts/languageContext";
 import translations from "../../translations";
 import { useUser } from "../../contexts/userContext";
-import { Transfer, Split } from "../../types/split";
-import { Budget } from "../../types/budget";
-import { Category } from "../../types/category";
-import { Account } from "../../types/account";
-import { SelectChangeEvent } from "@mui/material";
+import { Transfer } from "../../types/internal/transfer";
+import { Budget } from "../../types/api/budget";
+import { Category } from "../../types/api/category";
+import { Account } from "../../types/api/account";
+import { Split } from "../../types/api/split";
 
 dayjs.extend(utc);
 
@@ -46,6 +46,9 @@ const AddExpense: React.FC<AddExpenseProps> = ({
   const [transferDate, setTransferDate] = useState<dayjs.Dayjs>(
     dayjs().utc().startOf("day")
   );
+  const [transferName, setTransferName] = useState<string>("");
+  const [transferDescription, setTransferDescription] = useState<string>("");
+  const [transferValue, setTransferValue] = useState<number>(0);
   const [categories, setCategories] = useState<Category[]>([]);
   const [budgetId, setBudgetId] = useState<number | null>(null);
   const [transferId, setTransferId] = useState<number | null>(null);
@@ -57,11 +60,27 @@ const AddExpense: React.FC<AddExpenseProps> = ({
   const [splitRecords, setSplitRecords] = useState<Split[]>([
     {
       splitId: 0,
-      categoryId: 0,
       splitName: "",
       splitDescription: "",
       splitValue: 0,
+      categoryId: 0,
+      categoryName: "",
+      categoryDescription: "",
+      accountSourceId: 0,
+      accountSourceName: "",
+      accountSourceDescription: "",
+      transferId: 0,
+      transferName: "",
+      transferDescription: "",
+      transferValue: 0,
+      transferDate: new Date(),
       isActive: true,
+      orderId: 0,
+      percentage: 0,
+      transferDateFormated: "",
+      splitValueFormated: "",
+      transferValueFormated: "",
+      isShaded: null,
     },
   ]);
 
@@ -72,11 +91,27 @@ const AddExpense: React.FC<AddExpenseProps> = ({
       ...splitRecords,
       {
         splitId: 0,
-        categoryId: 0,
         splitName: "",
         splitDescription: "",
         splitValue: 0,
+        categoryId: 0,
+        categoryName: "",
+        categoryDescription: "",
+        accountSourceId: 0,
+        accountSourceName: "",
+        accountSourceDescription: "",
+        transferId: 0,
+        transferName: "",
+        transferDescription: "",
+        transferValue: 0,
+        transferDate: new Date(),
         isActive: true,
+        orderId: 0,
+        percentage: 0,
+        transferDateFormated: "",
+        splitValueFormated: "",
+        transferValueFormated: "",
+        isShaded: null,
       },
     ]);
   };
@@ -238,7 +273,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({
     //   });
     // };
 
-    if (validateResult.isValid && !isEdit) {
+    if (/*validateResult.isValid &&*/ !isEdit) {
       try {
         await axios.post(
           `${config.API_BASE_URL}${config.API_ENDPOINTS.TRANSFERS}`,
@@ -261,11 +296,27 @@ const AddExpense: React.FC<AddExpenseProps> = ({
         setSplitRecords([
           {
             splitId: 0,
-            categoryId: 0,
             splitName: "",
             splitDescription: "",
             splitValue: 0,
+            categoryId: 0,
+            categoryName: "",
+            categoryDescription: "",
+            accountSourceId: 0,
+            accountSourceName: "",
+            accountSourceDescription: "",
+            transferId: 0,
+            transferName: "",
+            transferDescription: "",
+            transferValue: 0,
+            transferDate: new Date(),
             isActive: true,
+            orderId: 0,
+            percentage: 0,
+            transferDateFormated: "",
+            splitValueFormated: "",
+            transferValueFormated: "",
+            isShaded: null,
           },
         ]);
         //addTransferSuccessToast();
@@ -280,7 +331,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({
           setIsValid({ isValid: false, errors: [error.message] });
         }
       }
-    } else if (validateResult.isValid && isEdit) {
+    } else if (/*validateResult.isValid &&*/ isEdit) {
       try {
         await axios.put(
           `${config.API_BASE_URL}${config.API_ENDPOINTS.TRANSFERS}`,
@@ -328,8 +379,12 @@ const AddExpense: React.FC<AddExpenseProps> = ({
     const updatedRecords = [...splitRecords];
     updatedRecords[index].categoryId = value;
 
-    const transferValue: number =
-      document.getElementById("transferValue")?.value || 0;
+    const transferValueElement = document.getElementById(
+      "transferValue"
+    ) as HTMLInputElement | null;
+    const transferValue: number = transferValueElement
+      ? parseFloat(transferValueElement.value)
+      : 0;
 
     if (index === 0 && transferValue) {
       updatedRecords[index].transferValue = transferValue;
@@ -352,15 +407,9 @@ const AddExpense: React.FC<AddExpenseProps> = ({
   useEffect(() => {
     if (isEdit && transferEdit) {
       setTransferId(transferEdit.transferId);
-      document
-        .getElementById("transferName")
-        ?.setAttribute("value", transferEdit.transferName);
-      document
-        .getElementById("transferDescription")
-        ?.setAttribute("value", transferEdit.transferDescription);
-      document
-        .getElementById("transferValue")
-        ?.setAttribute("value", transferEdit.transferValue.toString());
+      setTransferName(transferEdit.transferName || "");
+      setTransferDescription(transferEdit.transferDescription || "");
+      setTransferValue(Number(transferEdit.transferValue) || 0);
       setTransferDate(dayjs.utc(transferEdit.transferDate).startOf("day"));
       setAccounts(transferEdit.accounts);
       setAccountId(transferEdit.accountSourceId);
@@ -429,10 +478,12 @@ const AddExpense: React.FC<AddExpenseProps> = ({
               <Select
                 labelId="budgetSelect"
                 id="budgetSelect"
-                value={budgetId || ""}
+                value={budgetId || 0}
                 label={translations[language].lbl_budget}
                 name="budgetId"
-                onChange={handleDropdownBudgetChange}
+                onChange={(e) =>
+                  handleDropdownBudgetChange(Number(e.target.value))
+                }
               >
                 {budgets.map((budget) => (
                   <MenuItem key={budget.id} value={budget.id}>
@@ -467,16 +518,22 @@ const AddExpense: React.FC<AddExpenseProps> = ({
             id="transferName"
             label={translations[language].txt_name}
             variant="outlined"
+            value={transferName}
+            onChange={(e) => setTransferName(e.target.value)}
           />
           <TextField
             id="transferDescription"
             label={translations[language].txt_description}
             variant="outlined"
+            value={transferDescription}
+            onChange={(e) => setTransferDescription(e.target.value)}
           />
           <TextField
             id="transferValue"
             label={translations[language].txt_value}
             variant="outlined"
+            value={transferValue}
+            onChange={(e) => setTransferValue(Number(e.target.value))}
           />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker

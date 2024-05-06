@@ -8,10 +8,7 @@ import React, {
 import axios, { AxiosResponse } from "axios";
 import config from "./../config";
 import { useUser } from "./userContext";
-
-interface Category {
-  // Definiuj tutaj typy dla kategorii
-}
+import { Category } from "../types/api/category";
 
 interface CategoryContextType {
   categories: Category[];
