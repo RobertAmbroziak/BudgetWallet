@@ -16,8 +16,6 @@ import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-//import { toast, ToastContainer } from "react-toastify";
-//import "react-toastify/dist/ReactToastify.css";
 import { useLanguage } from "../../contexts/languageContext";
 import translations from "../../translations";
 import { useUser } from "../../contexts/userContext";
@@ -26,6 +24,8 @@ import { Budget } from "../../types/api/budget";
 import { Category } from "../../types/api/category";
 import { Account } from "../../types/api/account";
 import { Split } from "../../types/api/split";
+import { PostTransfer } from "../../types/api/postTransfer";
+import { useSnackbar } from "../../contexts/toastContext";
 
 dayjs.extend(utc);
 
@@ -40,6 +40,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({
   handleSaveTransfer = null,
   isEdit = false,
 }) => {
+  const { openSnackbar } = useSnackbar();
   const { jwtToken } = useUser();
   const [budgets, setBudgets] = useState<Budget[]>([]);
   const [accounts, setAccounts] = useState<Account[]>([]);
@@ -140,54 +141,23 @@ const AddExpense: React.FC<AddExpenseProps> = ({
   };
 
   const handleAddTransferButtonClick = async () => {
-    const transfer = {
-      id: transferId,
+    const transfer: PostTransfer = {
+      id: transferId ?? 0,
       isActive: true,
-      budgetId: budgetId,
-      sourceAccountId: accountId,
-      name:
-        (document.getElementById("transferName") as HTMLInputElement | null)
-          ?.value || "",
-      description:
-        (
-          document.getElementById(
-            "transferDescription"
-          ) as HTMLInputElement | null
-        )?.value || "",
-      value:
-        (document.getElementById("transferValue") as HTMLInputElement | null)
-          ?.value || "",
-      transferDate: transferDate,
+      budgetId: budgetId!,
+      sourceAccountId: accountId!,
+      name: transferName,
+      description: transferDescription,
+      value: transferValue,
+      transferDate: transferDate.toDate(),
       transferType: "Expense",
       splits: splitRecords.map((record) => ({
-        splitId: record.splitId,
-        isActive: record.isActive,
+        id: record.splitId,
         categoryId: record.categoryId,
-        splitName:
-          (
-            document.getElementById(
-              `splitName_${splitRecords.indexOf(record)}`
-            ) as HTMLInputElement | null
-          )?.value || "",
-        splitDescription:
-          (
-            document.getElementById(
-              `splitDescription${splitRecords.indexOf(record)}`
-            ) as HTMLInputElement | null
-          )?.value || "",
-        splitValue: (
-          document.getElementById(
-            `splitValue_${splitRecords.indexOf(record)}`
-          ) as HTMLInputElement | null
-        )?.value
-          ? parseFloat(
-              (
-                document.getElementById(
-                  `splitValue_${splitRecords.indexOf(record)}`
-                ) as HTMLInputElement
-              ).value
-            )
-          : 0,
+        name: record.splitName,
+        description: record.splitDescription,
+        value: record.splitValue,
+        isActive: record.isActive,
       })),
     };
 
@@ -274,6 +244,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({
     // };
 
     if (/*validateResult.isValid &&*/ !isEdit) {
+      console.log(transfer);
       try {
         await axios.post(
           `${config.API_BASE_URL}${config.API_ENDPOINTS.TRANSFERS}`,
@@ -285,11 +256,9 @@ const AddExpense: React.FC<AddExpenseProps> = ({
           }
         );
 
-        document.getElementById("transferName")?.setAttribute("value", "");
-        document
-          .getElementById("transferDescription")
-          ?.setAttribute("value", "");
-        document.getElementById("transferValue")?.setAttribute("value", "");
+        setTransferDescription("");
+        setTransferName("");
+        setTransferValue(0);
         setTransferDate(dayjs().utc().startOf("day"));
         setAccountId(null);
         setIsValid({ isValid: true, errors: [] });
@@ -319,7 +288,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({
             isShaded: null,
           },
         ]);
-        //addTransferSuccessToast();
+        openSnackbar("Dodano transfer");
       } catch (error: any) {
         if (
           error.response &&
@@ -342,6 +311,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({
             },
           }
         );
+        openSnackbar("Zmodyfikowano transfer");
         handleSaveTransfer && handleSaveTransfer();
       } catch (error: any) {
         if (
@@ -379,24 +349,19 @@ const AddExpense: React.FC<AddExpenseProps> = ({
     const updatedRecords = [...splitRecords];
     updatedRecords[index].categoryId = value;
 
-    const transferValueElement = document.getElementById(
-      "transferValue"
-    ) as HTMLInputElement | null;
-    const transferValue: number = transferValueElement
-      ? parseFloat(transferValueElement.value)
-      : 0;
-
     if (index === 0 && transferValue) {
-      updatedRecords[index].transferValue = transferValue;
+      updatedRecords[index].splitValue = transferValue;
     }
 
     const categoryName = categories.find(
       (category) => category.id === value
     )?.name;
+
     if (categoryName) {
-      updatedRecords[index].categoryName = categoryName;
+      updatedRecords[index].splitName = categoryName;
     }
 
+    console.log(updatedRecords);
     setSplitRecords(updatedRecords);
   };
 
@@ -447,7 +412,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({
       }
     };
     fetchBudgets();
-  }, [isEdit, transferEdit, jwtToken]);
+  }, [isEdit, transferEdit, jwtToken, splitRecords]);
 
   return (
     <>

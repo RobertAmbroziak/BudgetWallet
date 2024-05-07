@@ -66,7 +66,7 @@ const SplitFilter: React.FC<Props> = ({ onGetSplitsButtonClick }) => {
           categories: response.data.categories,
           currentBudgetId: response.data.currentBudgetId,
         });
-        console.log(filters);
+
         setSelectedValues((prevValues) => ({
           ...prevValues,
           budgetId: defaultBudget ? defaultBudget.id : "",

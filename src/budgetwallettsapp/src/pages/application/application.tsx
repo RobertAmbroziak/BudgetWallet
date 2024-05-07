@@ -13,6 +13,7 @@ import { CategoryProvider } from "../../contexts/categoryContext";
 import { useUser } from "../../contexts/userContext";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import AddExpense from "../../components/expense/addExpense";
 
 const Application: FC = () => {
   const { jwtToken } = useUser();
@@ -126,8 +127,8 @@ const Application: FC = () => {
               </Button>
             </Box>
             {isButtonExpensesClicked && <Expenses />}
-            {/* {isButtonExpenseClicked && <Expense />}
-            {isButtonConfigurationClicked && <Configuration />}
+            {isButtonExpenseClicked && <AddExpense />}
+            {/* {isButtonConfigurationClicked && <Configuration />}
             {isButtonAccountClicked && <Account />} */}
           </div>
         ) : null}

@@ -219,6 +219,9 @@
   <data name="rule_transferNameRequired" xml:space="preserve">
     <value>Transfer name is required.</value>
   </data>
+  <data name="rule_transferSumEqualsSplitSum" xml:space="preserve">
+    <value>Sum of the split values must be equal transfer value.</value>
+  </data>
   <data name="rule_transferValueEqualsSplitSum" xml:space="preserve">
     <value>Transfer value not equals split value sum.</value>
   </data>

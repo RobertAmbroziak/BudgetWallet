@@ -775,7 +775,7 @@ namespace BusinessLogic.Services
                 {
                     PeriodOrderId = budgetValue.Key,
                     BudgetPartSumValue = budgetValue.Value,
-                    SpltPartSumValue = splitValues[budgetValue.Key]
+                    SplitPartSumValue = splitValues[budgetValue.Key]
                 });
             }
 

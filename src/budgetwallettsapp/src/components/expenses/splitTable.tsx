@@ -132,14 +132,15 @@ const SplitTable: React.FC<Props> = ({ splitRequest, expenseFilterData }) => {
             }
           );
 
-          const xAxisData = response.data.splitChartItems.map(
+          const xAxisData: number[] = response.data.splitChartItems.map(
             (item) => item.periodOrderId
           );
-          const budgetPartSeries = response.data.splitChartItems.map(
+          const budgetPartSeries: number[] = response.data.splitChartItems.map(
             (item) => item.budgetPartSumValue
           );
-          const splitPartSeries = response.data.splitChartItems.map(
-            (item) => item.splitPartSumValue
+
+          const splitPartSeries: number[] = response.data.splitChartItems.map(
+            (item) => item.splitPartSumValue ?? 0
           );
 
           setChartData({
@@ -150,7 +151,7 @@ const SplitTable: React.FC<Props> = ({ splitRequest, expenseFilterData }) => {
                 name: translations[language].lbl_budget,
                 data: budgetPartSeries,
                 valueFormatter: (value: number) =>
-                  value == null ? "NaN" : value.toString(),
+                  value == null ? "0" : value.toString(),
               },
               {
                 showMark: false,

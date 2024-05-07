@@ -367,6 +367,15 @@ namespace Util.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sum of the split values must be equal transfer value..
+        /// </summary>
+        public static string rule_transferSumEqualsSplitSum {
+            get {
+                return ResourceManager.GetString("rule_transferSumEqualsSplitSum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Transfer value not equals split value sum..
         /// </summary>
         public static string rule_transferValueEqualsSplitSum {
