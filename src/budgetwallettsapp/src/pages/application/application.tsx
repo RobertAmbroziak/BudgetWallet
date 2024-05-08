@@ -7,7 +7,7 @@ import translations from "../../translations";
 //import Expense from "../../components/expense/expense";
 import Expenses from "../../components/expenses/expenses";
 //import Account from "../../components/account/account";
-//import Configuration from "../../components/configuration/configuration";
+import Configuration from "../../components/configuration/configuration";
 import Button from "@mui/material/Button";
 import { CategoryProvider } from "../../contexts/categoryContext";
 import { useUser } from "../../contexts/userContext";
@@ -128,8 +128,8 @@ const Application: FC = () => {
             </Box>
             {isButtonExpensesClicked && <Expenses />}
             {isButtonExpenseClicked && <AddExpense />}
-            {/* {isButtonConfigurationClicked && <Configuration />}
-            {isButtonAccountClicked && <Account />} */}
+            {isButtonConfigurationClicked && <Configuration />}
+            {/*{isButtonAccountClicked && <Account />} */}
           </div>
         ) : null}
         <br />
