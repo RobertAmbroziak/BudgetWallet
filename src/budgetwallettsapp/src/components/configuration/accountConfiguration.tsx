@@ -27,9 +27,6 @@ function AccountConfiguration() {
     field: string,
     value: any
   ) => {
-    console.log("index:", index);
-    console.log("field:", field);
-    console.log("value:", value);
     const updatedRecords = [...accounts];
     if (field === "name" || field === "description") {
       updatedRecords[index][field] = value as string;
@@ -37,19 +34,18 @@ function AccountConfiguration() {
       updatedRecords[index][field] = value as number;
     } else if (field === "isActive") {
       updatedRecords[index][field] = value as boolean;
-      setAccounts(updatedRecords);
     }
+    setAccounts(updatedRecords);
   };
 
   const handleDeleteAccountRecord = (index: number) => {
     const updatedRecords = [...accounts];
     if (updatedRecords[index].id > 0) {
       updatedRecords[index].isActive = false;
-      setAccounts(updatedRecords);
     } else {
       updatedRecords.splice(index, 1);
-      setAccounts(updatedRecords);
     }
+    setAccounts(updatedRecords);
   };
 
   const handleRestoreAccountRecord = (
@@ -64,8 +60,8 @@ function AccountConfiguration() {
       updatedRecords[index][field] = value as number;
     } else if (field === "isActive") {
       updatedRecords[index][field] = value as boolean;
-      setAccounts(updatedRecords);
     }
+    setAccounts(updatedRecords);
   };
 
   const handleAddAccountRecord = () => {
@@ -111,7 +107,6 @@ function AccountConfiguration() {
   };
 
   useEffect(() => {
-    console.log("use");
     const fetchAccounts = async () => {
       try {
         const response = await axios.get(
@@ -153,7 +148,6 @@ function AccountConfiguration() {
       {accounts.map((record, index) => (
         <Box
           key={"key_accountBox_" + index}
-          component="div"
           sx={{
             display: "flex",
             flexDirection: "row",
@@ -168,8 +162,6 @@ function AccountConfiguration() {
             height: !record.isActive && !showInactive ? 0 : "auto",
             overflow: !record.isActive && !showInactive ? "hidden" : "visible",
           }}
-          //noValidate
-          //autoComplete="off"
         >
           {record.isActive ? (
             <IconButton
@@ -193,7 +185,7 @@ function AccountConfiguration() {
             id={"accountName_" + index}
             variant="outlined"
             label={translations[language].txt_name}
-            value={accounts[index].name}
+            value={record.name}
             onChange={(e) =>
               handleAccountRecordChange(index, "name", e.target.value)
             }
@@ -202,7 +194,7 @@ function AccountConfiguration() {
             id={"accountDescription" + index}
             variant="outlined"
             label={translations[language].txt_description}
-            value={accounts[index].description}
+            value={record.description}
             onChange={(e) =>
               handleAccountRecordChange(index, "description", e.target.value)
             }
@@ -211,7 +203,7 @@ function AccountConfiguration() {
             id={"accountMinValue" + index}
             variant="outlined"
             label={translations[language].txt_minValue}
-            value={accounts[index].minValue}
+            value={record.minValue}
             onChange={(e) =>
               handleAccountRecordChange(index, "minValue", e.target.value)
             }

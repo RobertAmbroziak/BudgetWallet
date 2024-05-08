@@ -42,7 +42,6 @@ function CategoryConfiguration() {
       updatedRecords[index][field] = value as string;
     } else if (field === "isActive") {
       updatedRecords[index][field] = value as boolean;
-      setLocalCategories(updatedRecords);
     }
     setLocalCategories(updatedRecords);
   };
