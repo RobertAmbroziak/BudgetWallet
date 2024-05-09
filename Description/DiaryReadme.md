@@ -293,3 +293,6 @@
  
 ### Day 69
 * Problems with Configuration when i try to rewrite to TS
+
+### Day 70
+* Tests TS App and prearation list of errors
