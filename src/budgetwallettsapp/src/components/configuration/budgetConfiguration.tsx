@@ -13,10 +13,11 @@ import Checkbox from "@mui/material/Checkbox";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
-import BudgetDetail from "./budgetDetail";
-import { Budget } from "../../types/api/budget";
+import BudgetDetails from "./budgetDetail";
 import { useUser } from "../../contexts/userContext";
 import utc from "dayjs/plugin/utc";
+import { Budget } from "../../types/api/budget";
+import { useSnackbar } from "../../contexts/toastContext";
 
 dayjs.extend(utc);
 
@@ -27,6 +28,7 @@ function BudgetConfiguration() {
   const [showInactive, setShowInactive] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
   const [reload, setReload] = useState(false);
+  const { openSnackbar } = useSnackbar();
 
   const handleEditBudgetRecord = (budget: Budget) => {
     setSelectedBudget(budget);
@@ -43,6 +45,7 @@ function BudgetConfiguration() {
       const validTo = new Date(
         Date.UTC(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
       );
+
       const description = `${validFrom.getFullYear()}-${String(
         validFrom.getMonth() + 1
       ).padStart(2, "0")}`;
@@ -65,6 +68,8 @@ function BudgetConfiguration() {
           validFrom: validFrom,
           validTo: validTo,
           isActive: true,
+          budgetPeriods: [],
+          budgetCategories: [],
         },
       ]);
     }
@@ -105,7 +110,7 @@ function BudgetConfiguration() {
       }
     };
     fetchBudgets();
-  }, [jwtToken, onSuccess, onError, reload]);
+  }, [jwtToken, reload]);
 
   if (selectedBudget !== null) {
     return (
@@ -115,8 +120,6 @@ function BudgetConfiguration() {
           setSelectedBudget(null);
           setReload((reload) => !reload);
         }}
-        onSuccess={onSuccess}
-        onError={onError}
       />
     );
   }
@@ -155,8 +158,6 @@ function BudgetConfiguration() {
             height: !record.isActive && !showInactive ? 0 : "auto",
             overflow: !record.isActive && !showInactive ? "hidden" : "visible",
           }}
-          noValidate
-          autoComplete="off"
         >
           <IconButton
             aria-label="edit"

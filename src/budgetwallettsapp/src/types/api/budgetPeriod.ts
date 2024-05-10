@@ -6,5 +6,6 @@ export interface BudgetPeriod {
     validFrom: Date,
     validTo: Date,
     name: string,
+    isActive: boolean,
     budgetPeriodCategories: BudgetPeriodCategory[]
 }

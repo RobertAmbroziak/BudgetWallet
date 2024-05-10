@@ -296,3 +296,6 @@
 
 ### Day 70
 * Tests TS App and prearation list of errors
+
+### Day 71
+* JS to TS conversion Budget Configuration area
