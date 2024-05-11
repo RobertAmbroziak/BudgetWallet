@@ -302,3 +302,6 @@
 
 ### Day 72
 * Configuration Tests
+
+### Day 73
+* Configuration Tests part 2
