@@ -299,3 +299,6 @@
 
 ### Day 71
 * JS to TS conversion Budget Configuration area
+
+### Day 72
+* Configuration Tests
