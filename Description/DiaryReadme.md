@@ -305,3 +305,6 @@
 
 ### Day 73
 * Configuration Tests part 2
+
+### Day 74
+* Budget Configuration TS Fixes

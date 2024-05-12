@@ -26,7 +26,7 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-//import BudgetPeriodCategories from "./budgetPeriodCategories";
+import BudgetPeriodCategories from "./budgetPeriodCategory";
 import { useCategories } from "../../contexts/categoryContext";
 import { useUser } from "../../contexts/userContext";
 import utc from "dayjs/plugin/utc";
@@ -64,9 +64,8 @@ const BudgetDetails: React.FC<BudgetDetailsProps> = ({
   const [budget, setBudget] = useState<Budget | null>(null);
   const [editingBudgetPeriod, setEditingBudgetPeriod] =
     useState<BudgetPeriod | null>(null);
-  const [editingBudgetPeriodIndex, setEditingBudgetPeriodIndex] = useState<
-    number | null
-  >(null);
+  const [editingBudgetPeriodIndex, setEditingBudgetPeriodIndex] =
+    useState<number>(0);
   const [filteredCategories, setFilteredCategories] = useState(categories);
   const { openSnackbar } = useSnackbar();
 
@@ -129,7 +128,7 @@ const BudgetDetails: React.FC<BudgetDetailsProps> = ({
     });
 
     setEditingBudgetPeriod(null);
-    setEditingBudgetPeriodIndex(null);
+    setEditingBudgetPeriodIndex(0);
   };
 
   const editBudgetPeriod = (record: BudgetPeriod, index: number) => {
@@ -166,50 +165,37 @@ const BudgetDetails: React.FC<BudgetDetailsProps> = ({
   const handleAlignBudgetPeriods = () => {
     if (!budget) return;
 
+    // aktualny budget
     const updatedBudget = { ...budget };
-    updatedBudget.budgetPeriods = updatedBudget.budgetPeriods.map((period) => {
-      const newPeriodCategories = [...period.budgetPeriodCategories];
 
-      updatedBudget.budgetCategories.forEach((category) => {
-        let sameCategoryPeriods = newPeriodCategories.filter(
-          (pCat) => pCat.categoryId === category.categoryId
-        );
+    // wszystkie budgetPeriodCategories
+    const allBudgetPeriodCategories: BudgetPeriodCategory[] = [];
+    updatedBudget.budgetPeriods.forEach((period) => {
+      if (period.isActive === true) {
+        allBudgetPeriodCategories.push(...period.budgetPeriodCategories);
+      }
+    });
 
-        if (sameCategoryPeriods.length === 0 && category.isActive) {
-          newPeriodCategories.push({
-            id: 0,
-            budgetPeriodId: period.id,
-            categoryId: category.categoryId,
-            isActive: category.isActive,
-            maxValue: 0,
-            category: { id: 0, name: "", description: "", isActive: false },
-          });
-          sameCategoryPeriods = newPeriodCategories.filter(
-            (pCat) => pCat.categoryId === category.categoryId
-          );
-        }
+    // tylko budgetPeriodCategories dla danej categoryId
+    updatedBudget.budgetCategories.forEach((budgetCategory) => {
+      let sameCategoryBudgetPeriodCategories = allBudgetPeriodCategories.filter(
+        (bpc) => bpc.categoryId === budgetCategory.categoryId
+      );
 
-        if (sameCategoryPeriods.length > 0) {
-          const eachValue = (
-            category.maxValue / sameCategoryPeriods.length
-          ).toFixed(2);
-          let totalAssigned = 0;
+      const difSumSameCategoryBPCAndBC: number =
+        sameCategoryBudgetPeriodCategories.reduce(
+          (acc, curr) => acc + curr.maxValue,
+          0
+        ) - budgetCategory.maxValue;
+      if (difSumSameCategoryBPCAndBC != 0) {
+        /*
+              podziel całą sumę na ilość periodów
+              każdy period musi mić bpc aktywne- więć albo dodajemy jak nie ma, albo aktywujemy jak nieaktywne 
+              do pierwszego bpc danej kategorii dodaj różnice jeśli wyjdzie z zaokrągleń
 
-          sameCategoryPeriods.forEach((pCat, index) => {
-            pCat.isActive = category.isActive;
-
-            if (index === sameCategoryPeriods.length - 1) {
-              pCat.maxValue = Number(
-                (category.maxValue - totalAssigned).toFixed(2)
-              );
-            } else {
-              pCat.maxValue = Number(eachValue);
-              totalAssigned += parseFloat(eachValue);
-            }
-          });
-        }
-      });
-      return { ...period, budgetPeriodCategories: newPeriodCategories };
+              jeśli zostały nam jakieć aktywne bpc na kategorie których nie ma w liście aktywnych bc to je dezaktywujemy
+        */
+      }
     });
     setBudget(updatedBudget);
   };
@@ -380,16 +366,16 @@ const BudgetDetails: React.FC<BudgetDetailsProps> = ({
     }
   }, [simpleBudget.id, jwtToken, categories]);
 
-  //   if (editingBudgetPeriod) {
-  //     return (
-  //       <BudgetPeriodCategories
-  //         budgetPeriod={editingBudgetPeriod}
-  //         budgetPeriodIndex={editingBudgetPeriodIndex}
-  //         categories={filteredCategories}
-  //         onBack={updateBudgetPeriod}
-  //       />
-  //     );
-  //   }
+  if (editingBudgetPeriod) {
+    return (
+      <BudgetPeriodCategories
+        budgetPeriod={editingBudgetPeriod}
+        budgetPeriodIndex={editingBudgetPeriodIndex}
+        categories={filteredCategories}
+        onBack={updateBudgetPeriod}
+      />
+    );
+  }
 
   return (
     <div>

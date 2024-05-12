@@ -244,7 +244,6 @@ const AddExpense: React.FC<AddExpenseProps> = ({
     // };
 
     if (/*validateResult.isValid &&*/ !isEdit) {
-      console.log(transfer);
       try {
         await axios.post(
           `${config.API_BASE_URL}${config.API_ENDPOINTS.TRANSFERS}`,
@@ -360,8 +359,6 @@ const AddExpense: React.FC<AddExpenseProps> = ({
     if (categoryName) {
       updatedRecords[index].splitName = categoryName;
     }
-
-    console.log(updatedRecords);
     setSplitRecords(updatedRecords);
   };
 

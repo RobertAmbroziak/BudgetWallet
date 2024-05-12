@@ -5,7 +5,7 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-//import BudgetConfiguration from "./budgetConfiguration";
+import BudgetConfiguration from "./budgetConfiguration";
 import CategoryConfiguration from "./categoryConfiguration";
 import AccountConfiguration from "./accountConfiguration";
 
@@ -45,7 +45,9 @@ function Configuration() {
         >
           {translations[language].lbl_ConfigurationBudgets}
         </AccordionSummary>
-        <AccordionDetails>{/* <BudgetConfiguration /> */}</AccordionDetails>
+        <AccordionDetails>
+          <BudgetConfiguration />
+        </AccordionDetails>
       </Accordion>
       <br />
     </>
