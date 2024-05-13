@@ -26,6 +26,7 @@ import { Account } from "../../types/api/account";
 import { Split } from "../../types/api/split";
 import { PostTransfer } from "../../types/api/postTransfer";
 import { useSnackbar } from "../../contexts/toastContext";
+import { Severity } from "../../types/enums/severity";
 
 dayjs.extend(utc);
 
@@ -287,7 +288,10 @@ const AddExpense: React.FC<AddExpenseProps> = ({
             isShaded: null,
           },
         ]);
-        openSnackbar("Dodano transfer");
+        openSnackbar(
+          translations[language].toast_addTransferSuccess,
+          Severity.SUCCESS
+        );
       } catch (error: any) {
         if (
           error.response &&
@@ -310,7 +314,10 @@ const AddExpense: React.FC<AddExpenseProps> = ({
             },
           }
         );
-        openSnackbar("Zmodyfikowano transfer");
+        openSnackbar(
+          translations[language].toast_editTransferSuccess,
+          Severity.SUCCESS
+        );
         handleSaveTransfer && handleSaveTransfer();
       } catch (error: any) {
         if (

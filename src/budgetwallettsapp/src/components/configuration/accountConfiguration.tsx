@@ -14,6 +14,7 @@ import Checkbox from "@mui/material/Checkbox";
 import { useUser } from "../../contexts/userContext";
 import { Account } from "../../types/api/account";
 import { useSnackbar } from "../../contexts/toastContext";
+import { Severity } from "../../types/enums/severity";
 
 function AccountConfiguration() {
   const { jwtToken } = useUser();
@@ -82,9 +83,15 @@ function AccountConfiguration() {
           },
         }
       );
-      openSnackbar(translations[language].toast_updateAccountsSuccess);
+      openSnackbar(
+        translations[language].toast_updateAccountsSuccess,
+        Severity.SUCCESS
+      );
     } catch (error) {
-      openSnackbar(translations[language].toast_updateAccountsError);
+      openSnackbar(
+        translations[language].toast_updateAccountsError,
+        Severity.ERROR
+      );
     }
   };
 

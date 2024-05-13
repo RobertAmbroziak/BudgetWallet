@@ -36,6 +36,7 @@ import { BudgetPeriod } from "../../types/api/budgetPeriod";
 import { BudgetPeriodCategory } from "../../types/api/budgetPeriodCategory";
 import { BudgetCategory } from "../../types/api/budgetCategory";
 import { useSnackbar } from "../../contexts/toastContext";
+import { Severity } from "../../types/enums/severity";
 import { AxiosError } from "axios";
 
 dayjs.extend(utc);
@@ -85,7 +86,10 @@ const BudgetDetails: React.FC<BudgetDetailsProps> = ({
         }
       );
       setIsValid({ isValid: true, errors: [] });
-      openSnackbar(translations[language].toast_updateBudgetsSuccess);
+      openSnackbar(
+        translations[language].toast_updateBudgetsSuccess,
+        Severity.SUCCESS
+      );
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError<any>;
@@ -98,7 +102,10 @@ const BudgetDetails: React.FC<BudgetDetailsProps> = ({
         } else {
           setIsValid({ isValid: false, errors: [axiosError.message] });
         }
-        openSnackbar(translations[language].toast_updateBudgetsError);
+        openSnackbar(
+          translations[language].toast_updateBudgetsError,
+          Severity.ERROR
+        );
       } else {
         console.error("Unhandled error:", error);
       }

@@ -15,6 +15,7 @@ import { useCategories } from "../../contexts/categoryContext";
 import { useUser } from "../../contexts/userContext";
 import { Category } from "../../types/api/category";
 import { useSnackbar } from "../../contexts/toastContext";
+import { Severity } from "../../types/enums/severity";
 
 function CategoryConfiguration() {
   const { jwtToken } = useUser();
@@ -89,9 +90,15 @@ function CategoryConfiguration() {
       );
       updateGlobalCategories(localCategories);
       await fetchCategories();
-      openSnackbar(translations[language].toast_updateCategoriesSuccess);
+      openSnackbar(
+        translations[language].toast_updateCategoriesSuccess,
+        Severity.SUCCESS
+      );
     } catch (error) {
-      openSnackbar(translations[language].toast_updateCategoriesError);
+      openSnackbar(
+        translations[language].toast_updateCategoriesError,
+        Severity.ERROR
+      );
     }
   };
 

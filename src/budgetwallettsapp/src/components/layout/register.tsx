@@ -8,6 +8,7 @@ import translations from "../../translations";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
+import { Severity } from "../../types/enums/severity";
 
 interface RegisterProps {
   setShowRegister: (show: boolean) => void;
@@ -51,7 +52,10 @@ const Register: React.FC<RegisterProps> = ({
       );
       setShowRegister(false);
       navigate("/");
-      openSnackbar("Zarejestrowano");
+      openSnackbar(
+        translations[language].toast_registerSuccess,
+        Severity.SUCCESS
+      );
     } catch (error) {
       handleError(error);
       setRegisterAlerts(alerts);

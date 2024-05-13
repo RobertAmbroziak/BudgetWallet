@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { Snackbar } from "@mui/material";
 import Alert from "@mui/material/Alert";
+import { Severity } from "../types/enums/severity";
 
 interface SnackbarContextType {
-  openSnackbar: (message: string) => void;
+  openSnackbar: (message: string, severity: Severity) => void;
   closeSnackbar: () => void;
 }
 
@@ -14,9 +15,13 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<Severity>(
+    Severity.SUCCESS
+  );
 
-  const openSnackbar = (message: string) => {
+  const openSnackbar = (message: string, severity: Severity) => {
     setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
     setSnackbarOpen(true);
   };
 
@@ -35,7 +40,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({
       >
         <Alert
           onClose={closeSnackbar}
-          severity="success"
+          severity={snackbarSeverity}
           variant="filled"
           sx={{ width: "100%" }}
         >

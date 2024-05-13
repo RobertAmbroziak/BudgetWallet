@@ -18,6 +18,7 @@ import { useUser } from "../../contexts/userContext";
 import utc from "dayjs/plugin/utc";
 import { Budget } from "../../types/api/budget";
 import { useSnackbar } from "../../contexts/toastContext";
+import { Severity } from "../../types/enums/severity";
 
 dayjs.extend(utc);
 
