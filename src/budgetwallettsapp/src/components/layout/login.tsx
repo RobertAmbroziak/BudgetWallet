@@ -40,7 +40,6 @@ const Login: React.FC<LoginProps> = ({
   const [password, setPassword] = useState<string>("");
   const { language } = useLanguage();
   const navigate = useNavigate();
-  const [alerts, setAlerts] = useState<JSX.Element[]>([]);
 
   const handleRegisterClick = () => {
     setShowRegister(true);
@@ -88,8 +87,8 @@ const Login: React.FC<LoginProps> = ({
       onClose();
       navigate("/user");
     } catch (error) {
-      handleError(error);
-      setLoginAlerts(alerts);
+      const errorAlerts = handleError(error);
+      setLoginAlerts(errorAlerts);
     }
   };
 
@@ -124,7 +123,7 @@ const Login: React.FC<LoginProps> = ({
         </Alert>
       );
     }
-    setAlerts(alerts);
+    return alerts;
   };
 
   return (

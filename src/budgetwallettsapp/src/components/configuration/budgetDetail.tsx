@@ -195,13 +195,63 @@ const BudgetDetails: React.FC<BudgetDetailsProps> = ({
           0
         ) - budgetCategory.maxValue;
       if (difSumSameCategoryBPCAndBC != 0) {
-        /*
-              podziel całą sumę na ilość periodów
-              każdy period musi mić bpc aktywne- więć albo dodajemy jak nie ma, albo aktywujemy jak nieaktywne 
-              do pierwszego bpc danej kategorii dodaj różnice jeśli wyjdzie z zaokrągleń
+        const activeBudgetPeriods = updatedBudget.budgetPeriods.filter(
+          (period) => period.isActive === true
+        );
 
-              jeśli zostały nam jakieć aktywne bpc na kategorie których nie ma w liście aktywnych bc to je dezaktywujemy
-        */
+        // Pętla po kategoriach budżetowych
+        updatedBudget.budgetCategories.forEach((budgetCategory) => {
+          // Podział wartości maxValue na składowe
+          const dividedValue = +(
+            budgetCategory.maxValue / activeBudgetPeriods.length
+          ).toFixed(2);
+
+          // Sprawdzenie, czy każdy aktywny budgetPeriod ma budgetPeriodCategory dla danej kategorii
+          activeBudgetPeriods.forEach((period) => {
+            const categoryExists = period.budgetPeriodCategories.some(
+              (bpc) => bpc.categoryId === budgetCategory.categoryId
+            );
+
+            // Jeśli nie ma, dodaj nową budgetPeriodCategory z maxValue równym składowej
+            if (!categoryExists) {
+              period.budgetPeriodCategories.push({
+                id: 0,
+                budgetPeriodId: period.id,
+                categoryId: budgetCategory.categoryId,
+                maxValue: dividedValue,
+                isActive: true,
+                category: {
+                  id: budgetCategory.categoryId,
+                  name: "",
+                  description: "",
+                  isActive: true,
+                },
+              });
+            }
+          });
+        });
+      }
+
+      // Sprawdzenie, czy suma składowych nie równa się maxValue kategorii
+      const sumMaxValues = updatedBudget.budgetPeriods
+        .flatMap((period) => period.budgetPeriodCategories)
+        .filter((bpc) => bpc.categoryId === budgetCategory.categoryId)
+        .reduce((acc, curr) => acc + curr.maxValue, 0);
+
+      const roundedSumMaxValues = parseFloat(sumMaxValues.toFixed(2));
+
+      const difToAdd: number =
+        Number(budgetCategory.maxValue) - roundedSumMaxValues;
+      const roundedDifToAdd = parseFloat(difToAdd.toFixed(2));
+      if (difToAdd !== 0) {
+        const firstBudgetPeriodCategory =
+          updatedBudget.budgetPeriods[0].budgetPeriodCategories.find(
+            (bpc) => bpc.categoryId === budgetCategory.categoryId
+          );
+        if (firstBudgetPeriodCategory) {
+          const newValue = firstBudgetPeriodCategory.maxValue + roundedDifToAdd;
+          firstBudgetPeriodCategory.maxValue = parseFloat(newValue.toFixed(2));
+        }
       }
     });
     setBudget(updatedBudget);

@@ -29,7 +29,7 @@ const Register: React.FC<RegisterProps> = ({
   const { language } = useLanguage();
   const navigate = useNavigate();
   const { openSnackbar } = useSnackbar();
-  const [alerts, setAlerts] = useState<JSX.Element[]>([]);
+  //const [alerts, setAlerts] = useState<JSX.Element[]>([]);
 
   const register = async () => {
     if (registerPassword !== registerRepeatPassword) {
@@ -42,7 +42,7 @@ const Register: React.FC<RegisterProps> = ({
       return;
     }
     try {
-      const response = await axios.post(
+      await axios.post(
         `${config.API_BASE_URL}${config.API_ENDPOINTS.REGISTER}`,
         {
           userName: registerUserName,
@@ -57,8 +57,8 @@ const Register: React.FC<RegisterProps> = ({
         Severity.SUCCESS
       );
     } catch (error) {
-      handleError(error);
-      setRegisterAlerts(alerts);
+      const errorAlerts = handleError(error);
+      setRegisterAlerts(errorAlerts);
     }
   };
 
@@ -93,7 +93,7 @@ const Register: React.FC<RegisterProps> = ({
         </Alert>
       );
     }
-    setAlerts(alerts);
+    return alerts;
   };
 
   return (

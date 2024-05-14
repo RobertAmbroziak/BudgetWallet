@@ -309,3 +309,8 @@
 ### Day 74
 * Budget Configuration TS Fixes
 * Toast Fixes
+
+### Day 75
+* Login and Register fixed response on the first click
+* transfer editing fix
+* Align to budget period functionality fix - still requires minor adjustment.

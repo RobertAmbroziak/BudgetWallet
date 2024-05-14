@@ -374,6 +374,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({
   };
 
   useEffect(() => {
+    console.log("useEf");
     if (isEdit && transferEdit) {
       setTransferId(transferEdit.transferId);
       setTransferName(transferEdit.transferName || "");
@@ -416,7 +417,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({
       }
     };
     fetchBudgets();
-  }, [isEdit, transferEdit, jwtToken, splitRecords]);
+  }, [isEdit, transferEdit, jwtToken]);
 
   return (
     <>
