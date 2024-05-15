@@ -314,3 +314,6 @@
 * Login and Register fixed response on the first click
 * transfer editing fix
 * Align to budget period functionality fix - still requires minor adjustment.
+
+### Day 76
+* Type Script Gui tests
