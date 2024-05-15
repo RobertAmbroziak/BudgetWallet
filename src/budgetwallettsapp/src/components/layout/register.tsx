@@ -29,7 +29,6 @@ const Register: React.FC<RegisterProps> = ({
   const { language } = useLanguage();
   const navigate = useNavigate();
   const { openSnackbar } = useSnackbar();
-  //const [alerts, setAlerts] = useState<JSX.Element[]>([]);
 
   const register = async () => {
     if (registerPassword !== registerRepeatPassword) {

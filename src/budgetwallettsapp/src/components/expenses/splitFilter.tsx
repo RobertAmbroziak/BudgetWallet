@@ -172,7 +172,7 @@ const SplitFilter: React.FC<Props> = ({ onGetSplitsButtonClick }) => {
         <Select
           labelId="budgetSelect"
           id="budgetSelect"
-          value={selectedValues.budgetId}
+          value={selectedValues.budgetId !== 0 ? selectedValues.budgetId : ""}
           label="Budget"
           name="budgetId"
           onChange={handleDropdownChange}
@@ -191,7 +191,7 @@ const SplitFilter: React.FC<Props> = ({ onGetSplitsButtonClick }) => {
         <Select
           labelId="budgetPeriodSelect"
           id="budgetPeriodSelect"
-          value={selectedValues.budgetPeriodId ?? 0}
+          value={selectedValues.budgetPeriodId ?? ""}
           label="BudgetPeriod"
           name="budgetPeriodId"
           onChange={handleDropdownChange}
@@ -213,7 +213,7 @@ const SplitFilter: React.FC<Props> = ({ onGetSplitsButtonClick }) => {
         <Select
           labelId="categorySelect"
           id="categorySelect"
-          value={selectedValues.categoryId ?? 0}
+          value={selectedValues.categoryId ?? ""}
           label="Category"
           name="categoryId"
           onChange={handleDropdownChange}
@@ -235,7 +235,7 @@ const SplitFilter: React.FC<Props> = ({ onGetSplitsButtonClick }) => {
         <Select
           labelId="accountSelect"
           id="accountSelect"
-          value={selectedValues.accountId ?? 0}
+          value={selectedValues.accountId ?? ""}
           label="Account"
           name="accountId"
           onChange={handleDropdownChange}

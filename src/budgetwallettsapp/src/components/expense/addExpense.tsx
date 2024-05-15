@@ -27,6 +27,8 @@ import { Split } from "../../types/api/split";
 import { PostTransfer } from "../../types/api/postTransfer";
 import { useSnackbar } from "../../contexts/toastContext";
 import { Severity } from "../../types/enums/severity";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 dayjs.extend(utc);
 
@@ -55,6 +57,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({
   const [budgetId, setBudgetId] = useState<number | null>(null);
   const [transferId, setTransferId] = useState<number | null>(null);
   const [accountId, setAccountId] = useState<number | null>(null);
+  const [transferActivity, setTransferActivity] = useState<boolean>(true);
   const [isValid, setIsValid] = useState<{
     isValid: boolean;
     errors: string[];
@@ -144,7 +147,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({
   const handleAddTransferButtonClick = async () => {
     const transfer: PostTransfer = {
       id: transferId ?? 0,
-      isActive: true,
+      isActive: isEdit ? transferActivity : true,
       budgetId: budgetId!,
       sourceAccountId: accountId!,
       name: transferName,
@@ -374,7 +377,6 @@ const AddExpense: React.FC<AddExpenseProps> = ({
   };
 
   useEffect(() => {
-    console.log("useEf");
     if (isEdit && transferEdit) {
       setTransferId(transferEdit.transferId);
       setTransferName(transferEdit.transferName || "");
@@ -447,7 +449,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({
               <Select
                 labelId="budgetSelect"
                 id="budgetSelect"
-                value={budgetId || 0}
+                value={budgetId ?? ""}
                 label={translations[language].lbl_budget}
                 name="budgetId"
                 onChange={(e) =>
@@ -462,6 +464,17 @@ const AddExpense: React.FC<AddExpenseProps> = ({
               </Select>
             </FormControl>
           )}
+          {isEdit && (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={transferActivity}
+                  onChange={(e) => setTransferActivity(e.target.checked)}
+                />
+              }
+              label={translations[language].cbx_IsActive}
+            />
+          )}
           <FormControl sx={{ m: 1, minWidth: 120 }}>
             <InputLabel id="accountSelect">
               {translations[language].lbl_account}
@@ -469,7 +482,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({
             <Select
               labelId="accountSelect"
               id="accountSelect"
-              value={accountId || 0}
+              value={accountId ?? ""}
               label={translations[language].lbl_account}
               name="accountId"
               onChange={(e) =>
@@ -556,7 +569,11 @@ const AddExpense: React.FC<AddExpenseProps> = ({
               <Select
                 labelId={`categorySelect_${index}`}
                 id={`categorySelect_${index}`}
-                value={splitRecords[index]?.categoryId || 0}
+                value={
+                  splitRecords[index]?.categoryId !== 0
+                    ? splitRecords[index]?.categoryId
+                    : ""
+                }
                 label={translations[language].lbl_category}
                 name={`categoryId_${index}`}
                 onChange={(e) =>

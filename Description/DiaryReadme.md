@@ -317,3 +317,8 @@
 
 ### Day 76
 * Type Script Gui tests
+
+### Day 77
+* Account State Init in TS Application
+* Added transfer deactivation
+* React Mui Select with ID = 0 fix

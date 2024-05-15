@@ -286,6 +286,7 @@ namespace BusinessLogic.Services
             transfer.Description = postTransfer.Description;
             transfer.Value = postTransfer.Value;
             transfer.SourceAccountId = postTransfer.SourceAccountId;
+            transfer.IsActive = postTransfer.IsActive;
 
             foreach (var postSplit in postTransfer.Splits)
             {
@@ -309,7 +310,7 @@ namespace BusinessLogic.Services
                         Value = postSplit.Value,
                         CategoryId = postSplit.CategoryId,
                         IsActive = postSplit.IsActive
-                    });
+                });
                 }
             }
 
@@ -317,6 +318,14 @@ namespace BusinessLogic.Services
             {
                 var postSplit = postTransfer.Splits.FirstOrDefault(x => x.Id == split.Id);
                 if (postSplit == null)
+                {
+                    split.IsActive = false;
+                }
+            }
+
+            if (!postTransfer.IsActive)
+            {
+                foreach (var split in transfer.Splits)
                 {
                     split.IsActive = false;
                 }
