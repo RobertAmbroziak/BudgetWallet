@@ -322,3 +322,4 @@
 * Account State Init in TS Application
 * Added transfer deactivation
 * React Mui Select with ID = 0 fix
+* Facebook Login/ GitHub Login Recognition
