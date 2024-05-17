@@ -7,7 +7,7 @@ namespace Model.Tables
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public int BudgetId { get; set; }
+        public int? BudgetId { get; set; }
         public int? SourceAccountId { get; set; }
         public int? DestinationAccountId { get; set; }
         public DateTime TransferDate { get; set; }

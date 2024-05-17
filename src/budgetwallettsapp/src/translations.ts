@@ -106,6 +106,7 @@ const translations: Translations = {
     btn_AccountsState: "Accounts State",
     btn_alignBudgetPeriods: "Align",
     cbx_IsActive: "Is Active ?",
+    lbl_externalSource: "External Source",
   },
   pl: {
     btn_logout: "Wyloguj",
@@ -209,6 +210,7 @@ const translations: Translations = {
     btn_AccountsState: "Stan Kont",
     btn_alignBudgetPeriods: "Wyrównaj",
     cbx_IsActive: "Czy aktywny ?",
+    lbl_externalSource: "Źródło zewnętrzne",
   },
 };
 

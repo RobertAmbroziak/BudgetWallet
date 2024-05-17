@@ -150,6 +150,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({
       isActive: isEdit ? transferActivity : true,
       budgetId: budgetId!,
       sourceAccountId: accountId!,
+      destinationAccountId: null,
       name: transferName,
       description: transferDescription,
       value: transferValue,

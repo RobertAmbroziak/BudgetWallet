@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model.Application;
+using WebApi.Validators;
 
 namespace WebApi.Controllers
 {
@@ -15,12 +16,14 @@ namespace WebApi.Controllers
     public class TransferController : ControllerBase
     {
         private readonly IApplicationService _applicationService;
-        private readonly IValidator<PostTransfer> _postTransferValidator;
+        private readonly PostTransferValidator _postTransferValidator;
+        private readonly PostTransferInternalValidator _postTransferInternalValidator;
 
-        public TransferController(IApplicationService applicationService, IValidator<PostTransfer> postTransferValidator)
+        public TransferController(IApplicationService applicationService, PostTransferValidator postTransferValidator, PostTransferInternalValidator postTransferInternalValidator)
         {
             _applicationService = applicationService;
             _postTransferValidator = postTransferValidator;
+            _postTransferInternalValidator = postTransferInternalValidator;
         }
 
         /// <summary>
@@ -90,10 +93,18 @@ namespace WebApi.Controllers
         /// </summary>
         /// <param name="postTransfer">Transfer without split</param>
         /// <returns>Code 200 Accepted</returns>
-        [HttpPost("interal")]
+        [HttpPost("internal")]
         public async Task<ActionResult> AddInternalTransfer(PostTransfer transfer)
         {
-            throw new NotImplementedException();
+            var validationResult = await _postTransferInternalValidator.ValidateAsync(transfer);
+
+            if (!validationResult.IsValid)
+            {
+                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                return BadRequest(errors);
+            }
+            await _applicationService.AddTransfer(transfer);
+            return Accepted();
         }
 
         /// <summary>

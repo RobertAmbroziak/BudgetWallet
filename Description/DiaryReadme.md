@@ -323,3 +323,6 @@
 * Added transfer deactivation
 * React Mui Select with ID = 0 fix
 * Facebook Login/ GitHub Login Recognition
+
+### Day 78
+* Internal/Deposit Transfer save

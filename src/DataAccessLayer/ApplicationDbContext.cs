@@ -106,7 +106,7 @@ namespace DataAccessLayer
                 entity.HasOne(e => e.Budget)
                     .WithMany(b => b.Transfers)
                     .HasForeignKey(e => e.BudgetId)
-                    .IsRequired();
+                    .IsRequired(false);
 
                 entity.HasOne(e => e.SourceAccount)
                     .WithMany(a => a.SourceTransfers)

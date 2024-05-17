@@ -20,13 +20,21 @@ import { useLanguage } from "../../contexts/languageContext";
 import translations from "../../translations";
 import { useUser } from "../../contexts/userContext";
 import { Account } from "../../types/api/account";
+import { PostTransfer } from "../../types/api/postTransfer";
+import { useSnackbar } from "../../contexts/toastContext";
+import { Severity } from "../../types/enums/severity";
 
 dayjs.extend(utc);
 
 function Accounts() {
   const { jwtToken } = useUser();
   const { language } = useLanguage();
-  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [sourceAccounts, setSourceAccounts] = useState<Account[]>([]);
+  const [destinationAccounts, setDestinationAccounts] = useState<Account[]>([]);
+  const [transferName, setTransferName] = useState<string>("");
+  const [transferDescription, setTransferDescription] = useState<string>("");
+  const [transferValue, setTransferValue] = useState<number>(0);
+  const { openSnackbar } = useSnackbar();
   const [isValid, setIsValid] = useState<{
     isValid: boolean;
     errors: string[];
@@ -34,14 +42,103 @@ function Accounts() {
     isValid: true,
     errors: [],
   });
-  const [accountId, setAccountId] = useState<number | null>(null);
+  const [sourceAccountId, setSourceAccountId] = useState<number | null>(null);
+  const [destinationAccountId, setDestinationAccountId] = useState<
+    number | null
+  >(null);
   const [transferDate, setTransferDate] = useState<dayjs.Dayjs>(
     dayjs().utc().startOf("day")
   );
 
-  const handleAddTransferButtonClick = async () => {};
-  const handleDropdownAccountSourceChange = async () => {};
-  const handleDropdownAccountDestinationChange = async () => {};
+  const handleAddTransferButtonClick = async () => {
+    const transfer: PostTransfer = {
+      id: 0,
+      isActive: true,
+      budgetId: null,
+      sourceAccountId: sourceAccountId,
+      destinationAccountId: destinationAccountId,
+      name: transferName,
+      description: transferDescription,
+      value: transferValue,
+      transferDate: transferDate.toDate(),
+      transferType: sourceAccountId === null ? "Deposit" : "InternalTransfer",
+      splits: [],
+    };
+
+    try {
+      await axios.post(
+        `${config.API_BASE_URL}${config.API_ENDPOINTS.TRANSFERS}/internal`,
+        transfer,
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+
+      setTransferDescription("");
+      setTransferName("");
+      setTransferValue(0);
+      setTransferDate(dayjs().utc().startOf("day"));
+      setSourceAccountId(null);
+      setDestinationAccountId(null);
+      setIsValid({ isValid: true, errors: [] });
+
+      openSnackbar(
+        translations[language].toast_addTransferSuccess,
+        Severity.SUCCESS
+      );
+    } catch (error: any) {
+      console.log(error);
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.length > 0
+      ) {
+        setIsValid({ isValid: false, errors: error.response.data });
+      } else {
+        setIsValid({ isValid: false, errors: [error.message] });
+      }
+    }
+  };
+
+  const handleDropdownAccountSourceChange = (value: number) => {
+    setSourceAccountId(value);
+  };
+  const handleDropdownAccountDestinationChange = (value: number) => {
+    setDestinationAccountId(value);
+  };
+
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      try {
+        const response = await axios.get(
+          `${config.API_BASE_URL}${config.API_ENDPOINTS.ACCOUNTS}`,
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
+
+        const externalSource: Account = {
+          id: 0,
+          name: translations[language].lbl_externalSource,
+          description: "",
+          isActive: false,
+          minValue: 0,
+        };
+        const updatedSourceAccounts = [externalSource, ...response.data];
+
+        setSourceAccounts(updatedSourceAccounts);
+        setDestinationAccounts(response.data);
+      } catch (error) {
+        console.error("Error fetching filters:", error);
+      }
+    };
+    fetchAccounts();
+  }, [jwtToken]);
+
   /*
     w tym widoku będzie lista aktywnych kont bez możliwości ich edycji ,ale pokaże się  ich nazwa opis, minValue i aktualny stan
     wyliczany z sumy transferów wydatków, przychodów i transferów pomiędzy kontami - tylko aktywne transfery - bez splitów, bo sa zbędne
@@ -82,12 +179,14 @@ function Accounts() {
             <Select
               labelId="accountSourceSelect"
               id="accountSourceSelect"
-              value={accountId ?? ""}
+              value={sourceAccountId ?? ""}
               label={translations[language].lbl_sourceAccount}
               name="accountSourceId"
-              onChange={handleDropdownAccountSourceChange}
+              onChange={(e) =>
+                handleDropdownAccountSourceChange(Number(e.target.value))
+              }
             >
-              {accounts.map((account) => (
+              {sourceAccounts.map((account) => (
                 <MenuItem key={account.id} value={account.id}>
                   {account.name}
                 </MenuItem>
@@ -101,12 +200,14 @@ function Accounts() {
             <Select
               labelId="accountDestinationSelect"
               id="accountDestinationSelect"
-              value={accountId ?? ""}
+              value={destinationAccountId ?? ""}
               label={translations[language].lbl_destinationAccount}
               name="accountDestinationId"
-              onChange={handleDropdownAccountDestinationChange}
+              onChange={(e) =>
+                handleDropdownAccountDestinationChange(Number(e.target.value))
+              }
             >
-              {accounts.map((account) => (
+              {destinationAccounts.map((account) => (
                 <MenuItem key={account.id} value={account.id}>
                   {account.name}
                 </MenuItem>
@@ -117,16 +218,22 @@ function Accounts() {
             id="transferName"
             label={translations[language].txt_name}
             variant="outlined"
+            value={transferName}
+            onChange={(e) => setTransferName(e.target.value)}
           />
           <TextField
             id="transferDescription"
             label={translations[language].txt_description}
             variant="outlined"
+            value={transferDescription}
+            onChange={(e) => setTransferDescription(e.target.value)}
           />
           <TextField
             id="transferValue"
             label={translations[language].txt_value}
             variant="outlined"
+            value={transferValue}
+            onChange={(e) => setTransferValue(Number(e.target.value))}
           />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker

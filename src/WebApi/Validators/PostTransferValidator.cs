@@ -29,16 +29,16 @@ namespace WebApi.Validators
                 .MaximumLength(200).WithMessage(_localizer["rule_transferDescMaxLong"].Value);
 
             RuleFor(x => x.BudgetId)
-                .MustAsync(async (budgetId, cancellationToken) => await IsBudgetIdBelongToUser(budgetId))
+                .MustAsync(async (budgetId, cancellationToken) => await IsBudgetIdBelongToUser(budgetId.Value))
                 .WithMessage(_localizer["rule_budgetIdBelongsToUser"].Value);
 
             RuleFor(x => x.SourceAccountId)
-                .MustAsync(async (accountId, cancellationToken) => await IsAccountIdBelongToUser(accountId))
+                .MustAsync(async (accountId, cancellationToken) => await IsAccountIdBelongToUser(accountId.Value))
                 .WithMessage(_localizer["rule_accountIdBelongsToUser"].Value);
 
             RuleFor(x => x)
                 .MustAsync(async (postTransfer, cancellationToken) =>
-                    await IsCategoryIdsBelongToBudget(postTransfer.Splits.Select(s => s.CategoryId), postTransfer.BudgetId))
+                    await IsCategoryIdsBelongToBudget(postTransfer.Splits.Select(s => s.CategoryId), postTransfer.BudgetId.Value))
                 .WithMessage(_localizer["rule_categoryIdsBelongToBudget"].Value)
                 .When(x => x.Splits != null && x.Splits.Any());
 
