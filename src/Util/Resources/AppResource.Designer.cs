@@ -223,6 +223,15 @@ namespace Util.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Destination account is required..
+        /// </summary>
+        public static string rule_destinationAccountIdRequired {
+            get {
+                return ResourceManager.GetString("rule_destinationAccountIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email is requaired..
         /// </summary>
         public static string rule_emailIsRequired {
@@ -327,6 +336,15 @@ namespace Util.Resources {
         public static string rule_periodsMustBeSequential {
             get {
                 return ResourceManager.GetString("rule_periodsMustBeSequential", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Source and destination account should be defferent..
+        /// </summary>
+        public static string rule_sourceAndDestinationDifferent {
+            get {
+                return ResourceManager.GetString("rule_sourceAndDestinationDifferent", resourceCulture);
             }
         }
         

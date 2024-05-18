@@ -171,6 +171,9 @@
   <data name="rule_categoryValuesMustMatch" xml:space="preserve">
     <value>Sum of category values for the periods must be equal budget category value.</value>
   </data>
+  <data name="rule_destinationAccountIdRequired" xml:space="preserve">
+    <value>Destination account is required.</value>
+  </data>
   <data name="rule_emailIsRequired" xml:space="preserve">
     <value>Email is requaired.</value>
   </data>
@@ -206,6 +209,9 @@
   </data>
   <data name="rule_periodsMustBeSequential" xml:space="preserve">
     <value>Periods in the budget must be sequential.</value>
+  </data>
+  <data name="rule_sourceAndDestinationDifferent" xml:space="preserve">
+    <value>Source and destination account should be defferent.</value>
   </data>
   <data name="rule_splitValuePositive" xml:space="preserve">
     <value>Split values should be positive.</value>

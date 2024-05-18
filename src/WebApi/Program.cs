@@ -105,12 +105,9 @@ builder.Services.AddScoped<IApplicationService, ApplicationService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddScoped<IValidator<UserRegisterRequest>, UserRegisterRequestValidator>();
-builder.Services.AddScoped<IValidator<PostTransfer>, PostTransferValidator>();
-builder.Services.AddScoped<IValidator<PostTransfer>, PostTransferInternalValidator>();
-//builder.Services.AddScoped<PostTransferValidator>();
-//builder.Services.AddScoped<PostTransferInternalValidator>();
-
 builder.Services.AddScoped<IValidator<Budget>, BudgetValidator>();
+builder.Services.AddScoped<PostTransferValidator>();
+builder.Services.AddScoped<PostTransferInternalValidator>();
 
 builder.Services.AddSingleton<IMapperService<BudgetDto, Budget>, BudgetMapper>();
 builder.Services.AddSingleton<IMapperService<BudgetPeriodDto, BudgetPeriod>, BudgetPeriodMapper>();

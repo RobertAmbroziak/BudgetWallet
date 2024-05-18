@@ -55,13 +55,16 @@ function Accounts() {
       id: 0,
       isActive: true,
       budgetId: null,
-      sourceAccountId: sourceAccountId,
+      sourceAccountId: sourceAccountId === 0 ? null : sourceAccountId,
       destinationAccountId: destinationAccountId,
       name: transferName,
       description: transferDescription,
       value: transferValue,
       transferDate: transferDate.toDate(),
-      transferType: sourceAccountId === null ? "Deposit" : "InternalTransfer",
+      transferType:
+        sourceAccountId === null || sourceAccountId === 0
+          ? "Deposit"
+          : "InternalTransfer",
       splits: [],
     };
 

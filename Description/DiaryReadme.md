@@ -326,3 +326,7 @@
 
 ### Day 78
 * Internal/Deposit Transfer save
+
+### Day 79
+* Internal/Deposit Transfer save fixes
+* Internal/Deposit Transfer save validator

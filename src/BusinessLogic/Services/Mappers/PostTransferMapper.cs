@@ -32,6 +32,7 @@ namespace BusinessLogic.Services.Mappers
                 Value = source.Value,
                 TransferType = (TransferType)Enum.Parse(typeof(TransferType), source.TransferType),
                 SourceAccountId = source.SourceAccountId,
+                DestinationAccountId = source.DestinationAccountId,
                 IsActive = source.IsActive,
                 Splits = splits
             };

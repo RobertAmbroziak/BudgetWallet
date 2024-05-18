@@ -171,6 +171,9 @@
   <data name="rule_categoryValuesMustMatch" xml:space="preserve">
     <value>Suma wartość kategorii dla okresu musi być równa wartości kategorii dla budżetu</value>
   </data>
+  <data name="rule_destinationAccountIdRequired" xml:space="preserve">
+    <value>Konto docelowe jest wymagane.</value>
+  </data>
   <data name="rule_emailIsRequired" xml:space="preserve">
     <value>Email jest wymagany.</value>
   </data>
@@ -206,6 +209,9 @@
   </data>
   <data name="rule_periodsMustBeSequential" xml:space="preserve">
     <value>Okresy w budżecie muszą mieć zachowaną ciągłość</value>
+  </data>
+  <data name="rule_sourceAndDestinationDifferent" xml:space="preserve">
+    <value>Konto źródłowe i docelowe muszą być różne.</value>
   </data>
   <data name="rule_splitValuePositive" xml:space="preserve">
     <value>Wartości podziałów powinny być dodatnie.</value>

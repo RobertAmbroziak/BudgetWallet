@@ -2,6 +2,7 @@
 using FluentValidation;
 using Microsoft.Extensions.Localization;
 using Model.Application;
+using Util.Enums;
 using Util.Resources;
 
 namespace WebApi.Validators
@@ -29,12 +30,32 @@ namespace WebApi.Validators
                 .MaximumLength(200).WithMessage(_localizer["rule_transferDescMaxLong"].Value);
 
             RuleFor(x => x.SourceAccountId)
-                .MustAsync(async (accountId, cancellationToken) => await IsAccountIdBelongToUser(accountId.Value))
+                .MustAsync(async (transfer, accountId, cancellationToken) =>
+                {
+                    if (transfer.TransferType == Enum.GetName(typeof(TransferType), TransferType.InternalTransfer))
+                    {
+                        return accountId != null && await IsAccountIdBelongToUser(accountId.Value);
+                    }
+                    else if (transfer.TransferType == Enum.GetName(typeof(TransferType), TransferType.Deposit))
+                    {
+                        return accountId == null;
+                    }
+                    return true;
+                })
                 .WithMessage(_localizer["rule_accountIdBelongsToUser"].Value);
 
             RuleFor(x => x.DestinationAccountId)
-                .MustAsync(async (accountId, cancellationToken) => await IsAccountIdBelongToUser(accountId.Value))
+                .NotNull().WithMessage(_localizer["rule_destinationAccountIdRequired"].Value)
+                .MustAsync(async (accountId, cancellationToken) =>
+                {
+                    return !accountId.HasValue || await IsAccountIdBelongToUser(accountId.Value);
+                })
                 .WithMessage(_localizer["rule_accountIdBelongsToUser"].Value);
+
+            RuleFor(x => new { x.SourceAccountId, x.DestinationAccountId })
+                .Must(x => x.SourceAccountId != x.DestinationAccountId)
+                .When(x => x.SourceAccountId.HasValue && x.DestinationAccountId.HasValue)
+                .WithMessage(_localizer["rule_sourceAndDestinationDifferent"].Value);
 
             RuleFor(x => x.Value)
                 .GreaterThan(0).WithMessage(_localizer["rule_transferValuePositive"].Value);
