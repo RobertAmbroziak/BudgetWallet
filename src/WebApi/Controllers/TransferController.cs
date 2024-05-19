@@ -82,10 +82,18 @@ namespace WebApi.Controllers
         /// <param name="postTransfer">Transfer without split</param>
         /// <param name="transferId">Transfer Id</param>
         /// <returns>Code 200 Accepted</returns>
-        [HttpPut("internal/{transferId}")]
-        public async Task<ActionResult> UpdateInternalTransfer([FromRoute] int transferId, PostTransfer transfer)
+        [HttpPut("internal")]
+        public async Task<ActionResult> UpdateInternalTransfer(PostTransfer transfer)
         {
-            throw new NotImplementedException();
+            var validationResult = await _postTransferInternalValidator.ValidateAsync(transfer);
+
+            if (!validationResult.IsValid)
+            {
+                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                return BadRequest(errors);
+            }
+            await _applicationService.UpdateTransfer(transfer);
+            return Accepted();
         }
 
         /// <summary>
@@ -111,10 +119,11 @@ namespace WebApi.Controllers
         /// Get all user deposit/internalTransfer transfers without splits
         /// </summary>
         /// <returns>TODO</returns>
-        [HttpGet("interal")]
+        [HttpGet("internal")]
         public async Task<ActionResult> GetInternalTransfers()
         {
-            throw new NotImplementedException();
+            var internalTransfers = await _applicationService.GetInternalTransfers();
+            return Ok(internalTransfers);
         }
 
         /// <summary>

@@ -9,6 +9,7 @@ using Util.Resources;
 using Mocks.DefaultData;
 using Util.Helpers;
 using System.Security.Cryptography.Xml;
+using Util.Enums;
 
 namespace BusinessLogic.Services
 {
@@ -22,6 +23,7 @@ namespace BusinessLogic.Services
         private readonly IMapperService<CategoryDto, Category> _categoryMapper;
         private readonly IMapperService<AccountDto, Account> _accountMapper;
         private readonly IMapperService<PostTransfer, TransferDto> _postTransferMapper;
+        private readonly IMapperService<TransferDto, Transfer> _transferMapper;
         private readonly IDateTimeProvider _dateTimeProvider;
 
         public ApplicationService
@@ -34,6 +36,7 @@ namespace BusinessLogic.Services
             IMapperService<CategoryDto, Category> categoryMapper,
             IMapperService<AccountDto, Account> accountMapper,
             IMapperService<PostTransfer, TransferDto> postTransferMapper,
+            IMapperService<TransferDto, Transfer> transferMapper,
             IDateTimeProvider dateTimeProvider
         )
         {
@@ -45,6 +48,7 @@ namespace BusinessLogic.Services
             _categoryMapper = categoryMapper;
             _accountMapper = accountMapper;
             _postTransferMapper = postTransferMapper;
+            _transferMapper = transferMapper;
             _dateTimeProvider = dateTimeProvider;
         }
 
@@ -739,6 +743,18 @@ namespace BusinessLogic.Services
                 Account = _accountMapper.Map(kvp.Key),
                 CurrentState = kvp.Value
             });
+        }
+
+        public async Task<IEnumerable<Transfer>> GetInternalTransfers()
+        {
+            var user = await _identityService.GetCurrentUser();
+
+            var transfers = await _applicationRepository.FilterAsync<TransferDto>(x =>
+                (x.TransferType == TransferType.InternalTransfer || x.TransferType == TransferType.Deposit) &&
+                ((x.SourceAccount != null && x.SourceAccount.UserId == user.Id) ||
+                (x.DestinationAccount != null && x.DestinationAccount.UserId == user.Id)));
+
+            return _transferMapper.Map(transfers);
         }
 
         #region private

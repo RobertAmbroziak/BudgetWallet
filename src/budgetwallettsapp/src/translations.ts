@@ -116,6 +116,10 @@ const translations: Translations = {
     lbl_minValue: "Minimum value",
     lbl_isActive: "Is active",
     lbl_accountState: "Account balance",
+    lbl_internalDepositTransfers: "Transfers",
+    lbl_transferValue: "Value",
+    lbl_transferName: "Name",
+    lbl_transferType: "Type",
   },
   pl: {
     btn_logout: "Wyloguj",
@@ -229,6 +233,10 @@ const translations: Translations = {
     lbl_minValue: "Wartość minimalna",
     lbl_isActive: "Czy aktywne",
     lbl_accountState: "Stan konta",
+    lbl_internalDepositTransfers: "Transfery",
+    lbl_transferValue: "Wartość",
+    lbl_transferName: "Nazwa",
+    lbl_transferType: "Typ",
   },
 };
 

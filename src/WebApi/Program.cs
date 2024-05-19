@@ -114,6 +114,7 @@ builder.Services.AddSingleton<IMapperService<BudgetPeriodDto, BudgetPeriod>, Bud
 builder.Services.AddSingleton<IMapperService<CategoryDto, Category>, CategoryMapper>();
 builder.Services.AddSingleton<IMapperService<AccountDto, Account>, AccountMapper>();
 builder.Services.AddSingleton<IMapperService<PostTransfer, TransferDto>, PostTransferMapper>();
+builder.Services.AddSingleton<IMapperService<TransferDto, Transfer>, TransferMapper>();
 
 builder.Services.AddScoped<IDateTimeProvider, DateTimeProvider>();
 

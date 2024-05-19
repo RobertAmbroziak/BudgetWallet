@@ -32,8 +32,8 @@ namespace DataAccessLayer
         {
             var conditions = new Dictionary<string, object>();
 
-            conditions.Add($"{nameof(SplitDto.Transfer)}.{nameof(TransferDto.TransferType)}", TransferType.Expense);
-            conditions.Add($"{nameof(SplitDto.Transfer)}.{nameof(TransferDto.BudgetId)}", splitsRequest.BudgetId);
+            conditions.Add($"{nameof(SplitDto.Transfer)}.{nameof(Transfer.TransferType)}", TransferType.Expense);
+            conditions.Add($"{nameof(SplitDto.Transfer)}.{nameof(Transfer.BudgetId)}", splitsRequest.BudgetId);
 
             if (splitsRequest.BudgetPeriodId != null)
             {
@@ -45,14 +45,14 @@ namespace DataAccessLayer
                     DateTime validFrom = budgetPeriod.ValidFrom;
                     DateTime validTo = budgetPeriod.ValidTo;
 
-                    conditions.Add($"{nameof(SplitDto.Transfer)}.{nameof(TransferDto.TransferDate)} >= @0", validFrom);
-                    conditions.Add($"{nameof(SplitDto.Transfer)}.{nameof(TransferDto.TransferDate)} < @1", validTo);
+                    conditions.Add($"{nameof(SplitDto.Transfer)}.{nameof(Transfer.TransferDate)} >= @0", validFrom);
+                    conditions.Add($"{nameof(SplitDto.Transfer)}.{nameof(Transfer.TransferDate)} < @1", validTo);
                 }
             }
 
             if (splitsRequest.AccountId != null)
             {
-                conditions.Add($"{nameof(SplitDto.Transfer)}.{nameof(TransferDto.SourceAccountId)}", splitsRequest.AccountId);
+                conditions.Add($"{nameof(SplitDto.Transfer)}.{nameof(Transfer.SourceAccountId)}", splitsRequest.AccountId);
             }
 
             if (splitsRequest.CategoryId != null)
