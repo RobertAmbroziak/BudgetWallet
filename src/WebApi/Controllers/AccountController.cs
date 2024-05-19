@@ -64,7 +64,8 @@ namespace WebApi.Controllers
         [HttpGet("states")]
         public async Task<ActionResult> GetAccountStates()
         {
-            throw new NotImplementedException();
+            var result = await _applicationService.GetAccountStates();
+            return Ok(result);
         }
 
         /// <summary>

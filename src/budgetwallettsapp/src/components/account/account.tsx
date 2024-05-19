@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import config from "../../config";
 import axios from "axios";
 import Box from "@mui/material/Box";
@@ -7,8 +7,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
 import Paper from "@mui/material/Paper";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -23,6 +21,15 @@ import { Account } from "../../types/api/account";
 import { PostTransfer } from "../../types/api/postTransfer";
 import { useSnackbar } from "../../contexts/toastContext";
 import { Severity } from "../../types/enums/severity";
+import { Typography } from "@mui/material";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
+import "../expenses/splitTable.css";
+import { AccountState } from "../../types/api/accountState";
 
 dayjs.extend(utc);
 
@@ -42,6 +49,7 @@ function Accounts() {
     isValid: true,
     errors: [],
   });
+  const [isTransferSaved, setIsTransferSaved] = useState<boolean>(false);
   const [sourceAccountId, setSourceAccountId] = useState<number | null>(null);
   const [destinationAccountId, setDestinationAccountId] = useState<
     number | null
@@ -49,6 +57,8 @@ function Accounts() {
   const [transferDate, setTransferDate] = useState<dayjs.Dayjs>(
     dayjs().utc().startOf("day")
   );
+
+  const [accountStates, setAccountStates] = useState<AccountState[]>([]);
 
   const handleAddTransferButtonClick = async () => {
     const transfer: PostTransfer = {
@@ -86,13 +96,12 @@ function Accounts() {
       setSourceAccountId(null);
       setDestinationAccountId(null);
       setIsValid({ isValid: true, errors: [] });
-
+      setIsTransferSaved(true);
       openSnackbar(
         translations[language].toast_addTransferSuccess,
         Severity.SUCCESS
       );
     } catch (error: any) {
-      console.log(error);
       if (
         error.response &&
         error.response.data &&
@@ -136,21 +145,67 @@ function Accounts() {
         setSourceAccounts(updatedSourceAccounts);
         setDestinationAccounts(response.data);
       } catch (error) {
-        console.error("Error fetching filters:", error);
+        console.error("Error fetching accounts:", error);
       }
     };
     fetchAccounts();
   }, [jwtToken]);
 
+  const fetchAccountStates = async () => {
+    try {
+      const response = await axios.get(
+        `${config.API_BASE_URL}${config.API_ENDPOINTS.ACCOUNTS}/states`,
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+
+      setAccountStates(response.data);
+    } catch (error) {
+      console.error("Error fetching accountStates:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchAccountStates = async () => {
+      try {
+        const response = await axios.get(
+          `${config.API_BASE_URL}${config.API_ENDPOINTS.ACCOUNTS}/states`,
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
+
+        setAccountStates(response.data);
+      } catch (error) {
+        console.error("Error fetching accountStates:", error);
+      }
+    };
+
+    fetchAccountStates();
+  }, [jwtToken]);
+
+  useEffect(() => {
+    if (isTransferSaved) {
+      fetchAccountStates();
+      setIsTransferSaved(false);
+    }
+  }, [isTransferSaved]);
+
   /*
-    w tym widoku będzie lista aktywnych kont bez możliwości ich edycji ,ale pokaże się  ich nazwa opis, minValue i aktualny stan
+    -w tym widoku będzie lista aktywnych kont bez możliwości ich edycji ,ale pokaże się  ich nazwa opis, minValue i aktualny stan
     wyliczany z sumy transferów wydatków, przychodów i transferów pomiędzy kontami - tylko aktywne transfery - bez splitów, bo sa zbędne
 
-    lista transferów bez wydatków - tylko zasilenia i międzykontami
+    
 
-    można będzie dodać nowy transfer zasilający (np wypłata, zwrot podatku, spadek, bliczki od znajomych)
+    -można będzie dodać nowy transfer zasilający (np wypłata, zwrot podatku, spadek, bliczki od znajomych)
     można będzie dodać nowy transfer między kontami
 
+    lista transferów bez wydatków - tylko zasilenia i międzykontami
     można będzie wyedytować istniejący transfer: nazwa , opis, data, wartość, sourceAccountId, DestinationAccountId
 
   */
@@ -166,90 +221,209 @@ function Accounts() {
           </ul>
         </Paper>
       )}
-      <Paper elevation={3} sx={{ margin: { xs: "5px", sm: "20px" } }}>
+      {/* <Paper elevation={3} sx={{ margin: { xs: "5px", sm: "20px" } }}>
         <Box
           component="form"
           sx={{
-            "& > :not(style)": { m: 1, width: "25ch" },
+            display: "flex",
+            flexDirection: "row",
+            "& > :not(style)": { m: 1, width: "100%" },
+            "@media (max-width:600px)": {
+              flexDirection: "column",
+              alignItems: "center",
+              "& > :not(style)": {
+                width: "calc(100% - 10px)",
+                textAlign: "center",
+              },
+            },
+            position: "relative",
+            height: "auto",
+            overflow: "visible",
           }}
           noValidate
           autoComplete="off"
+        > */}
+      <>
+        <Accordion
+          sx={{
+            my: 1,
+            mx: 2,
+          }}
         >
-          <FormControl sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="accountSourceSelect">
-              {translations[language].lbl_sourceAccount}
-            </InputLabel>
-            <Select
-              labelId="accountSourceSelect"
-              id="accountSourceSelect"
-              value={sourceAccountId ?? ""}
-              label={translations[language].lbl_sourceAccount}
-              name="accountSourceId"
-              onChange={(e) =>
-                handleDropdownAccountSourceChange(Number(e.target.value))
-              }
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="account-addTransfer-content"
+            id="accout-addTransfer-header"
+          >
+            <Typography
+              variant="h6"
+              component="h2"
+              sx={{ marginBottom: "10px" }}
             >
-              {sourceAccounts.map((account) => (
-                <MenuItem key={account.id} value={account.id}>
-                  {account.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="accountDestinationSelect">
-              {translations[language].lbl_destinationAccount}
-            </InputLabel>
-            <Select
-              labelId="accountDestinationSelect"
-              id="accountDestinationSelect"
-              value={destinationAccountId ?? ""}
-              label={translations[language].lbl_destinationAccount}
-              name="accountDestinationId"
-              onChange={(e) =>
-                handleDropdownAccountDestinationChange(Number(e.target.value))
-              }
+              {translations[language].lbl_addInternalDepositTransfer}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Paper
+              elevation={3}
+              sx={{
+                margin: { xs: "5px", sm: "5px" },
+                padding: { xs: "5px", sm: "10px" },
+                overflow: "hidden",
+                width: { xs: "95%", sm: "auto" },
+              }}
             >
-              {destinationAccounts.map((account) => (
-                <MenuItem key={account.id} value={account.id}>
-                  {account.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <TextField
-            id="transferName"
-            label={translations[language].txt_name}
-            variant="outlined"
-            value={transferName}
-            onChange={(e) => setTransferName(e.target.value)}
-          />
-          <TextField
-            id="transferDescription"
-            label={translations[language].txt_description}
-            variant="outlined"
-            value={transferDescription}
-            onChange={(e) => setTransferDescription(e.target.value)}
-          />
-          <TextField
-            id="transferValue"
-            label={translations[language].txt_value}
-            variant="outlined"
-            value={transferValue}
-            onChange={(e) => setTransferValue(Number(e.target.value))}
-          />
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              label={translations[language].lbl_transferDate}
-              value={transferDate ?? dayjs().utc().startOf("day")}
-              onChange={(newDate) => setTransferDate(newDate!)}
-            />
-          </LocalizationProvider>
-          <Button variant="outlined" onClick={handleAddTransferButtonClick}>
-            {translations[language].btn_save}
-          </Button>
-        </Box>
-      </Paper>
+              <FormControl sx={{ m: 1, minWidth: 200 }}>
+                <InputLabel id="accountSourceSelect">
+                  {translations[language].lbl_sourceAccount}
+                </InputLabel>
+                <Select
+                  labelId="accountSourceSelect"
+                  id="accountSourceSelect"
+                  value={sourceAccountId ?? ""}
+                  label={translations[language].lbl_sourceAccount}
+                  name="accountSourceId"
+                  onChange={(e) =>
+                    handleDropdownAccountSourceChange(Number(e.target.value))
+                  }
+                >
+                  {sourceAccounts.map((account) => (
+                    <MenuItem key={account.id} value={account.id}>
+                      {account.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl sx={{ m: 1, minWidth: 200 }}>
+                <InputLabel id="accountDestinationSelect">
+                  {translations[language].lbl_destinationAccount}
+                </InputLabel>
+                <Select
+                  labelId="accountDestinationSelect"
+                  id="accountDestinationSelect"
+                  value={destinationAccountId ?? ""}
+                  label={translations[language].lbl_destinationAccount}
+                  name="accountDestinationId"
+                  onChange={(e) =>
+                    handleDropdownAccountDestinationChange(
+                      Number(e.target.value)
+                    )
+                  }
+                >
+                  {destinationAccounts.map((account) => (
+                    <MenuItem key={account.id} value={account.id}>
+                      {account.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <TextField
+                id="transferName"
+                label={translations[language].txt_name}
+                variant="outlined"
+                value={transferName}
+                sx={{ m: 1 }}
+                onChange={(e) => setTransferName(e.target.value)}
+              />
+              <TextField
+                id="transferDescription"
+                label={translations[language].txt_description}
+                variant="outlined"
+                value={transferDescription}
+                sx={{ m: 1 }}
+                onChange={(e) => setTransferDescription(e.target.value)}
+              />
+              <TextField
+                id="transferValue"
+                label={translations[language].txt_value}
+                variant="outlined"
+                value={transferValue}
+                sx={{ m: 1 }}
+                onChange={(e) => setTransferValue(Number(e.target.value))}
+              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label={translations[language].lbl_transferDate}
+                  value={transferDate ?? dayjs().utc().startOf("day")}
+                  sx={{ m: 1 }}
+                  onChange={(newDate) => setTransferDate(newDate!)}
+                />
+              </LocalizationProvider>
+              <Button
+                variant="outlined"
+                sx={{ m: 1 }}
+                onClick={handleAddTransferButtonClick}
+              >
+                {translations[language].btn_save}
+              </Button>
+            </Paper>
+          </AccordionDetails>
+        </Accordion>
+
+        <Accordion sx={{ my: 1, mx: 2 }}>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="account-accountState-content"
+            id="accout-accountState-header"
+          >
+            <Typography
+              variant="h6"
+              component="h2"
+              sx={{ marginBottom: "10px" }}
+            >
+              {translations[language].lbl_accountStates}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Paper
+              elevation={3}
+              sx={{
+                margin: { xs: "5px", sm: "5px" },
+                padding: { xs: "5px", sm: "10px" },
+                overflow: "hidden",
+                width: { xs: "95%", sm: "auto" },
+              }}
+            >
+              <Table className="bwtable">
+                <Thead>
+                  <Tr>
+                    <Th>{translations[language].lbl_accountName}</Th>
+                    <Th>{translations[language].lbl_accountDescription}</Th>
+                    <Th>{translations[language].lbl_minValue}</Th>
+                    <Th>{translations[language].lbl_isActive}</Th>
+                    <Th>{translations[language].lbl_accountState}</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {accountStates.map((accountState, index) => (
+                    <Tr key={index}>
+                      <Td>
+                        <span>{accountState.account.name}</span>
+                      </Td>
+                      <Td>
+                        <span>{accountState.account.description}</span>
+                      </Td>
+                      <Td>
+                        <span>{accountState.account.minValue}</span>
+                      </Td>
+                      <Td>
+                        <span>
+                          {accountState.account.isActive ? "Tak" : "Nie"}
+                        </span>
+                      </Td>
+                      <Td>
+                        <span>{accountState.currentState}</span>
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </Paper>
+          </AccordionDetails>
+        </Accordion>
+      </>
+      {/* </Box>
+      </Paper> */}
     </>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent } from "react";
+import React, { useState, useEffect } from "react";
 import config from "../../config";
 import axios from "axios";
 import { useLanguage } from "../../contexts/languageContext";

@@ -330,3 +330,6 @@
 ### Day 79
 * Internal/Deposit Transfer save fixes
 * Internal/Deposit Transfer save validator
+
+### Day 80
+* Account State Table

@@ -35,32 +35,30 @@ const EditExpense: React.FC<TransferEditProps> = ({
   };
 
   return (
-    <>
-      <Modal
-        open={openModal}
-        onClose={handleCloseModal}
-        aria-labelledby="modal-editTransfer-title"
-        aria-describedby="modal-editTransfer-description"
-      >
-        <Box sx={editTransferBoxStyle}>
-          <Typography id="modal-editTransfer-title" variant="h6" component="h2">
-            {translations[language].lbl_TransferEdition}
-          </Typography>
-          <Typography id="modal-editTransfer-description" sx={{ mt: 2 }}>
-            {translations[language].lbl_TransferEditionFor}{" "}
-            {currentTransfer?.transferName}
-          </Typography>
-          <AddExpense
-            transferEdit={currentTransfer}
-            handleSaveTransfer={handleSaveTransfer}
-            isEdit={true}
-          />
-          <Button onClick={handleCloseModal}>
-            {translations[language].btn_Close}
-          </Button>
-        </Box>
-      </Modal>
-    </>
+    <Modal
+      open={openModal}
+      onClose={handleCloseModal}
+      aria-labelledby="modal-editTransfer-title"
+      aria-describedby="modal-editTransfer-description"
+    >
+      <Box sx={editTransferBoxStyle}>
+        <Typography id="modal-editTransfer-title" variant="h6" component="h2">
+          {translations[language].lbl_TransferEdition}
+        </Typography>
+        <Typography id="modal-editTransfer-description" sx={{ mt: 2 }}>
+          {translations[language].lbl_TransferEditionFor}{" "}
+          {currentTransfer?.transferName}
+        </Typography>
+        <AddExpense
+          transferEdit={currentTransfer}
+          handleSaveTransfer={handleSaveTransfer}
+          isEdit={true}
+        />
+        <Button onClick={handleCloseModal}>
+          {translations[language].btn_Close}
+        </Button>
+      </Box>
+    </Modal>
   );
 };
 

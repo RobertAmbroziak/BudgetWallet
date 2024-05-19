@@ -116,5 +116,48 @@ namespace DataAccessLayer
             .Where(b => b.Id == budgetId)
             .FirstOrDefaultAsync();
         }
+
+        public async Task<IDictionary<AccountDto, decimal>> GetAccountStates(int userId)
+        {
+            var userAccounts = await _context.Accounts.Where(a => a.UserId == userId).ToListAsync();
+
+            var transfers = await _context.Transfers
+                .Where(t => (t.SourceAccount.UserId == userId || t.DestinationAccount.UserId == userId) && t.IsActive)
+                .Select(t => new
+                {
+                    t.SourceAccountId,
+                    t.DestinationAccountId,
+                    t.Value
+                })
+                .ToListAsync();
+
+            var accountBalances = transfers
+                .SelectMany(t => new[]
+                {
+                new { AccountId = t.SourceAccountId, IsSource = true, Value = t.Value },
+                new { AccountId = t.DestinationAccountId, IsSource = false, Value = t.Value }
+                })
+                .GroupBy(t => t.AccountId)
+                .Select(g => new
+                {
+                    AccountId = g.Key,
+                    Balance = g.Sum(t => t.IsSource ? -t.Value : t.Value)
+                })
+                .ToList();
+
+            var result = new Dictionary<AccountDto, decimal>();
+
+            foreach (var account in userAccounts)
+            {
+                var accountId = account.Id;
+                var balance = accountBalances
+                    .Where(b => b.AccountId == accountId)
+                    .Sum(b => b.Balance);
+
+                result[account] = balance;
+            }
+
+            return result;
+        }
     }
 }

@@ -6,9 +6,6 @@ import translations from "../../translations";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import "./splitTable.css";
-//import Summary from "../../components/expenses/splitSummary";
-//import EditExpenseModal from "../../components/expense/editExpenseModal";
-//import { LineChart } from "@mui/x-charts/LineChart";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -16,7 +13,6 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Tooltip from "@mui/material/Tooltip";
 import EditIcon from "@mui/icons-material/Edit";
 import { Button } from "@mui/material";
-//import "react-toastify/dist/ReactToastify.css";
 import { useUser } from "../../contexts/userContext";
 import { TransferFilter } from "../../types/api/transferFilter";
 import { SplitRequest } from "../../types/api/splitRequest";
@@ -97,25 +93,11 @@ const SplitTable: React.FC<Props> = ({ splitRequest, expenseFilterData }) => {
     setOpenModal(true);
   };
 
-  //   const editTransferSuccessToast = () => {
-  //     toast.success(translations[language].toast_editTransferSuccess, {
-  //       position: "top-right",
-  //       autoClose: 4000,
-  //       hideProgressBar: false,
-  //       closeOnClick: true,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       progress: undefined,
-  //       theme: "colored",
-  //     });
-  //   };
-
   const handleCloseModal = () => setOpenModal(false);
 
   const handleSaveTransfer = () => {
     handleCloseModal();
     setRefreshData((current) => !current);
-    //editTransferSuccessToast();
   };
 
   useEffect(() => {
@@ -187,7 +169,6 @@ const SplitTable: React.FC<Props> = ({ splitRequest, expenseFilterData }) => {
 
   return (
     <>
-      {/* <ToastContainer /> */}
       <div>
         {splitResponse && splitResponse.splits ? (
           <div>

@@ -4,7 +4,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../contexts/languageContext";
 import translations from "../../translations";
-//import Expense from "../../components/expense/expense";
 import Expenses from "../../components/expenses/expenses";
 import Accounts from "../../components/account/account";
 import Configuration from "../../components/configuration/configuration";

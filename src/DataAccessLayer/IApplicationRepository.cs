@@ -12,5 +12,6 @@ namespace DataAccessLayer
         Task AddMockData(IEnumerable<BudgetDto> budgets, IEnumerable<AccountDto> accounts);
         Task<IEnumerable<CategoryDto>> GetCategoriesByBudgetId(int budgetId);
         Task<BudgetDto> GetBudget(int budgetId);
+        Task<IDictionary<AccountDto, decimal>> GetAccountStates(int userId);
     }
 }

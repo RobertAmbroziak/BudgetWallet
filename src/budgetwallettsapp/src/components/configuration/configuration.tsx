@@ -1,4 +1,3 @@
-import React from "react";
 import { useLanguage } from "../../contexts/languageContext";
 import translations from "../../translations";
 import Accordion from "@mui/material/Accordion";

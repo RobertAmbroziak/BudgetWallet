@@ -8,6 +8,7 @@ using Microsoft.Extensions.Localization;
 using Util.Resources;
 using Mocks.DefaultData;
 using Util.Helpers;
+using System.Security.Cryptography.Xml;
 
 namespace BusinessLogic.Services
 {
@@ -725,6 +726,19 @@ namespace BusinessLogic.Services
             };
 
             return budget;
+        }
+
+        public async Task<IEnumerable<AccountState>> GetAccountStates()
+        {
+            var user = await _identityService.GetCurrentUser();
+
+            var accountStates = await _applicationRepository.GetAccountStates(user.Id);
+
+            return accountStates.Select(kvp => new AccountState
+            {
+                Account = _accountMapper.Map(kvp.Key),
+                CurrentState = kvp.Value
+            });
         }
 
         #region private
