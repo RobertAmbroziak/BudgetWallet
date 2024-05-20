@@ -3,6 +3,7 @@
     public enum Provider
     {
         Application,
-        Google
+        Google,
+        Facebook
     }
 }

@@ -56,7 +56,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin", builder =>
     {
-        builder.WithOrigins(new string[] { "https://budgetwallet.azurewebsites.net", "http://localhost:3000" })
+        builder.WithOrigins(new string[] { "https://budgetwallet.azurewebsites.net", "http://localhost:3000", "https://localhost:3000" })
                .AllowAnyHeader()
                .AllowAnyMethod();
     });

@@ -10,6 +10,7 @@ namespace BusinessLogic.Abstractions
         public Task<UserDto> Authenticate(UserLoginRequest userLogin);
         public Task<UserDto> RegisterUser(UserRegisterRequest registeruser);
         public Task<UserDto> AuthenticateWithGoogle(string googleToken);
+        public Task<UserDto> AuthenticateWithFacebook(string facebookToken);
         public Task<UserDto> Activate(string code);
         public Task<bool> IsEmailExists(string email);
         public Task<bool> IsUserNameExists(string userName);

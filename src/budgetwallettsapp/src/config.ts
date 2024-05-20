@@ -1,6 +1,6 @@
 const config = {
   API_BASE_URL:
-    "https://localhost:7006" /*"https://budgetwallet.azurewebsites.net","http://localhost:2777",*/,
+    /*"https://localhost:7006" /*"https://budgetwallet.azurewebsites.net",*/"http://localhost:2777",
   API_ENDPOINTS: {
     ADMIN: "/api/administration",
     APPLICATION: "/api/application",
@@ -8,6 +8,7 @@ const config = {
     LOGIN: "/api/identity/login",
     REGISTER: "/api/identity/register",
     GOOGLE_LOGIN: "/api/identity/googleLogin",
+    FACEBOOK_LOGIN: "/api/identity/facebookLogin",
     SPLITS: "/api/transfer/splits",
     FILTER: "/api/application/transferfilter",
     BUDGET_PERIODS: "/api/budget/{budgetId}/budgetPeriods",
@@ -18,8 +19,10 @@ const config = {
     ACCOUNTS: "/api/account",
     CATEGORIES: "/api/category",
   },
-  GOOGLE_CLIENT_ID: "793238167799-sqpsattu44mdhq726f2tfpi8a9c70r0q.apps.googleusercontent.com",
+  GOOGLE_CLIENT_ID: "ADD_YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com",
+  FACEBOOK_CLIENT_ID: "ADD_YOUR_FACEBOOK_CLIENT_ID_HERE",
 };
 
 export default config;
+
   

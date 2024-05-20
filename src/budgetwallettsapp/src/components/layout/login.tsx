@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
+import FacebookLogin from "react-facebook-login";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import config from "../../config";
@@ -13,7 +14,9 @@ import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import { IconButton } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
+import FacebookIcon from "@mui/icons-material/Facebook";
 import Register from "./register";
+import "./login.css";
 
 interface LoginProps {
   onClose: () => void;
@@ -40,6 +43,7 @@ const Login: React.FC<LoginProps> = ({
   const [password, setPassword] = useState<string>("");
   const { language } = useLanguage();
   const navigate = useNavigate();
+  const facebookButtonRef = useRef<HTMLDivElement | null>(null);
 
   const handleRegisterClick = () => {
     setShowRegister(true);
@@ -48,7 +52,7 @@ const Login: React.FC<LoginProps> = ({
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse: any) => {
       try {
-        await authenticate(tokenResponse.access_token);
+        await authenticateGoogle(tokenResponse.access_token);
         onClose();
         navigate("/user");
       } catch (error) {
@@ -57,10 +61,54 @@ const Login: React.FC<LoginProps> = ({
     },
   });
 
-  const authenticate = async (token: string) => {
+  const handleFacebookCallback = async (response: any) => {
+    if (response?.status === "unknown") {
+      console.error(
+        "Przepraszamy!",
+        "Coś poszło nie tak z logowaniem przez Facebook."
+      );
+      return;
+    }
+    try {
+      await authenticateFacebook(response.accessToken);
+      onClose();
+      navigate("/user");
+    } catch (error) {
+      const errorAlerts = handleError(error);
+      setLoginAlerts(errorAlerts);
+    }
+  };
+
+  const facebookLogin = () => {
+    if (facebookButtonRef.current) {
+      const button = facebookButtonRef.current.querySelector("button");
+      if (button) {
+        button.click();
+      }
+    }
+  };
+
+  const authenticateGoogle = async (token: string) => {
     try {
       const response = await axios.post(
         `${config.API_BASE_URL}${config.API_ENDPOINTS.GOOGLE_LOGIN}`,
+        {
+          token: token,
+        }
+      );
+      onSetToken(response.data);
+      onClose();
+      navigate("/user");
+    } catch (error) {
+      console.error(error);
+      handleError(error);
+    }
+  };
+
+  const authenticateFacebook = async (token: string) => {
+    try {
+      const response = await axios.post(
+        `${config.API_BASE_URL}${config.API_ENDPOINTS.FACEBOOK_LOGIN}`,
         {
           token: token,
         }
@@ -180,7 +228,18 @@ const Login: React.FC<LoginProps> = ({
               <IconButton onClick={() => googleLogin()} className="m-1">
                 <GoogleIcon />
               </IconButton>
+              <IconButton onClick={() => facebookLogin()} className="m-1">
+                <FacebookIcon />
+              </IconButton>
             </Box>
+            <div ref={facebookButtonRef} style={{ display: "none" }}>
+              <FacebookLogin
+                appId={config.FACEBOOK_CLIENT_ID}
+                autoLoad={false}
+                fields="name,email,picture"
+                callback={handleFacebookCallback}
+              />
+            </div>
           </div>
         </>
       ) : (

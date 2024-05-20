@@ -115,5 +115,25 @@ namespace WebApi.Controllers
 
             return BadRequest(_localizer["err_userNotFound"].Value);
         }
+
+        /// <summary>
+        /// Log in using Facebook account
+        /// </summary>
+        /// <param name="facebookToken">Facebook Token</param>
+        /// <returns>Authentication token</returns>
+        [AllowAnonymous]
+        [HttpPost("FacebookLogin")]
+        public async Task<IActionResult> FacebookLogin([FromBody] FacebookToken facebookToken)
+        {
+            var user = await _identityService.AuthenticateWithFacebook(facebookToken.Token);
+
+            if (user != null)
+            {
+                var token = await _identityService.GenerateToken(user);
+                return Ok(token);
+            }
+
+            return BadRequest(_localizer["err_userNotFound"].Value);
+        }
     }
 }

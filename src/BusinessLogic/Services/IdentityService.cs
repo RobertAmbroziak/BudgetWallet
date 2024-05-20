@@ -13,6 +13,7 @@ using DataAccessLayer;
 using System.Security.Cryptography;
 using Model.Email;
 using Util.Helpers;
+using System.Net.Http;
 
 namespace BusinessLogic.Services
 {
@@ -128,6 +129,57 @@ namespace BusinessLogic.Services
                             IsActive = true,
                             UserRole = UserRole.User,
                             Provider = Provider.Google
+                        };
+
+                        await _applicationRepository.InsertAsync(newUser);
+                        await _applicationRepository.SaveChangesAsync();
+
+                        return newUser;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<UserDto> AuthenticateWithFacebook(string facebookToken)
+        {
+            try
+            {
+                using var httpClient = new HttpClient();
+                string userInfoFacebookEndpoint = $"https://graph.facebook.com/me?fields=id,name,email&access_token={facebookToken}";
+
+                HttpResponseMessage response = await httpClient.GetAsync(userInfoFacebookEndpoint);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+
+                    var userInfo = JsonConvert.DeserializeObject<FacebookUserInfo>(responseBody);
+
+                    var currentUser = (await _applicationRepository.FilterAsync<UserDto>(x =>
+                            x.Email == userInfo.Email && x.Provider == Provider.Facebook)).SingleOrDefault();
+
+                    if (currentUser != null)
+                    {
+                        return currentUser;
+                    }
+                    else
+                    {
+                        var newUser = new UserDto
+                        {
+                            UserName = userInfo.Name,
+                            Email = userInfo.Email,
+                            HashedPassword = null,
+                            IsActive = true,
+                            UserRole = UserRole.User,
+                            Provider = Provider.Facebook
                         };
 
                         await _applicationRepository.InsertAsync(newUser);
