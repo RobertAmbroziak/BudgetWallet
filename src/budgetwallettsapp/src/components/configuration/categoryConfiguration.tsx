@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import config from "../../config";
 import { useLanguage } from "../../contexts/languageContext";
@@ -58,9 +58,9 @@ function CategoryConfiguration() {
   };
 
   const handleRestoreCategoryRecord = (
-    index: number,
-    field: string,
-    value: any
+    index: number
+    //field: string,
+    //value: any
   ) => {
     const updatedRecords = [...localCategories];
     if (updatedRecords[index].id > 0) {
@@ -164,9 +164,7 @@ function CategoryConfiguration() {
           ) : (
             <IconButton
               aria-label="restore"
-              onClick={() =>
-                handleRestoreCategoryRecord(index, "isActive", true)
-              }
+              onClick={() => handleRestoreCategoryRecord(index)}
             >
               <DataSaverOn />
             </IconButton>

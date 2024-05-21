@@ -76,7 +76,7 @@ const BudgetDetails: React.FC<BudgetDetailsProps> = ({
 
   const handleBudgetSave = async () => {
     try {
-      const response = await axios.put(
+      await axios.put(
         `${config.API_BASE_URL}${config.API_ENDPOINTS.BUDGETS}`,
         budget,
         {

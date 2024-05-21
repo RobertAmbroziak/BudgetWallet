@@ -339,3 +339,7 @@
 
 ### Day 82
 * Facebook login
+
+### Day 83
+* New version of application deployed on azure (React Vite type Script + MUI)
+* Facebook login doesn't work on azure :(

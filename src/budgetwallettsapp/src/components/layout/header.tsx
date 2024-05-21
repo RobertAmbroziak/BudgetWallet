@@ -20,7 +20,7 @@ import { jwtDecode } from "jwt-decode";
 interface DecodedToken {
   exp: number;
   iat?: number;
-  sub?: string;
+  id?: string;
 }
 
 const Header: FC = () => {
@@ -45,7 +45,7 @@ const Header: FC = () => {
     if (jwtToken) {
       try {
         const decodedToken: DecodedToken = jwtDecode(jwtToken);
-        const expirationDate = new Date(decodedToken.exp * 1000);
+        const expirationDate = new Date(decodedToken?.exp * 1000);
         const currentDate = new Date();
         return currentDate < expirationDate;
       } catch (error) {

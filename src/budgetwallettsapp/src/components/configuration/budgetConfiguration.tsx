@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import config from "../../config";
 import axios from "axios";
 import { useLanguage } from "../../contexts/languageContext";
@@ -17,8 +17,7 @@ import BudgetDetails from "./budgetDetail";
 import { useUser } from "../../contexts/userContext";
 import utc from "dayjs/plugin/utc";
 import { Budget } from "../../types/api/budget";
-import { useSnackbar } from "../../contexts/toastContext";
-import { Severity } from "../../types/enums/severity";
+//import { useSnackbar } from "../../contexts/toastContext";
 
 dayjs.extend(utc);
 
@@ -29,7 +28,7 @@ function BudgetConfiguration() {
   const [showInactive, setShowInactive] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
   const [reload, setReload] = useState(false);
-  const { openSnackbar } = useSnackbar();
+  //const { openSnackbar } = useSnackbar();
 
   const handleEditBudgetRecord = (budget: Budget) => {
     setSelectedBudget(budget);
