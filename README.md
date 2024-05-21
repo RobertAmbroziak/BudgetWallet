@@ -13,6 +13,8 @@ In my efforts to control expenses and manage the household budget, I have tried 
 > [!NOTE]
 > [BudgetWallet Beta Version](https://budgetwallet.azurewebsites.net/)
 
+Feel free to use your own application account or test account: [User]: Testuser1 [Password]: Testuser1!
+
 > [!TIP]
 > [Video about the project (Polish).](https://www.youtube.com/watch?v=drUR2k0tE9I)
 
@@ -43,7 +45,6 @@ In my efforts to control expenses and manage the household budget, I have tried 
   - :heavy_check_mark: login by Google
   - :heavy_check_mark: login by Facebook
   - :x: login by Microsoft, GitHub etc.
-  - :white_square_button: register
   - :heavy_check_mark: register user form
   - :heavy_check_mark: success toast
   - :heavy_check_mark: bad request informations
@@ -53,7 +54,7 @@ In my efforts to control expenses and manage the household budget, I have tried 
   - :x: forgot password
 - :white_square_button: Application (User Panel)
   - :heavy_check_mark: buttons - expenses, add expense, configuration, account state
-  - :white_square_button: expenses
+  - :heavy_check_mark: expenses
     - :heavy_check_mark: get expenses(splits)
     - :heavy_check_mark: filter for get expenses -> data for filter and filter manipulation
     - :heavy_check_mark: data for summary and presentation summary
