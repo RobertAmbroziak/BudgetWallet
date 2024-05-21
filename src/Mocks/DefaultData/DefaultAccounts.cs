@@ -6,7 +6,7 @@ namespace Mocks.DefaultData
     {
         private static readonly IEnumerable<Account> _defaultAccounts = new List<Account>
         {
-            new Account { Name = "Konto prywattne", Description = "Konto z debetem w banku mBank", MinValue = -10000, IsActive = true },
+            new Account { Name = "Konto prywatne", Description = "Konto z debetem w banku mBank", MinValue = -10000, IsActive = true },
             new Account { Name = "Konto firmowe", Description = "Konto firmowe PKOBP", MinValue = 0, IsActive = true },
             new Account { Name = "Karta mBank", Description = "Karta kredytowa mBank", MinValue = -10000, IsActive = true },
             new Account { Name = "Karta City", Description = "Karta kredytowa CityBank", MinValue = -10000, IsActive = true },

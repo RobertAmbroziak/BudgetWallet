@@ -41,17 +41,18 @@ In my efforts to control expenses and manage the household budget, I have tried 
   - :heavy_check_mark: login by Application User
   - :heavy_check_mark: go to Register
   - :heavy_check_mark: login by Google
-  - :x: login by FB, Microsoft, GitHub etc.
+  - :heavy_check_mark: login by Facebook
+  - :x: login by Microsoft, GitHub etc.
   - :white_square_button: register
-	- :heavy_check_mark: register user form
-	- :heavy_check_mark: success toast
-	- :heavy_check_mark: bad request informations
-	- :heavy_check_mark: clearing form
-	- :x: sending email confirmation
+  - :heavy_check_mark: register user form
+  - :heavy_check_mark: success toast
+  - :heavy_check_mark: bad request informations
+  - :heavy_check_mark: clearing form
+  - :x: sending email confirmation
   - :x: remember me
   - :x: forgot password
 - :white_square_button: Application (User Panel)
-  - :heavy_check_mark: buttons - expenses, add, administration, account state
+  - :heavy_check_mark: buttons - expenses, add expense, configuration, account state
   - :white_square_button: expenses
     - :heavy_check_mark: get expenses(splits)
     - :heavy_check_mark: filter for get expenses -> data for filter and filter manipulation
@@ -64,10 +65,11 @@ In my efforts to control expenses and manage the household budget, I have tried 
     - :heavy_check_mark: add/edit categories
     - :heavy_check_mark: add/edit accounts
     - :heavy_check_mark: add/edit budget (with budgetCategories), budget period (with budgetPeriodCategories)
-  - :x: account state
-    - :x: add/edit internal transfer or deposit
-	- :x: account values
-	- :x: table of internal transfers and deposits
+  - :white_square_button: account state
+    - :heavy_check_mark: add internal transfer or deposit
+	- :x: edit internal transfer or deposit
+	- :heavy_check_mark: account values
+	- :heavy_check_mark: table of internal transfers and deposits
 
 ## Information about installation, startup, and deployment of the application
 

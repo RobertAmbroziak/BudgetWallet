@@ -343,3 +343,15 @@
 ### Day 83
 * New version of application deployed on azure (React Vite type Script + MUI)
 * Facebook login doesn't work on azure :(
+
+### Day 84
+* Facebook login works :)
+* Tests on beta version on azure and finding issues
+   Align Budget Period values after changing Budget Category - doesn't work perfectly
+   Problem with decimal numbers when adding a transfer
+   Decimal value on a split works only with a dot, but with a comma it returns an unclear error
+   Lack of default sorting for splits and internal transfers by date in tables
+* Some screens from azure (darkMode,lightMode,translations,mobile)
+<img src="Images/sc17.PNG" alt="Image 17" height="200px" style="width:auto;">
+<img src="Images/sc18.PNG" alt="Image 18" height="200px" style="width:auto;">
+  <img src="Images/sc19.PNG" alt="Image 19" height="200px" style="width:auto;"> 
