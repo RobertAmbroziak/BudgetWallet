@@ -353,5 +353,6 @@
    Lack of default sorting for splits and internal transfers by date in tables
 * Some screens from azure (darkMode,lightMode,translations,mobile)
 <img src="Images/sc17.PNG" alt="Image 17" height="200px" style="width:auto;">
-<img src="Images/sc18.PNG" alt="Image 18" height="200px" style="width:auto;">
-  <img src="Images/sc19.PNG" alt="Image 19" height="200px" style="width:auto;"> 
+	<img src="Images/sc18.PNG" alt="Image 18" height="200px" style="width:auto;">
+		<img src="Images/sc19.PNG" alt="Image 19" height="200px" style="width:auto;"> 
+  

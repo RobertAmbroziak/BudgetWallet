@@ -144,6 +144,10 @@ const AddExpense: React.FC<AddExpenseProps> = ({
     setSplitRecords(updatedRecords);
   };
 
+  const handleTransferValueChange = (value: any) => {
+    setTransferValue(value as number);
+  };
+
   const handleAddTransferButtonClick = async () => {
     const transfer: PostTransfer = {
       id: transferId ?? 0,
@@ -516,7 +520,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({
             label={translations[language].txt_value}
             variant="outlined"
             value={transferValue}
-            onChange={(e) => setTransferValue(Number(e.target.value))}
+            onChange={(e) => handleTransferValueChange(e.target.value)}
           />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
