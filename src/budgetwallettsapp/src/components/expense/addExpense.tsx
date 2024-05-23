@@ -38,6 +38,11 @@ interface AddExpenseProps {
   isEdit?: boolean;
 }
 
+interface IsValid {
+  isValid: boolean;
+  errors: string[];
+}
+
 const AddExpense: React.FC<AddExpenseProps> = ({
   transferEdit = null,
   handleSaveTransfer = null,
@@ -58,10 +63,10 @@ const AddExpense: React.FC<AddExpenseProps> = ({
   const [transferId, setTransferId] = useState<number | null>(null);
   const [accountId, setAccountId] = useState<number | null>(null);
   const [transferActivity, setTransferActivity] = useState<boolean>(true);
-  const [isValid, setIsValid] = useState<{
-    isValid: boolean;
-    errors: string[];
-  }>({ isValid: true, errors: [] });
+  const [isValid, setIsValid] = useState<IsValid>({
+    isValid: true,
+    errors: [],
+  });
   const [splitRecords, setSplitRecords] = useState<Split[]>([
     {
       splitId: 0,
@@ -148,6 +153,36 @@ const AddExpense: React.FC<AddExpenseProps> = ({
     setTransferValue(value as number);
   };
 
+  const validateNotEmpty = (value: string) => {
+    return value.trim() !== "";
+  };
+
+  const validateGreaterThanZero = (value: number) => {
+    return value > 0;
+  };
+
+  const validateTransfer: (transfer: PostTransfer) => IsValid = (
+    transfer: PostTransfer
+  ) => {
+    const { name, value, sourceAccountId } = transfer;
+    const errors: string[] = [];
+
+    if (!validateNotEmpty(name)) {
+      errors.push(translations[language].errValid_transferName);
+    }
+
+    if (!validateGreaterThanZero(value)) {
+      errors.push(translations[language].errValid_transfeValue);
+    }
+
+    if (!validateGreaterThanZero(sourceAccountId!)) {
+      errors.push(translations[language].errValid_invalidAccountId);
+    }
+
+    setIsValid({ isValid: errors.length === 0, errors: errors });
+    return { isValid: errors.length === 0, errors: errors };
+  };
+
   const handleAddTransferButtonClick = async () => {
     const transfer: PostTransfer = {
       id: transferId ?? 0,
@@ -170,17 +205,11 @@ const AddExpense: React.FC<AddExpenseProps> = ({
       })),
     };
 
+    const isValid = validateTransfer(transfer);
+
     // const validateNumber = (value: string) => {
     //   const regex = /^\d+(\.\d{1,2})?$/;
     //   return regex.test(value);
-    // };
-
-    // const validateNotEmpty = (value: string) => {
-    //   return value.trim() !== "";
-    // };
-
-    // const validateGreaterThanZero = (value: number) => {
-    //   return value > 0;
     // };
 
     // const validateTransferFields = (transfer: Transfer) => {
@@ -238,21 +267,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({
     // const validateResult = validateTransferFields(transfer);
     // setIsValid(validateResult);
 
-    // const addTransferSuccessToast = () => {
-    //   toast.success(translations[language].toast_addTransferSuccess, {
-    //     position: "top-right",
-    //     autoClose: 4000,
-    //     hideProgressBar: false,
-    //     closeOnClick: true,
-    //     pauseOnHover: true,
-    //     draggable: true,
-    //     progress: undefined,
-    //     theme: "colored",
-    //     //transition: Bounce,
-    //   });
-    // };
-
-    if (/*validateResult.isValid &&*/ !isEdit) {
+    if (isValid.isValid && !isEdit) {
       try {
         await axios.post(
           `${config.API_BASE_URL}${config.API_ENDPOINTS.TRANSFERS}`,
@@ -311,7 +326,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({
           setIsValid({ isValid: false, errors: [error.message] });
         }
       }
-    } else if (/*validateResult.isValid &&*/ isEdit) {
+    } else if (isValid.isValid && isEdit) {
       try {
         await axios.put(
           `${config.API_BASE_URL}${config.API_ENDPOINTS.TRANSFERS}`,

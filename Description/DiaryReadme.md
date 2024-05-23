@@ -355,4 +355,6 @@
 <img src="Images/sc17.PNG" alt="Image 17" height="200px" style="width:auto;">
 	<img src="Images/sc18.PNG" alt="Image 18" height="200px" style="width:auto;">
 		<img src="Images/sc19.PNG" alt="Image 19" height="200px" style="width:auto;"> 
-  
+
+### Day 85
+* Some fixes on add expense
