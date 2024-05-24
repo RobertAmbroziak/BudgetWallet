@@ -358,3 +358,6 @@
 
 ### Day 85
 * Some fixes on add expense
+
+### Day 86
+* Align budget period Fix

@@ -194,66 +194,122 @@ const BudgetDetails: React.FC<BudgetDetailsProps> = ({
           (acc, curr) => acc + curr.maxValue,
           0
         ) - budgetCategory.maxValue;
-      if (difSumSameCategoryBPCAndBC != 0) {
+
+      if (difSumSameCategoryBPCAndBC !== 0) {
         const activeBudgetPeriods = updatedBudget.budgetPeriods.filter(
           (period) => period.isActive === true
         );
 
-        // Pętla po kategoriach budżetowych
-        updatedBudget.budgetCategories.forEach((budgetCategory) => {
-          // Podział wartości maxValue na składowe
-          const dividedValue = +(
-            budgetCategory.maxValue / activeBudgetPeriods.length
-          ).toFixed(2);
+        // Podział wartości maxValue na składowe
+        const dividedValue = +(
+          budgetCategory.maxValue / activeBudgetPeriods.length
+        ).toFixed(2);
 
-          // Sprawdzenie, czy każdy aktywny budgetPeriod ma budgetPeriodCategory dla danej kategorii
+        // Sprawdzenie, czy każdy aktywny budgetPeriod ma budgetPeriodCategory dla danej kategorii
+        activeBudgetPeriods.forEach((period) => {
+          const categoryExists = period.budgetPeriodCategories.some(
+            (bpc) => bpc.categoryId === budgetCategory.categoryId
+          );
+
+          // Jeśli nie ma, dodaj nową budgetPeriodCategory z maxValue równym składowej
+          if (!categoryExists) {
+            period.budgetPeriodCategories.push({
+              id: 0,
+              budgetPeriodId: period.id,
+              categoryId: budgetCategory.categoryId,
+              maxValue: dividedValue,
+              isActive: true,
+              category: {
+                id: budgetCategory.categoryId,
+                name: "",
+                description: "",
+                isActive: true,
+              },
+            });
+          }
+        });
+
+        // Redistribute differences evenly
+        const sumMaxValues = updatedBudget.budgetPeriods
+          .flatMap((period) => period.budgetPeriodCategories)
+          .filter((bpc) => bpc.categoryId === budgetCategory.categoryId)
+          .reduce((acc, curr) => acc + curr.maxValue, 0);
+
+        const roundedSumMaxValues = parseFloat(sumMaxValues.toFixed(2));
+
+        const difToAdd: number =
+          Number(budgetCategory.maxValue) - roundedSumMaxValues;
+        const roundedDifToAdd = parseFloat(difToAdd.toFixed(2));
+
+        if (roundedDifToAdd !== 0) {
+          const incrementValue = parseFloat(
+            (roundedDifToAdd / activeBudgetPeriods.length).toFixed(2)
+          );
           activeBudgetPeriods.forEach((period) => {
-            const categoryExists = period.budgetPeriodCategories.some(
+            const budgetPeriodCategory = period.budgetPeriodCategories.find(
               (bpc) => bpc.categoryId === budgetCategory.categoryId
             );
-
-            // Jeśli nie ma, dodaj nową budgetPeriodCategory z maxValue równym składowej
-            if (!categoryExists) {
-              period.budgetPeriodCategories.push({
-                id: 0,
-                budgetPeriodId: period.id,
-                categoryId: budgetCategory.categoryId,
-                maxValue: dividedValue,
-                isActive: true,
-                category: {
-                  id: budgetCategory.categoryId,
-                  name: "",
-                  description: "",
-                  isActive: true,
-                },
-              });
+            if (budgetPeriodCategory) {
+              budgetPeriodCategory.maxValue = parseFloat(
+                (budgetPeriodCategory.maxValue + incrementValue).toFixed(2)
+              );
             }
           });
-        });
-      }
 
-      // Sprawdzenie, czy suma składowych nie równa się maxValue kategorii
+          // Adjust the first category to fix any floating point precision issues
+          const finalSumMaxValues = updatedBudget.budgetPeriods
+            .flatMap((period) => period.budgetPeriodCategories)
+            .filter((bpc) => bpc.categoryId === budgetCategory.categoryId)
+            .reduce((acc, curr) => acc + curr.maxValue, 0);
+
+          const finalRoundedSumMaxValues = parseFloat(
+            finalSumMaxValues.toFixed(2)
+          );
+          const finalDifToAdd: number =
+            Number(budgetCategory.maxValue) - finalRoundedSumMaxValues;
+          const finalRoundedDifToAdd = parseFloat(finalDifToAdd.toFixed(2));
+
+          if (finalRoundedDifToAdd !== 0) {
+            const firstBudgetPeriodCategory =
+              activeBudgetPeriods[0].budgetPeriodCategories.find(
+                (bpc) => bpc.categoryId === budgetCategory.categoryId
+              );
+            if (firstBudgetPeriodCategory) {
+              firstBudgetPeriodCategory.maxValue = parseFloat(
+                (
+                  firstBudgetPeriodCategory.maxValue + finalRoundedDifToAdd
+                ).toFixed(2)
+              );
+            }
+          }
+        }
+      }
+    });
+
+    // Final check and adjustment
+    updatedBudget.budgetCategories.forEach((budgetCategory) => {
       const sumMaxValues = updatedBudget.budgetPeriods
         .flatMap((period) => period.budgetPeriodCategories)
         .filter((bpc) => bpc.categoryId === budgetCategory.categoryId)
         .reduce((acc, curr) => acc + curr.maxValue, 0);
 
       const roundedSumMaxValues = parseFloat(sumMaxValues.toFixed(2));
-
-      const difToAdd: number =
-        Number(budgetCategory.maxValue) - roundedSumMaxValues;
+      const difToAdd = Number(budgetCategory.maxValue) - roundedSumMaxValues;
       const roundedDifToAdd = parseFloat(difToAdd.toFixed(2));
-      if (difToAdd !== 0) {
+
+      if (roundedDifToAdd !== 0) {
         const firstBudgetPeriodCategory =
           updatedBudget.budgetPeriods[0].budgetPeriodCategories.find(
             (bpc) => bpc.categoryId === budgetCategory.categoryId
           );
         if (firstBudgetPeriodCategory) {
-          const newValue = firstBudgetPeriodCategory.maxValue + roundedDifToAdd;
-          firstBudgetPeriodCategory.maxValue = parseFloat(newValue.toFixed(2));
+          firstBudgetPeriodCategory.maxValue = parseFloat(
+            (firstBudgetPeriodCategory.maxValue + roundedDifToAdd).toFixed(2)
+          );
         }
       }
     });
+
     setBudget(updatedBudget);
   };
 
