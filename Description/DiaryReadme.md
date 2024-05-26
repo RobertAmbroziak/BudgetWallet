@@ -364,3 +364,6 @@
 
 ### Day 87
 * Plan of instruction content
+
+### Day 88
+* Plan of instruction content 2
