@@ -67,7 +67,7 @@ namespace WebApi.Controllers
         }
 
         /// <summary>
-        /// Get budget with dependencies by budhet id
+        /// Get budget with dependencies by budget id
         /// </summary>
         /// <param name="budgetId">Budget Id</param>
         /// <returns>Budget with dependencies</returns>
@@ -86,6 +86,18 @@ namespace WebApi.Controllers
         public async Task<ActionResult<Budget>> GetDefaultBudget()
         {
             var result = await _applicationService.GetDefaultBudget();
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Clone budget to another period
+        /// </summary>
+        /// <param name="budgetId">Budget Id</param>
+        /// <returns>Budget with dependencies</returns>
+        [HttpPost("{budgetId}/clone")]
+        public async Task<ActionResult<Budget>> CloneBudgets([FromRoute] int budgetId)
+        {
+            var result = await _applicationService.CloneBudget(budgetId);
             return Ok(result);
         }
     }

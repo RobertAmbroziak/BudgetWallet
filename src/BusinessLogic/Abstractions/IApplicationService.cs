@@ -21,6 +21,7 @@ namespace BusinessLogic.Abstractions
         Task<Budget> GetBudget(int budgetId);
         Task UpdateBudget(Budget budget);
         Task<Budget> GetDefaultBudget();
+        Task<Budget> CloneBudget(int budgetId);
         Task<IEnumerable<AccountState>> GetAccountStates();
         Task<IEnumerable<Transfer>> GetInternalTransfers();
 

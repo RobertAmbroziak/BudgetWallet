@@ -619,6 +619,28 @@ namespace BusinessLogic.Services
             
             await _applicationRepository.SaveChangesAsync();
         }
+        public async Task<Budget> CloneBudget(int budgetId)
+        {
+            var user = await _identityService.GetCurrentUser();
+
+            /*
+                TODO:
+                pobierz budget ze wszystkimi zależnościami po id
+                sprawdź czy należy do usera
+                na podstawie dat budzetu i dat budżet periodów ustal nowe daty na kolejny podobny okres
+                podział periodów również powinien być podobny
+
+                jesli mamy budżet na maj i tygodniowe periody to wszystko jest proste - stwórz budżet na czerwiec z tygodniowymi periodami
+                jeśli jednak okres budżetu jest nietypowy lub budżety periodów są nietypowe to trzeba pokombinować
+                kategorie (nawet nieaktywne) i wartości przenosimy takie same
+                ignorujemy wszystkie nieaktywne bc, bp i bpc
+
+                tworzymy encje, zapisujemy i zwracamy Budget
+             
+             */
+
+            throw new NotImplementedException();
+        }
 
         public async Task<Budget> GetDefaultBudget()
         {
