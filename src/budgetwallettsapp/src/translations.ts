@@ -120,6 +120,11 @@ const translations: Translations = {
     lbl_transferValue: "Value",
     lbl_transferName: "Name",
     lbl_transferType: "Type",
+    st_image1Desc: "Manage your own household budget",
+    st_image2Desc: "Customize the app to your needs by defining your own categories, accounts, and budgets",
+    st_image3Desc: "Easily enter your daily expenses",
+    st_image4Desc: "Track expenses by periods and categories",
+    st_image5Desc: "Track the status of your resources",
   },
   pl: {
     btn_logout: "Wyloguj",
@@ -237,6 +242,11 @@ const translations: Translations = {
     lbl_transferValue: "Wartość",
     lbl_transferName: "Nazwa",
     lbl_transferType: "Typ",
+    st_image1Desc: "Zarządzaj własnym budżetem domowym",
+    st_image2Desc: "Dostosuj aplikacje pod siebie definiując własne kategorie, konta oraz budżety",
+    st_image3Desc: "W prosty sposób wprwadzaj codzienne operacje",
+    st_image4Desc: "Monitoruj wydatki w podziale na okresy i kategorie",
+    st_image5Desc: "Monitoruj stan swoich zasobów",
   },
 };
 
