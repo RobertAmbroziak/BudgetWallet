@@ -345,8 +345,41 @@ function Home() {
             Stan kont i wewnętrzne transfery
           </AccordionSummary>
           <AccordionDetails>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
+            <p>
+              Stan kont to również miejsce, które warto odwiedzić na samym
+              początku. Znajduje się tam kilka funkcjonalności, ale po kolei.
+            </p>
+
+            <p>
+              W pierwszej rozwijanej belce Nowy (Wewnętrzny/Depozyt) Transfer
+              możemy dodawać transfery pieniężne inne niż wydatki. Chodzi tu o
+              wprowadzanie wpływów na nasze konta ze źródeł zewnętrznych
+              (wypłaty, przelewy od znajomych itp.) oraz transfery pomiędzy
+              własnymi kontami (wypłata z bankomatu, przelewy z konta firmowego
+              na prywatne, spłaty kart kredytowych).
+            </p>
+
+            <p>
+              Na początku warto zasilić swoje zdefiniowane konta inicjującą
+              kwotą ze źródła zewnętrznego, tak aby ustawić na nich stan
+              początkowy. Oczywiście później w tym miejscu również będzie można
+              dodawać takie operacje. Moduł wymaga wybrania konta źródłowego
+              (lub źródła zewnętrznego) i konta docelowego, podania nazwy
+              przelewu (opis jest opcjonalny), kwoty i daty.
+            </p>
+
+            <p>
+              Wszystkie te transfery będą widoczne w tabelce znajdującej się w
+              belce Transfery, która wymaga dopracowania (formatowanie,
+              sortowanie, stronicowanie, możliwość edycji).
+            </p>
+
+            <p>
+              Druga belka w tym module, Stan kont, prezentuje tabelę z naszymi
+              kontami oraz ich aktualnym stanem, który jest obliczany na
+              podstawie wszystkich wydatków, transferów przychodzących i
+              transferów pomiędzy kontami.
+            </p>
           </AccordionDetails>
         </Accordion>
         <Accordion>
@@ -358,8 +391,61 @@ function Home() {
             Wydatki
           </AccordionSummary>
           <AccordionDetails>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
+            <p>
+              Obszar wydatków rozpoczynamy od wybrania wartości na filtrze i
+              kliknięcia w SZUKAJ. Musimy wybrać jeden z istniejących budżetów,
+              a dodatkowo opcjonalnie możemy zawęzić prezentację danych o
+              konkretny period, kategorię lub konto. Możemy również zastosować
+              kombinację kilku opcji.
+            </p>
+
+            <p>
+              Wynik tej filtracji pokaże się w trzech belkach. Pierwsza,
+              Podsumowanie, to suma wydatków w stosunku do zakładanego budżetu
+              oraz procentowy stosunek tych wartości. Te wartości zależą od
+              ustawionego filtra. Mogą dotyczyć całego budżetu lub tylko pewnego
+              jego okresu lub konkretnej kategorii. Druga to prosta
+              reprezentacja graficzna w formie wykresu. Widzimy tam dwie linie.
+              Pierwsza (obecnie prosta) to linia budżetu od zera do ustalonej
+              wartości, druga reprezentuje już wydatki i pokazuje, jak rosły z
+              różnym kątem nachylenia.
+            </p>
+
+            <p>
+              Te belki nie pojawią się, jeśli filtrujemy po konkretnym koncie.
+              Budżety nie są oparte o konkretne konta i nie dałoby się wyliczyć
+              wartości budżetowej przy takim układzie filtra.
+            </p>
+
+            <p>
+              Trzecia belka to tabela wszystkich wydatków w ramach wybranego
+              filtra. Są one posortowane według daty, dlatego możemy tu pokazać
+              też w ostatniej kolumnie rosnąco procent konsumpcji danego budżetu
+              wynikającego z filtra. Ta kolumna pokaże 0 w przypadku filtracji
+              po koncie z wyżej wspomnianych powodów. Pojedynczy rekord w tej
+              tabeli to nie transfer, a podział. Mamy tu więc nazwę podziału i
+              transferu oraz nazwę kategorii i konta, z którego wyszedł. Dalej
+              jest data, wartość i wspomniany procent. Najeżdżając na nazwy, w
+              formie tooltipa zobaczymy również opisy (podziału, transferu,
+              kategorii czy konta), o ile zostały podane. Najeżdżając na wartość
+              w pojedynczym rekordzie, w tooltipie zobaczymy wartość całego
+              transferu. Dodatkowo odcień szarości grupuje rekordy podziałów w
+              jeden transfer.
+            </p>
+
+            <p>
+              W pierwszej kolumnie mamy ikonę ołówka, który pozwoli nam
+              zmodyfikować wybrany podział, a właściwie cały transfer, którego
+              jest częścią. Cały transfer wraz z podziałami otworzy się w oknie
+              modalnym, a jego zawartość jest praktycznie identyczna jak w
+              module do dodawania nowego wydatku. Możemy tu wszystko
+              zmodyfikować, a nawet dezaktywować cały transfer. Zasady walidacji
+              muszą być jednak zachowane. Należy pamiętać, że suma z podziałów
+              musi się równać wartości na transferze. Walidator sprawdzi
+              poprawność modyfikacji i najwyżej nie pozwoli na ich zapis. Zmiany
+              od razu zostaną odzwierciedlone w tabeli, podsumowaniu i na
+              wykresie.
+            </p>
           </AccordionDetails>
         </Accordion>
         <Accordion>
@@ -371,8 +457,67 @@ function Home() {
             Nowy wydatek
           </AccordionSummary>
           <AccordionDetails>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
+            <p>
+              Pod przyciskiem NOWY WYDATEK kryje się mechanizm, który będzie
+              używany jako główny moduł do wprowadzania bieżących informacji do
+              systemu. Tutaj rejestrujemy wszystkie nasze codzienne wydatki.
+            </p>
+
+            <p>
+              W górnej części definiujemy bardziej ogólne informacje dotyczące
+              transferu. Wybieramy budżet, w ramach którego nastąpił ten
+              wydatek, konto źródłowe oraz jego nazwę (np. Lidl Poznań, 22-05).
+              Opis, jak wszędzie w całej aplikacji, jest opcjonalny. Może nam
+              pomóc i dostarczyć dodatkowych informacji, ale nigdy nie jest
+              obowiązkowy. Podajemy wartość naszego transferu (np. rachunku za
+              zakupy) oraz wybieramy jego datę.
+            </p>
+
+            <p>
+              W dolnej części znajdują się szczegóły takiego transferu. To tutaj
+              wskazujemy jedną lub więcej kategorii budżetowych, na które chcemy
+              rozbić dany transfer. Jeśli robimy przelew za czynsz, to nasz
+              transfer będzie miał jeden podział i jedną kategorię (np. Opłaty).
+              Ale rachunek z hipermarketu możemy chcieć rozdzielić już na kilka
+              kategorii (Spożywcze, Chemia, Alkohol).
+            </p>
+
+            <p>
+              Zawsze mamy jeden domyślny podział pusty, ale po wybraniu w nim
+              kategorii, wartość i opis ustawią się na podstawie wartości z
+              transferu i nazwy kategorii. To oczywiście możemy zmienić. Dodając
+              kolejne podziały, musimy już ręcznie zadbać, aby suma wartości z
+              podziałów równała się wartości na transferze. Uzupełniony transfer
+              wraz z podziałami możemy zapisać za pomocą przycisku ZAPISZ.
+              Ewentualne błędy zostaną wyświetlone nad modułem. Jeśli wszystko
+              się powiedzie, dostaniemy klasyczną informację w prawym górnym
+              rogu ekranu.
+            </p>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="todo-content"
+            id="todo-header"
+          >
+            Do zrobienia
+          </AccordionSummary>
+          <AccordionDetails>
+            <p>
+              1. Możliwość potwierdzenia rejestracji, resetu hasła przez mail i
+              zmiany hasła
+            </p>
+            <p>2. Możliwość edycji transferów wewnętrznych i depozytów</p>
+            <p>3. Możliwość sklonowania budżetu na kolejny tożsamy okres</p>
+            <p>
+              4. Rozbudowanie funkcjonalności Wyrównaj przy definiowaniu budżetu
+            </p>
+            <p>
+              5. Ułatwienie wprowadzania wydatków poprzez implementację
+              mechanizmu DefaultExpenses (kliknięcie w ikonkę tworzącą domyślny
+              transfer na typowe wydatki)
+            </p>
           </AccordionDetails>
         </Accordion>
       </Box>
