@@ -10,6 +10,7 @@ using Mocks.DefaultData;
 using Util.Helpers;
 using System.Security.Cryptography.Xml;
 using Util.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace BusinessLogic.Services
 {
@@ -622,22 +623,103 @@ namespace BusinessLogic.Services
         public async Task<Budget> CloneBudget(int budgetId)
         {
             var user = await _identityService.GetCurrentUser();
+            var budget = await _applicationRepository.GetBudget(budgetId);
 
-            /*
-                TODO:
-                pobierz budget ze wszystkimi zależnościami po id
-                sprawdź czy należy do usera
-                na podstawie dat budzetu i dat budżet periodów ustal nowe daty na kolejny podobny okres
-                podział periodów również powinien być podobny
+            if (budget.UserId != user.Id)
+            {
+                throw new BadHttpRequestException(_localizer["rule_budgetIdBelongsToUser"].Value);
+            }
 
-                jesli mamy budżet na maj i tygodniowe periody to wszystko jest proste - stwórz budżet na czerwiec z tygodniowymi periodami
-                jeśli jednak okres budżetu jest nietypowy lub budżety periodów są nietypowe to trzeba pokombinować
-                kategorie (nawet nieaktywne) i wartości przenosimy takie same
-                ignorujemy wszystkie nieaktywne bc, bp i bpc
+            var budgetRangeInfo = GetBudgetRangeInfo(budget.ValidFrom, budget.ValidTo, budget.BudgetPeriods).Result;
 
-                tworzymy encje, zapisujemy i zwracamy Budget
-             
-             */
+            DateTime? budgetValidFrom = null;
+            DateTime? budgetValidTo = null;
+            List<Tuple<DateTime, DateTime>> periodDatePairs;
+
+            if (budgetRangeInfo.IsMonthlyRange)
+            {
+                budgetValidFrom = budget.ValidTo;
+                budgetValidTo = budget.ValidTo.AddMonths(1);
+            }
+
+            if (budgetRangeInfo.IsWeeklyRange)
+            {
+                budgetValidFrom = budget.ValidTo;
+                budgetValidTo = budget.ValidTo.AddDays(7);
+            }
+
+            if (budgetRangeInfo.BudgetDays.HasValue)
+            {
+                budgetValidFrom = budget.ValidTo;
+                budgetValidTo = budget.ValidTo.AddDays(budgetRangeInfo.BudgetDays.Value);
+            }
+
+            if (budgetRangeInfo.IsPeriodWeeklyRange)
+            {
+                periodDatePairs = new List<Tuple<DateTime, DateTime>>();
+
+                DateTime currentStartDate = budgetValidFrom.Value;
+                while (currentStartDate < budgetValidTo)
+                {
+                    DateTime currentEndDate = currentStartDate.AddDays(7);
+                    if (currentEndDate > budgetValidTo)
+                    {
+                        currentEndDate = budgetValidTo.Value;
+                    }
+
+                    periodDatePairs.Add(new Tuple<DateTime, DateTime>(currentStartDate, currentEndDate));
+                    currentStartDate = currentEndDate;
+                }
+            }
+
+            if(budgetRangeInfo.PeriodDays != null)
+            {
+                periodDatePairs = new List<Tuple<DateTime, DateTime>>();
+
+                DateTime currentStartDate = budgetValidFrom.Value;
+
+                foreach (int period in budgetRangeInfo.PeriodDays)
+                {
+                    DateTime currentEndDate = currentStartDate.AddDays(period);
+
+                    if (currentEndDate > budgetValidTo)
+                    {
+                        currentEndDate = budgetValidTo.Value;
+                    }
+
+
+                    periodDatePairs.Add(new Tuple<DateTime, DateTime>(currentStartDate, currentEndDate));
+
+                    currentStartDate = currentEndDate;
+
+                    if (currentStartDate >= budgetValidTo)
+                    {
+                        break;
+                    }
+                }
+
+                if (currentStartDate < budgetValidTo)
+                {
+                    periodDatePairs.Add(new Tuple<DateTime, DateTime>(currentStartDate, budgetValidTo.Value));
+                }
+            }
+
+            var userBudgetsInfo = await GetUserBudgetsInfo();
+            var budgetName = GetUniqueBudgetName(budgetValidFrom.Value, userBudgetsInfo);
+            var newBudget = new BudgetDto
+            {
+                UserId = user.Id,
+                Name = budgetName,
+                Description = budgetName,
+                ValidFrom = budgetValidFrom.Value,
+                ValidTo = budgetValidTo.Value
+                // TODO: uzupełnij pozostałe listy, niektóre trzeba specyficznie wyliczyć wartości
+            };
+
+            await _applicationRepository.InsertAsync<BudgetDto>(newBudget);
+            await _applicationRepository.SaveChangesAsync();
+
+            // TODO: przemapuj budgetDto na budget i zwróć
 
             throw new NotImplementedException();
         }
@@ -659,14 +741,7 @@ namespace BusinessLogic.Services
             var validFrom = new DateTime(currentDate.Year, currentDate.Month, 1, 0, 0, 0);
             var validTo = currentDate.Month == 12 ? new DateTime(currentDate.Year + 1,1,1, 0, 0, 0) : new DateTime(currentDate.Year, currentDate.Month + 1, 1, 0, 0, 0);
 
-            int version = 2;
-            string budgetName = $"{validFrom.Year}-{validFrom.Month.ToString().PadLeft(2, '0')}";
-
-            while (budgetInfo.Budgets.Any(budget => budget.Name == budgetName))
-            {
-                budgetName = $"{budgetName}v{version}";
-                version++;
-            }
+            var budgetName = GetUniqueBudgetName(validFrom, budgetInfo);
 
             var budgetCategories = new List<BudgetCategory>();
             
@@ -938,6 +1013,109 @@ namespace BusinessLogic.Services
             return result;
         }
 
+        private Task<BudgetRangeInfo> GetBudgetRangeInfo(DateTime budgetValidFrom, DateTime budgetValidTo, IEnumerable<BudgetPeriodDto> periods)
+        {
+            var isMonthlyRange = false;
+            var isWeeklyRange = false;
+            var isPeriodWeeklyRange = false;
+            int? budgetDays = null;
+            IEnumerable<int> periodDays = null;
+
+            if (budgetValidFrom >= budgetValidTo)
+            {
+                throw new ArgumentException("budgetValidFrom should be earlier than budgetValidUntil");
+            }
+
+            int yearDifference = budgetValidTo.Year - budgetValidFrom.Year;
+            int monthDifference = budgetValidTo.Month - budgetValidFrom.Month;
+
+            if (yearDifference == 1 && budgetValidFrom.Month == 12 && budgetValidTo.Month == 1 && budgetValidFrom.Day == budgetValidTo.Day)
+            {
+                isMonthlyRange = true;
+            }
+
+            if (yearDifference == 0 && monthDifference == 1 && budgetValidFrom.Day == budgetValidTo.Day)
+            {
+                isMonthlyRange = true;
+            }
+
+            if (!isMonthlyRange)
+            {
+                TimeSpan difference = budgetValidTo - budgetValidFrom;
+
+                if (difference.TotalDays == 7)
+                {
+                    isWeeklyRange = true;
+                }
+            }
+
+            if (!isMonthlyRange && !isWeeklyRange)
+            {
+                TimeSpan difference = budgetValidTo.Date - budgetValidFrom.Date;
+                budgetDays = (int)difference.TotalDays;
+            }
+
+            if (isMonthlyRange || isWeeklyRange)
+            {
+                if (periods.Count() == 1)
+                {
+                    TimeSpan difference = periods.Single().ValidTo - periods.Single().ValidFrom;
+                    isPeriodWeeklyRange = difference.TotalDays == 7;
+                }
+                else
+                {
+                    var somePeriodIsNotWeekley = false;
+                    foreach(var period in periods.Take(periods.Count() - 1))
+                    {
+                        TimeSpan difference = period.ValidTo - period.ValidFrom;
+                        if (difference.TotalDays != 7)
+                        {
+                            somePeriodIsNotWeekley = true;
+                        }
+                    }
+                    isPeriodWeeklyRange = !somePeriodIsNotWeekley;
+                }
+            }
+
+            if (!isPeriodWeeklyRange)
+            {
+                if (periods.Count() > 1)
+                {
+                    var periodDaysList = new List<int>();
+                    foreach (var period in periods.Take(periods.Count() - 1))
+                    {
+                        TimeSpan difference = period.ValidTo - period.ValidFrom;
+                        periodDaysList.Add((int)difference.TotalDays);
+                    }
+                    periodDays = periodDaysList.AsEnumerable();
+                }
+            }
+
+            var budgetRangeInfo = new BudgetRangeInfo
+            {
+                IsMonthlyRange = isMonthlyRange,
+                IsWeeklyRange = isWeeklyRange,
+                BudgetDays = budgetDays,
+                IsPeriodWeeklyRange = isPeriodWeeklyRange,
+                PeriodDays = periodDays
+            };
+
+            return Task.FromResult(budgetRangeInfo);
+        }
+
+        private string GetUniqueBudgetName(DateTime validFrom, UserBudgetsInfo budgetInfo)
+        {
+            int version = 2;
+            string budgetName = $"{validFrom.Year}-{validFrom.Month.ToString().PadLeft(2, '0')}";
+
+            while (budgetInfo.Budgets.Any(budget => budget.Name == budgetName))
+            {
+                budgetName = $"{budgetName}v{version}";
+                version++;
+            }
+
+            return budgetName;
+        }
         #endregion
     }
 }

@@ -376,3 +376,6 @@
 
 ### Day 91
 * finished instruction in polish
+
+### Day 92
+* BudgetClone method extension - not finished yet
