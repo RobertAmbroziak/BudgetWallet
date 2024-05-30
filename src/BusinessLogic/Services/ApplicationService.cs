@@ -630,11 +630,11 @@ namespace BusinessLogic.Services
                 throw new BadHttpRequestException(_localizer["rule_budgetIdBelongsToUser"].Value);
             }
 
-            var budgetRangeInfo = GetBudgetRangeInfo(budget.ValidFrom, budget.ValidTo, budget.BudgetPeriods).Result;
+            var budgetRangeInfo = GetBudgetRangeInfo(budget.ValidFrom, budget.ValidTo, budget.BudgetPeriods.Where(x => x.IsActive)).Result;
 
             DateTime? budgetValidFrom = null;
             DateTime? budgetValidTo = null;
-            List<Tuple<DateTime, DateTime>> periodDatePairs;
+            List<Tuple<DateTime, DateTime>> periodDatePairs = null;
 
             if (budgetRangeInfo.IsMonthlyRange)
             {
@@ -706,20 +706,24 @@ namespace BusinessLogic.Services
 
             var userBudgetsInfo = await GetUserBudgetsInfo();
             var budgetName = GetUniqueBudgetName(budgetValidFrom.Value, userBudgetsInfo);
+            var budgetCategories = GetClonedBudgetCategories(budget.BudgetCategories.Where(x => x.IsActive)).ToList();
+            var budgetPeriods = GetClonedBudgetPeriods(periodDatePairs, budgetCategories, budget.BudgetPeriods.Where(x => x.IsActive)).ToList();
             var newBudget = new BudgetDto
             {
                 UserId = user.Id,
                 Name = budgetName,
                 Description = budgetName,
                 ValidFrom = budgetValidFrom.Value,
-                ValidTo = budgetValidTo.Value
-                // TODO: uzupełnij pozostałe listy, niektóre trzeba specyficznie wyliczyć wartości
+                ValidTo = budgetValidTo.Value,
+                IsActive = true,
+                BudgetCategories = budgetCategories,
+                BudgetPeriods = budgetPeriods,
             };
 
             await _applicationRepository.InsertAsync<BudgetDto>(newBudget);
             await _applicationRepository.SaveChangesAsync();
 
-            // TODO: przemapuj budgetDto na budget i zwróć
+            return _budgetMapper.Map(newBudget);
 
             throw new NotImplementedException();
         }
@@ -1116,6 +1120,256 @@ namespace BusinessLogic.Services
 
             return budgetName;
         }
+
+        private IEnumerable<BudgetCategoryDto> GetClonedBudgetCategories(IEnumerable<BudgetCategoryDto> budgetCategories)
+        {
+            var clonedBudgetCategories = new List<BudgetCategoryDto>();
+
+            foreach (var budgetCategory in budgetCategories)
+            {
+                var clonedBudgetCategory = new BudgetCategoryDto
+                {
+                    CategoryId = budgetCategory.CategoryId,
+                    MaxValue = budgetCategory.MaxValue,
+                    IsActive = budgetCategory.IsActive
+                };
+
+                clonedBudgetCategories.Add(clonedBudgetCategory);
+            }
+
+            return clonedBudgetCategories;
+        }
+
+        private IEnumerable<BudgetPeriodDto> GetClonedBudgetPeriods(IEnumerable<Tuple<DateTime, DateTime>> periodDatePairs, IEnumerable<BudgetCategoryDto> budgetCategories, IEnumerable<BudgetPeriodDto> rootBudgetPeriods)
+        {
+            if (rootBudgetPeriods.Count() == periodDatePairs.Count())
+            {
+                var budgetPeriods = new List<BudgetPeriodDto>();
+
+                for (int i = 0; i < rootBudgetPeriods.Count(); i++)
+                {
+                    var rootBudgetPeriod = rootBudgetPeriods.ElementAt(i);
+                    var periodDatePair = periodDatePairs.ElementAt(i);
+
+                    var budgetPeriod = new BudgetPeriodDto
+                    {
+                        IsActive = true,
+                        ValidFrom = periodDatePair.Item1,
+                        ValidTo = periodDatePair.Item2,
+                        BudgetPeriodCategories = rootBudgetPeriod.BudgetPeriodCategories.ToList().Select(x => new BudgetPeriodCategoryDto { IsActive = true, CategoryId = x.CategoryId, MaxValue = x.MaxValue } ).ToList()
+                    };
+
+                    budgetPeriods.Add(budgetPeriod);
+                }
+                
+                return budgetPeriods;
+            }
+
+            if (rootBudgetPeriods.Count() > periodDatePairs.Count())
+            {
+                var budgetPeriods = new List<BudgetPeriodDto>();
+
+                for (int i = 0; i < periodDatePairs.Count(); i++)
+                {
+                    var rootBudgetPeriod = rootBudgetPeriods.ElementAt(i);
+                    var periodDatePair = periodDatePairs.ElementAt(i);
+
+                    var budgetPeriod = new BudgetPeriodDto
+                    {
+                        IsActive = true,
+                        ValidFrom = periodDatePair.Item1,
+                        ValidTo = periodDatePair.Item2,
+                        BudgetPeriodCategories = rootBudgetPeriod.BudgetPeriodCategories.ToList().Select(x => new BudgetPeriodCategoryDto { IsActive = true, CategoryId = x.CategoryId, MaxValue = x.MaxValue }).ToList()
+                    };
+
+                    budgetPeriods.Add(budgetPeriod);
+                }
+
+                var excessRootBudgetPeriods = rootBudgetPeriods.Skip(periodDatePairs.Count());
+                var categorySums = excessRootBudgetPeriods
+                    .SelectMany(period => period.BudgetPeriodCategories)
+                    .GroupBy(category => category.CategoryId)
+                    .ToDictionary(
+                        group => group.Key,
+                        group => group.Sum(category => category.MaxValue)
+                    );
+
+                foreach (var categorySum in categorySums)
+                {
+                    var extraCategoryValue = Math.Round(categorySum.Value / periodDatePairs.Count(), 2);
+                    foreach (var period in budgetPeriods)
+                    {
+                        var budgetPeriodCategory = period.BudgetPeriodCategories.Single(x => x.CategoryId == categorySum.Key);
+                        budgetPeriodCategory.MaxValue += extraCategoryValue;
+                    }
+                }
+
+                AdjustCategoryValues(budgetPeriods, budgetCategories);
+
+                return budgetPeriods;
+            }
+
+            if (rootBudgetPeriods.Count() < periodDatePairs.Count())
+            {
+                var budgetPeriods = new List<BudgetPeriodDto>();
+
+                for (int i = 0; i < rootBudgetPeriods.Count(); i++)
+                {
+                    var rootBudgetPeriod = rootBudgetPeriods.ElementAt(i);
+                    var periodDatePair = periodDatePairs.ElementAt(i);
+
+                    var budgetPeriod = new BudgetPeriodDto
+                    {
+                        IsActive = true,
+                        ValidFrom = periodDatePair.Item1,
+                        ValidTo = periodDatePair.Item2,
+                        BudgetPeriodCategories = rootBudgetPeriod.BudgetPeriodCategories.ToList().Select(x => new BudgetPeriodCategoryDto { IsActive = true, CategoryId = x.CategoryId, MaxValue = x.MaxValue }).ToList()
+                    };
+
+                    budgetPeriods.Add(budgetPeriod);
+                }
+
+                var excessPeriodDatePairs = periodDatePairs.Skip(rootBudgetPeriods.Count());
+                var averagedPeriodCategoryValues = budgetCategories.Select(x => new Dictionary<int, decimal>
+                    {
+                        { x.CategoryId, Math.Round(x.MaxValue / periodDatePairs.Count(), 2) }
+                    })
+                    .ToList();
+
+                foreach (var excessPeriodDatePair in excessPeriodDatePairs)
+                {
+                    var rootBudgetPeriod = rootBudgetPeriods.First();
+                    var budgetPeriod = new BudgetPeriodDto
+                    {
+                        IsActive = true,
+                        ValidFrom = excessPeriodDatePair.Item1,
+                        ValidTo = excessPeriodDatePair.Item2,
+                        BudgetPeriodCategories = rootBudgetPeriod.BudgetPeriodCategories
+                            .Select(x =>
+                                new BudgetPeriodCategoryDto
+                                {
+                                    IsActive = true,
+                                    CategoryId = x.CategoryId,
+                                    MaxValue = averagedPeriodCategoryValues.Single(dic => dic.ContainsKey(x.CategoryId))[x.CategoryId]
+                                })
+                            .ToList()
+                    };
+                    budgetPeriods.Add(budgetPeriod);
+                }
+
+                ProportionallyAdjustCategoryValues(budgetPeriods, budgetCategories);
+
+                AdjustCategoryValues(budgetPeriods, budgetCategories);
+
+                return budgetPeriods;
+            }
+
+            throw new Exception($"Can not return data from {nameof(GetClonedBudgetPeriods)}");
+        }
+
+        private void AdjustCategoryValues(IEnumerable<BudgetPeriodDto> budgetPeriods, IEnumerable<BudgetCategoryDto> budgetCategories)
+        {
+            var categorySums = budgetPeriods
+                    .SelectMany(period => period.BudgetPeriodCategories)
+                    .GroupBy(category => category.CategoryId)
+                    .ToDictionary(
+                        group => group.Key,
+                        group => group.Sum(category => category.MaxValue)
+                    );
+
+            foreach (var categorySum in categorySums)
+            {
+                var budgetCategory = budgetCategories.Single(x => x.CategoryId == categorySum.Key);
+                var difference = budgetCategory.MaxValue - categorySum.Value;
+                if (difference > 0)
+                {
+                    var firstBudgetPeriod = budgetPeriods.First();
+                    var firstBudgetPeriodCurrentCategory = firstBudgetPeriod.BudgetPeriodCategories.Single(x => x.CategoryId == categorySum.Key);
+                    firstBudgetPeriodCurrentCategory.MaxValue += difference;
+                }
+                else if (difference < 0)
+                {
+                    difference = Math.Abs(difference);
+                    foreach (var budgetPeriod in budgetPeriods)
+                    {
+                        var currentCategory = budgetPeriod.BudgetPeriodCategories.Single(x => x.CategoryId == categorySum.Key);
+                        var maxValueToDeduct = Math.Min(currentCategory.MaxValue, difference);
+                        currentCategory.MaxValue -= maxValueToDeduct;
+                        difference -= maxValueToDeduct;
+
+                        if (difference == 0)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ProportionallyAdjustCategoryValues(IEnumerable<BudgetPeriodDto> budgetPeriods, IEnumerable<BudgetCategoryDto> budgetCategories)
+        {
+            var categorySums = budgetPeriods
+                    .SelectMany(period => period.BudgetPeriodCategories)
+                    .GroupBy(category => category.CategoryId)
+                    .ToDictionary(
+                        group => group.Key,
+                        group => group.Sum(category => category.MaxValue)
+                    );
+
+            foreach (var categorySum in categorySums)
+            {
+                var budgetCategory = budgetCategories.Single(x => x.CategoryId == categorySum.Key);
+                var difference = budgetCategory.MaxValue - categorySum.Value;
+
+                if (difference < 0)
+                {
+                    var diffPerPeriod = Math.Round(difference / budgetPeriods.Count(), 2);
+                    foreach (var budgetPeriod in budgetPeriods)
+                    {
+                        var currentBudgetPeriodCategory = budgetPeriod.BudgetPeriodCategories.Single(x => x.CategoryId == categorySum.Key);
+                        currentBudgetPeriodCategory.MaxValue += diffPerPeriod;
+                    }
+                }
+            }
+
+            bool anyNegativeMaxValue = budgetPeriods
+                .SelectMany(period => period.BudgetPeriodCategories)
+                .Any(category => category.MaxValue < 0);
+
+            if (anyNegativeMaxValue)
+            {
+                var negativeCategories = budgetPeriods
+                    .SelectMany(period => period.BudgetPeriodCategories)
+                    .Where(category => category.MaxValue < 0)
+                    .ToList();
+
+                var positiveCategories = budgetPeriods
+                    .SelectMany(period => period.BudgetPeriodCategories)
+                    .Where(category => category.MaxValue >= 0)
+                    .ToList();
+
+                negativeCategories.Sort((x, y) => Math.Abs(x.MaxValue).CompareTo(Math.Abs(y.MaxValue)));
+
+                foreach (var negativeCategory in negativeCategories)
+                {
+                    while (negativeCategory.MaxValue < 0)
+                    {
+                        var positiveCategory = positiveCategories.LastOrDefault();
+
+                        if (positiveCategory == null)
+                            break;
+
+                        var decreaseAmount = Math.Min(Math.Abs(negativeCategory.MaxValue), positiveCategory.MaxValue);
+                        negativeCategory.MaxValue += decreaseAmount;
+                        positiveCategory.MaxValue -= decreaseAmount;
+
+                        if (positiveCategory.MaxValue == 0)
+                            positiveCategories.Remove(positiveCategory);
+                    }
+                }
+            }
+        }
+
         #endregion
     }
 }

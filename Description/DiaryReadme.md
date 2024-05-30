@@ -379,3 +379,6 @@
 
 ### Day 92
 * BudgetClone method extension - not finished yet
+
+### Day 93
+* BudgetClone method finished - but need complex tests
