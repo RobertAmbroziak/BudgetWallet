@@ -563,6 +563,17 @@ const BudgetDetails: React.FC<BudgetDetailsProps> = ({
                   onChange={(newDate) => handleBudgetChange("validTo", newDate)}
                 />
               </LocalizationProvider>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={budget.isActive}
+                    onChange={(e) =>
+                      handleBudgetChange("isActive", e.target.checked)
+                    }
+                  />
+                }
+                label={translations[language].cbx_IsActive}
+              />
               <Button onClick={handleBudgetSave} variant="outlined">
                 {translations[language].btn_save}
               </Button>

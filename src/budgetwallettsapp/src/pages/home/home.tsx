@@ -334,6 +334,14 @@ function Home() {
               Po zapisie budżetu, jeśli się powiedzie, zawsze można tu wrócić i
               dokonać dowolnych zmian.
             </p>
+
+            <p>
+              Dodatkowo ostatnia kolumna w liście naszych budżetów to ikona
+              klonowania. Możemy sklonować wybrany budżet i wszelkie jego
+              ustawienia na kolejny tożsamy okres. Kliknięcie od razu zapisuje
+              nowy budżet w bazie danych, ale możemy do niego wrócić,
+              zmodyfikować lub zdezaktywować.
+            </p>
           </AccordionDetails>
         </Accordion>
         <Accordion>
@@ -509,12 +517,11 @@ function Home() {
               zmiany hasła
             </p>
             <p>2. Możliwość edycji transferów wewnętrznych i depozytów</p>
-            <p>3. Możliwość sklonowania budżetu na kolejny tożsamy okres</p>
             <p>
-              4. Rozbudowanie funkcjonalności Wyrównaj przy definiowaniu budżetu
+              3. Rozbudowanie funkcjonalności Wyrównaj przy definiowaniu budżetu
             </p>
             <p>
-              5. Ułatwienie wprowadzania wydatków poprzez implementację
+              4. Ułatwienie wprowadzania wydatków poprzez implementację
               mechanizmu DefaultExpenses (kliknięcie w ikonkę tworzącą domyślny
               transfer na typowe wydatki)
             </p>

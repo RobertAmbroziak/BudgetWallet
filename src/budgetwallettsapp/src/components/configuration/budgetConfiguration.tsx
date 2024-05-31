@@ -8,6 +8,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -32,6 +33,23 @@ function BudgetConfiguration() {
 
   const handleEditBudgetRecord = (budget: Budget) => {
     setSelectedBudget(budget);
+  };
+
+  const handleCloneBudgetRecord = async (budget: Budget) => {
+    try {
+      const response = await axios.post(
+        `${config.API_BASE_URL}${config.API_ENDPOINTS.BUDGETS}/${budget.id}/clone`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+      setReload((prev) => !prev);
+    } catch (error) {
+      console.error("Error cloning budget:", error);
+    }
   };
 
   const handleAddBudgetRecord = () => {
@@ -220,6 +238,12 @@ function BudgetConfiguration() {
               }}
             />
           </LocalizationProvider>
+          <IconButton
+            aria-label="edit"
+            onClick={() => handleCloneBudgetRecord(record)}
+          >
+            <ContentCopyIcon />
+          </IconButton>
         </Box>
       ))}
     </>
