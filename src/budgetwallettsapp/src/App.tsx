@@ -5,6 +5,7 @@ import Footer from "./components/layout/footer";
 import Home from "./pages/home/home";
 import Admin from "./pages/admin/admin";
 import User from "./pages/application/application";
+import ConfirmAccount from "./pages/confirmAccount/confirmAccount";
 import { LanguageProvider } from "./contexts/languageContext";
 import { ToastProvider } from "./contexts/toastContext";
 import { UserProvider } from "./contexts/userContext";
@@ -41,6 +42,10 @@ const App: FC = () => {
                   <Route path="/" element={<Home />} />
                   <Route path="/admin" element={<Admin />} />
                   <Route path="/user" element={<User />} />
+                  <Route
+                    path="/confirmAccount/:token"
+                    element={<ConfirmAccount />}
+                  />
                 </Routes>
                 <Footer />
               </div>

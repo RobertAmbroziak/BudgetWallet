@@ -230,7 +230,7 @@ const BudgetDetails: React.FC<BudgetDetailsProps> = ({
         });
 
         // Redistribute differences evenly
-        const sumMaxValues = updatedBudget.budgetPeriods
+        const sumMaxValues = activeBudgetPeriods
           .flatMap((period) => period.budgetPeriodCategories)
           .filter((bpc) => bpc.categoryId === budgetCategory.categoryId)
           .reduce((acc, curr) => acc + curr.maxValue, 0);
@@ -257,7 +257,7 @@ const BudgetDetails: React.FC<BudgetDetailsProps> = ({
           });
 
           // Adjust the first category to fix any floating point precision issues
-          const finalSumMaxValues = updatedBudget.budgetPeriods
+          const finalSumMaxValues = activeBudgetPeriods
             .flatMap((period) => period.budgetPeriodCategories)
             .filter((bpc) => bpc.categoryId === budgetCategory.categoryId)
             .reduce((acc, curr) => acc + curr.maxValue, 0);
@@ -289,6 +289,7 @@ const BudgetDetails: React.FC<BudgetDetailsProps> = ({
     // Final check and adjustment
     updatedBudget.budgetCategories.forEach((budgetCategory) => {
       const sumMaxValues = updatedBudget.budgetPeriods
+        .filter((period) => period.isActive === true)
         .flatMap((period) => period.budgetPeriodCategories)
         .filter((bpc) => bpc.categoryId === budgetCategory.categoryId)
         .reduce((acc, curr) => acc + curr.maxValue, 0);
@@ -298,10 +299,10 @@ const BudgetDetails: React.FC<BudgetDetailsProps> = ({
       const roundedDifToAdd = parseFloat(difToAdd.toFixed(2));
 
       if (roundedDifToAdd !== 0) {
-        const firstBudgetPeriodCategory =
-          updatedBudget.budgetPeriods[0].budgetPeriodCategories.find(
-            (bpc) => bpc.categoryId === budgetCategory.categoryId
-          );
+        const firstBudgetPeriodCategory = updatedBudget.budgetPeriods
+          .filter((period) => period.isActive === true)
+          .flatMap((period) => period.budgetPeriodCategories)
+          .find((bpc) => bpc.categoryId === budgetCategory.categoryId);
         if (firstBudgetPeriodCategory) {
           firstBudgetPeriodCategory.maxValue = parseFloat(
             (firstBudgetPeriodCategory.maxValue + roundedDifToAdd).toFixed(2)

@@ -168,110 +168,108 @@ const SplitTable: React.FC<Props> = ({ splitRequest, expenseFilterData }) => {
   }, [splitRequest, language, refreshData, jwtToken]);
 
   return (
-    <>
-      <div>
-        {splitResponse && splitResponse.splits ? (
-          <div>
-            <br />
-            {splitResponse.splitSummary.budgetValue > 0 && (
-              <>
-                <Accordion sx={{ my: 1, mx: 2 }}>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="summary-content"
-                    id="summary-header"
-                  >
-                    {translations[language].lbl_Summary}
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <SplitSummary splitSummary={splitResponse.splitSummary} />
-                  </AccordionDetails>
-                </Accordion>
-                <Accordion sx={{ my: 1, mx: 2 }}>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="pchart-content"
-                    id="chart-header"
-                  >
-                    {translations[language].lbl_Chart}
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <SplitChart chartData={chartData} />
-                  </AccordionDetails>
-                </Accordion>
-                <br />
-              </>
-            )}
-            <Table className="bwtable">
-              <Thead>
-                <Tr>
-                  <Th className="editColumn">
-                    {translations[language].hdr_Edit}
-                  </Th>
-                  <Th>{translations[language].hdr_Split}</Th>
-                  <Th>{translations[language].hdr_Transfer}</Th>
-                  <Th>{translations[language].hdr_Category}</Th>
-                  <Th>{translations[language].hdr_Account}</Th>
-                  <Th>{translations[language].hdr_Date}</Th>
-                  <Th>{translations[language].hdr_Value}</Th>
-                  <Th>{translations[language].hdr_Percentage}</Th>
+    <div>
+      {splitResponse && splitResponse.splits ? (
+        <div>
+          <br />
+          {splitResponse.splitSummary.budgetValue > 0 && (
+            <>
+              <Accordion sx={{ my: 1, mx: 2 }}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="summary-content"
+                  id="summary-header"
+                >
+                  {translations[language].lbl_Summary}
+                </AccordionSummary>
+                <AccordionDetails>
+                  <SplitSummary splitSummary={splitResponse.splitSummary} />
+                </AccordionDetails>
+              </Accordion>
+              <Accordion sx={{ my: 1, mx: 2 }}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="pchart-content"
+                  id="chart-header"
+                >
+                  {translations[language].lbl_Chart}
+                </AccordionSummary>
+                <AccordionDetails>
+                  <SplitChart chartData={chartData} />
+                </AccordionDetails>
+              </Accordion>
+              <br />
+            </>
+          )}
+          <Table className="bwtable">
+            <Thead>
+              <Tr>
+                <Th className="editColumn">
+                  {translations[language].hdr_Edit}
+                </Th>
+                <Th>{translations[language].hdr_Split}</Th>
+                <Th>{translations[language].hdr_Transfer}</Th>
+                <Th>{translations[language].hdr_Category}</Th>
+                <Th>{translations[language].hdr_Account}</Th>
+                <Th>{translations[language].hdr_Date}</Th>
+                <Th>{translations[language].hdr_Value}</Th>
+                <Th>{translations[language].hdr_Percentage}</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {splitResponse.splits.map((split, index) => (
+                <Tr key={index} className={split.isShaded ? "shaded" : ""}>
+                  <Td className="editColumn">
+                    <Button onClick={() => handleOpenModal(split)}>
+                      <EditIcon />
+                    </Button>
+                  </Td>
+                  <Td>
+                    <Tooltip title={split.splitDescription || ""}>
+                      <span>{split.splitName}</span>
+                    </Tooltip>
+                  </Td>
+                  <Td>
+                    <Tooltip title={split.transferDescription || ""}>
+                      <span>{split.transferName}</span>
+                    </Tooltip>
+                  </Td>
+                  <Td>
+                    <Tooltip title={split.categoryDescription || ""}>
+                      <span>{split.categoryName}</span>
+                    </Tooltip>
+                  </Td>
+                  <Td>
+                    <Tooltip title={split.accountSourceDescription || ""}>
+                      <span>{split.accountSourceName}</span>
+                    </Tooltip>
+                  </Td>
+                  <Td>{split.transferDateFormated}</Td>
+                  <Td>
+                    <Tooltip
+                      title={`${translations[language].tlt_TransferValue}: ${
+                        split.transferValueFormated || ""
+                      }`}
+                    >
+                      <span>{split.splitValueFormated}</span>
+                    </Tooltip>
+                  </Td>
+                  <Td>{split.percentage} %</Td>
                 </Tr>
-              </Thead>
-              <Tbody>
-                {splitResponse.splits.map((split, index) => (
-                  <Tr key={index} className={split.isShaded ? "shaded" : ""}>
-                    <Td className="editColumn">
-                      <Button onClick={() => handleOpenModal(split)}>
-                        <EditIcon />
-                      </Button>
-                    </Td>
-                    <Td>
-                      <Tooltip title={split.splitDescription || ""}>
-                        <span>{split.splitName}</span>
-                      </Tooltip>
-                    </Td>
-                    <Td>
-                      <Tooltip title={split.transferDescription || ""}>
-                        <span>{split.transferName}</span>
-                      </Tooltip>
-                    </Td>
-                    <Td>
-                      <Tooltip title={split.categoryDescription || ""}>
-                        <span>{split.categoryName}</span>
-                      </Tooltip>
-                    </Td>
-                    <Td>
-                      <Tooltip title={split.accountSourceDescription || ""}>
-                        <span>{split.accountSourceName}</span>
-                      </Tooltip>
-                    </Td>
-                    <Td>{split.transferDateFormated}</Td>
-                    <Td>
-                      <Tooltip
-                        title={`${translations[language].tlt_TransferValue}: ${
-                          split.transferValueFormated || ""
-                        }`}
-                      >
-                        <span>{split.splitValueFormated}</span>
-                      </Tooltip>
-                    </Td>
-                    <Td>{split.percentage} %</Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-            {currentTransfer && (
-              <EditExpense
-                openModal={openModal}
-                handleCloseModal={handleCloseModal}
-                handleSaveTransfer={handleSaveTransfer}
-                currentTransfer={currentTransfer}
-              />
-            )}
-          </div>
-        ) : null}
-      </div>
-    </>
+              ))}
+            </Tbody>
+          </Table>
+          {currentTransfer && (
+            <EditExpense
+              openModal={openModal}
+              handleCloseModal={handleCloseModal}
+              handleSaveTransfer={handleSaveTransfer}
+              currentTransfer={currentTransfer}
+            />
+          )}
+        </div>
+      ) : null}
+    </div>
   );
 };
 

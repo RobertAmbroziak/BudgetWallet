@@ -389,3 +389,9 @@
 * InternalTransfer add fix
 * added translations
 * tooltip for table
+
+### Day 95
+* DepositTransfer possible negativ (e.g init transfer for credit card)
+* Align values for budget fixes (not sure if works)
+* init changest for edit transfer internal/deposit
+* init page for confirm account

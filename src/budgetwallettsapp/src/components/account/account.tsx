@@ -1,25 +1,25 @@
 import { useState, useEffect } from "react";
 import config from "../../config";
 import axios from "axios";
-import TextField from "@mui/material/TextField";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import Button from "@mui/material/Button";
+// import TextField from "@mui/material/TextField";
+// import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+// import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+// import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import InputLabel from "@mui/material/InputLabel";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
+// import MenuItem from "@mui/material/MenuItem";
+// import FormControl from "@mui/material/FormControl";
+// import Select from "@mui/material/Select";
+// import InputLabel from "@mui/material/InputLabel";
+//import dayjs from "dayjs";
+//import utc from "dayjs/plugin/utc";
 import { useLanguage } from "../../contexts/languageContext";
 import translations from "../../translations";
 import { useUser } from "../../contexts/userContext";
 import { Account } from "../../types/api/account";
-import { PostTransfer } from "../../types/api/postTransfer";
-import { useSnackbar } from "../../contexts/toastContext";
-import { Severity } from "../../types/enums/severity";
+// import { PostTransfer } from "../../types/api/postTransfer";
+// import { useSnackbar } from "../../contexts/toastContext";
+// import { Severity } from "../../types/enums/severity";
 import { Typography } from "@mui/material";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -31,101 +31,109 @@ import "../expenses/splitTable.css";
 import { AccountState } from "../../types/api/accountState";
 import { InternalDepositTransfer } from "../../types/api/internalDepositTransfer";
 import Tooltip from "@mui/material/Tooltip";
+import AddInternalTransfer from "./addInternalTransfer";
+import { Button } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
 
-dayjs.extend(utc);
+//dayjs.extend(utc);
 
 function Accounts() {
   const { jwtToken } = useUser();
   const { language } = useLanguage();
-  const [sourceAccounts, setSourceAccounts] = useState<Account[]>([]);
-  const [destinationAccounts, setDestinationAccounts] = useState<Account[]>([]);
-  const [transferName, setTransferName] = useState<string>("");
-  const [transferDescription, setTransferDescription] = useState<string>("");
-  const [transferValue, setTransferValue] = useState<number>(0);
-  const { openSnackbar } = useSnackbar();
-  const [isValid, setIsValid] = useState<{
-    isValid: boolean;
-    errors: string[];
-  }>({
-    isValid: true,
-    errors: [],
-  });
+  //const [sourceAccounts, setSourceAccounts] = useState<Account[]>([]);
+  //const [destinationAccounts, setDestinationAccounts] = useState<Account[]>([]);
+  // const [transferName, setTransferName] = useState<string>("");
+  // const [transferDescription, setTransferDescription] = useState<string>("");
+  // const [transferValue, setTransferValue] = useState<number>(0);
+  // const { openSnackbar } = useSnackbar();
+  // const [isValid, setIsValid] = useState<{
+  //   isValid: boolean;
+  //   errors: string[];
+  // }>({
+  //   isValid: true,
+  //   errors: [],
+  // });
   const [isTransferSaved, setIsTransferSaved] = useState<boolean>(false);
-  const [sourceAccountId, setSourceAccountId] = useState<number | null>(null);
-  const [destinationAccountId, setDestinationAccountId] = useState<
-    number | null
-  >(null);
-  const [transferDate, setTransferDate] = useState<dayjs.Dayjs>(
-    dayjs().utc().startOf("day")
-  );
+  // const [sourceAccountId, setSourceAccountId] = useState<number | null>(null);
+  // const [destinationAccountId, setDestinationAccountId] = useState<
+  //   number | null
+  // >(null);
+  // const [transferDate, setTransferDate] = useState<dayjs.Dayjs>(
+  //   dayjs().utc().startOf("day")
+  // );
 
   const [accountStates, setAccountStates] = useState<AccountState[]>([]);
   const [transfers, setTransfers] = useState<InternalDepositTransfer[]>([]);
+  const [openModal, setOpenModal] = useState<boolean>(false);
 
-  const handleTransferValueChange = (value: any) => {
-    setTransferValue(value as number);
+  const handleOpenModal = (transfer: InternalDepositTransfer) => {
+    //setCurrentTransfer(currentTransfer);
+    setOpenModal(true);
   };
+  // const handleTransferValueChange = (value: any) => {
+  //   setTransferValue(value as number);
+  // };
 
-  const handleAddTransferButtonClick = async () => {
-    const transfer: PostTransfer = {
-      id: 0,
-      isActive: true,
-      budgetId: null,
-      sourceAccountId: sourceAccountId === 0 ? null : sourceAccountId,
-      destinationAccountId: destinationAccountId,
-      name: transferName,
-      description: transferDescription,
-      value: transferValue,
-      transferDate: transferDate.toDate(),
-      transferType:
-        sourceAccountId === null || sourceAccountId === 0
-          ? "Deposit"
-          : "InternalTransfer",
-      splits: [],
-    };
+  // const handleAddTransferButtonClick = async () => {
+  //   const transfer: PostTransfer = {
+  //     id: 0,
+  //     isActive: true,
+  //     budgetId: null,
+  //     sourceAccountId: sourceAccountId === 0 ? null : sourceAccountId,
+  //     destinationAccountId: destinationAccountId,
+  //     name: transferName,
+  //     description: transferDescription,
+  //     value: transferValue,
+  //     transferDate: transferDate.toDate(),
+  //     transferType:
+  //       sourceAccountId === null || sourceAccountId === 0
+  //         ? "Deposit"
+  //         : "InternalTransfer",
+  //     splits: [],
+  //   };
 
-    try {
-      await axios.post(
-        `${config.API_BASE_URL}${config.API_ENDPOINTS.TRANSFERS}/internal`,
-        transfer,
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        }
-      );
+  //   try {
+  //     await axios.post(
+  //       `${config.API_BASE_URL}${config.API_ENDPOINTS.TRANSFERS}/internal`,
+  //       transfer,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${jwtToken}`,
+  //         },
+  //       }
+  //     );
 
-      setTransferDescription("");
-      setTransferName("");
-      setTransferValue(0);
-      setTransferDate(dayjs().utc().startOf("day"));
-      setSourceAccountId(null);
-      setDestinationAccountId(null);
-      setIsValid({ isValid: true, errors: [] });
-      setIsTransferSaved(true);
-      openSnackbar(
-        translations[language].toast_addTransferSuccess,
-        Severity.SUCCESS
-      );
-    } catch (error: any) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.length > 0
-      ) {
-        setIsValid({ isValid: false, errors: error.response.data });
-      } else {
-        setIsValid({ isValid: false, errors: [error.message] });
-      }
-    }
-  };
+  //     setTransferDescription("");
+  //     setTransferName("");
+  //     setTransferValue(0);
+  //     setTransferDate(dayjs().utc().startOf("day"));
+  //     setSourceAccountId(null);
+  //     setDestinationAccountId(null);
+  //     setIsValid({ isValid: true, errors: [] });
+  //     setIsTransferSaved(true);
+  //     openSnackbar(
+  //       translations[language].toast_addTransferSuccess,
+  //       Severity.SUCCESS
+  //     );
+  //   } catch (error: any) {
+  //     if (
+  //       error.response &&
+  //       error.response.data &&
+  //       error.response.data.length > 0
+  //     ) {
+  //       setIsValid({ isValid: false, errors: error.response.data });
+  //     } else {
+  //       setIsValid({ isValid: false, errors: [error.message] });
+  //     }
+  //   }
+  // };
 
-  const handleDropdownAccountSourceChange = (value: number) => {
-    setSourceAccountId(value);
-  };
-  const handleDropdownAccountDestinationChange = (value: number) => {
-    setDestinationAccountId(value);
-  };
+  // const handleDropdownAccountSourceChange = (value: number) => {
+  //   setSourceAccountId(value);
+  // };
+  // const handleDropdownAccountDestinationChange = (value: number) => {
+  //   setDestinationAccountId(value);
+  // };
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -148,8 +156,8 @@ function Accounts() {
         };
         const updatedSourceAccounts = [externalSource, ...response.data];
 
-        setSourceAccounts(updatedSourceAccounts);
-        setDestinationAccounts(response.data);
+        //setSourceAccounts(updatedSourceAccounts);
+        //setDestinationAccounts(response.data);
       } catch (error) {
         console.error("Error fetching accounts:", error);
       }
@@ -205,14 +213,9 @@ function Accounts() {
     }
   }, [isTransferSaved]);
 
-  /*
-   TODO: lista transferów internal i deposit nie posiada obecnie nazwy Source i DestinationAccount
-   dodatkowo potrzebna możliwość edycji tych rekordów
-  */
-
   return (
     <>
-      {!isValid.isValid && (
+      {/* {!isValid.isValid && (
         <Paper elevation={3} sx={{ margin: "20px", color: "red" }}>
           <ul>
             {isValid.errors.map((error, index) => (
@@ -220,31 +223,13 @@ function Accounts() {
             ))}
           </ul>
         </Paper>
-      )}
-      {/* <Paper elevation={3} sx={{ margin: { xs: "5px", sm: "20px" } }}>
-        <Box
-          component="form"
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            "& > :not(style)": { m: 1, width: "100%" },
-            "@media (max-width:600px)": {
-              flexDirection: "column",
-              alignItems: "center",
-              "& > :not(style)": {
-                width: "calc(100% - 10px)",
-                textAlign: "center",
-              },
-            },
-            position: "relative",
-            height: "auto",
-            overflow: "visible",
-          }}
-          noValidate
-          autoComplete="off"
-        > */}
+      )} */}
       <>
-        <Accordion
+        <AddInternalTransfer
+          setAccountStates={setAccountStates}
+          setTransfers={setTransfers}
+        />
+        {/* <Accordion
           sx={{
             my: 1,
             mx: 2,
@@ -358,7 +343,7 @@ function Accounts() {
               </Button>
             </Paper>
           </AccordionDetails>
-        </Accordion>
+        </Accordion> */}
 
         <Accordion sx={{ my: 1, mx: 2 }}>
           <AccordionSummary
@@ -449,6 +434,9 @@ function Accounts() {
               <Table className="bwtable">
                 <Thead>
                   <Tr>
+                    <Th className="editColumn">
+                      {translations[language].hdr_Edit}
+                    </Th>
                     {/* <Th>{translations[language].lbl_sourceAccount}</Th>
                     <Th>{translations[language].lbl_destinationAccount}</Th> */}
                     <Th>{translations[language].lbl_transferType}</Th>
@@ -461,6 +449,11 @@ function Accounts() {
                 <Tbody>
                   {transfers.map((transfer, index) => (
                     <Tr key={index}>
+                      <Td className="editColumn">
+                        <Button onClick={() => handleOpenModal(transfer)}>
+                          <EditIcon />
+                        </Button>
+                      </Td>
                       <Td>
                         <span>{transfer.transferType}</span>
                       </Td>
@@ -486,8 +479,14 @@ function Accounts() {
           </AccordionDetails>
         </Accordion>
       </>
-      {/* </Box>
-      </Paper> */}
+      {/* {currentInternalTransfer && (
+        <EditInternalTransfer
+          openModal={openModal}
+          handleCloseModal={handleCloseModal}
+          handleSaveTransfer={handleSaveTransfer}
+          currentTransfer={currentTransfer}
+        />
+      )} */}
     </>
   );
 }

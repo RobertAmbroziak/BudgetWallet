@@ -58,7 +58,10 @@ namespace WebApi.Validators
                 .WithMessage(_localizer["rule_sourceAndDestinationDifferent"].Value);
 
             RuleFor(x => x.Value)
-                .GreaterThan(0).WithMessage(_localizer["rule_transferValuePositive"].Value);
+                .GreaterThan(0)
+                /* Deposit can be negative , e.g Init transfer for credit card */
+                .When(x => x.TransferType == Enum.GetName(typeof(TransferType), TransferType.InternalTransfer))
+                .WithMessage(_localizer["rule_transferValuePositive"].Value);
 
         }
 
