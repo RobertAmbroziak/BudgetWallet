@@ -384,3 +384,8 @@
 * BudgetClone method finished - but need complex tests
 * BudgetClone first unitTest passed
 * BudgetClone frontend action
+
+### Day 94
+* InternalTransfer add fix
+* added translations
+* tooltip for table

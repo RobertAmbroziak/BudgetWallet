@@ -148,7 +148,7 @@ function Home() {
             aria-controls="login-content"
             id="login-header"
           >
-            Rejestracja i logowanie
+            {translations[language].st_label_login}
           </AccordionSummary>
           <AccordionDetails>
             <p>
@@ -199,7 +199,7 @@ function Home() {
             aria-controls="configuration-content"
             id="configuration-header"
           >
-            Konfiguracja kont i kategorii
+            {translations[language].st_label_accountConfig}
           </AccordionSummary>
           <AccordionDetails>
             <p>
@@ -255,7 +255,7 @@ function Home() {
             aria-controls="budgetConfiguration-content"
             id="budgetConfiguration-header"
           >
-            Konfiguracja budżetów
+            {translations[language].st_label_budgetConfig}
           </AccordionSummary>
           <AccordionDetails>
             <p>
@@ -350,7 +350,7 @@ function Home() {
             aria-controls="accountState-content"
             id="accountState-header"
           >
-            Stan kont i wewnętrzne transfery
+            {translations[language].st_label_accountStatus}
           </AccordionSummary>
           <AccordionDetails>
             <p>
@@ -396,7 +396,7 @@ function Home() {
             aria-controls="expenses-content"
             id="expenses-header"
           >
-            Wydatki
+            {translations[language].st_label_expenses}
           </AccordionSummary>
           <AccordionDetails>
             <p>
@@ -462,7 +462,7 @@ function Home() {
             aria-controls="addExpense-content"
             id="addExpense-header"
           >
-            Nowy wydatek
+            {translations[language].st_label_newExpense}
           </AccordionSummary>
           <AccordionDetails>
             <p>
@@ -509,7 +509,7 @@ function Home() {
             aria-controls="todo-content"
             id="todo-header"
           >
-            Do zrobienia
+            {translations[language].st_label_toDo}
           </AccordionSummary>
           <AccordionDetails>
             <p>

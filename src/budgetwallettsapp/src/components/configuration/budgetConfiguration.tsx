@@ -37,7 +37,7 @@ function BudgetConfiguration() {
 
   const handleCloneBudgetRecord = async (budget: Budget) => {
     try {
-      const response = await axios.post(
+      await axios.post(
         `${config.API_BASE_URL}${config.API_ENDPOINTS.BUDGETS}/${budget.id}/clone`,
         {},
         {

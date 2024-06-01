@@ -125,6 +125,13 @@ const translations: Translations = {
     st_image3Desc: "Easily enter your daily expenses",
     st_image4Desc: "Track expenses by periods and categories",
     st_image5Desc: "Track the status of your resources",
+    st_label_login: "Registration and login",
+    st_label_accountConfig: "Account and category configuration",
+    st_label_budgetConfig: "Budget configuration",
+    st_label_accountStatus: "Account status and internal transfers",
+    st_label_expenses: "Expenses",
+    st_label_newExpense: "New expense",
+    st_label_toDo: "To do",
   },
   pl: {
     btn_logout: "Wyloguj",
@@ -247,6 +254,13 @@ const translations: Translations = {
     st_image3Desc: "W prosty sposób wprwadzaj codzienne operacje",
     st_image4Desc: "Monitoruj wydatki w podziale na okresy i kategorie",
     st_image5Desc: "Monitoruj stan swoich zasobów",
+    st_label_login: "Rejestracja i logowanie",
+    st_label_accountConfig: "Konfiguracja kont i kategorii",
+    st_label_budgetConfig: "Konfiguracja budżetów",
+    st_label_accountStatus: "Status kont i wewnętrzne transfery",
+    st_label_expenses: "Wydatki",
+    st_label_newExpense: "Nowy wydatek",
+    st_label_toDo: "Do zrobienia",
   },
 };
 

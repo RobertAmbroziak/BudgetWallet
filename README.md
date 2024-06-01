@@ -49,9 +49,10 @@ Feel free to use your own application account or test account: [User]: Testuser1
   - :heavy_check_mark: success toast
   - :heavy_check_mark: bad request informations
   - :heavy_check_mark: clearing form
-  - :x: sending email confirmation
+  - :x: sending email confirmation and confirm account
   - :x: remember me
   - :x: forgot password
+  - :x: change password
 - :white_square_button: Application (User Panel)
   - :heavy_check_mark: buttons - expenses, add expense, configuration, account state
   - :heavy_check_mark: expenses
@@ -62,10 +63,13 @@ Feel free to use your own application account or test account: [User]: Testuser1
     - :heavy_check_mark: more details of data row
 	- :heavy_check_mark: edit transfer
   - :heavy_check_mark: add (new expense)
-  - :heavy_check_mark: configuration
+  - :white_square_button: configuration
+    - :heavy_check_mark: get defaults
     - :heavy_check_mark: add/edit categories
     - :heavy_check_mark: add/edit accounts
     - :heavy_check_mark: add/edit budget (with budgetCategories), budget period (with budgetPeriodCategories)
+	- :heavy_check_mark: clone budget to next period
+	- :x: align budget values
   - :white_square_button: account state
     - :heavy_check_mark: add internal transfer or deposit
 	- :x: edit internal transfer or deposit

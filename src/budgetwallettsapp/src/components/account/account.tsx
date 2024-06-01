@@ -30,6 +30,7 @@ import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import "../expenses/splitTable.css";
 import { AccountState } from "../../types/api/accountState";
 import { InternalDepositTransfer } from "../../types/api/internalDepositTransfer";
+import Tooltip from "@mui/material/Tooltip";
 
 dayjs.extend(utc);
 
@@ -60,6 +61,10 @@ function Accounts() {
 
   const [accountStates, setAccountStates] = useState<AccountState[]>([]);
   const [transfers, setTransfers] = useState<InternalDepositTransfer[]>([]);
+
+  const handleTransferValueChange = (value: any) => {
+    setTransferValue(value as number);
+  };
 
   const handleAddTransferButtonClick = async () => {
     const transfer: PostTransfer = {
@@ -334,7 +339,7 @@ function Accounts() {
                 variant="outlined"
                 value={transferValue}
                 sx={{ m: 1 }}
-                onChange={(e) => setTransferValue(Number(e.target.value))}
+                onChange={(e) => handleTransferValueChange(e.target.value)}
               />
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
@@ -460,7 +465,9 @@ function Accounts() {
                         <span>{transfer.transferType}</span>
                       </Td>
                       <Td>
-                        <span>{transfer.name}</span>
+                        <Tooltip title={transfer.description || ""}>
+                          <span>{transfer.name}</span>
+                        </Tooltip>
                       </Td>
                       <Td>
                         <span>{transfer.value}</span>
