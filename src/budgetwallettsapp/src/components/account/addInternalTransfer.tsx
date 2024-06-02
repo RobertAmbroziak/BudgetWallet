@@ -20,17 +20,11 @@ import { Account } from "../../types/api/account";
 import { PostTransfer } from "../../types/api/postTransfer";
 import { useSnackbar } from "../../contexts/toastContext";
 import { Severity } from "../../types/enums/severity";
-import { Typography } from "@mui/material";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import "../expenses/splitTable.css";
-import { AccountState } from "../../types/api/accountState";
 import { InternalDepositTransfer } from "../../types/api/internalDepositTransfer";
 
 interface AddInternalTransferProps {
-  transferEdit?: InternalDepositTransfer | null;
+  transfer?: InternalDepositTransfer | null;
   setAccountStates: (data: any) => void;
   setTransfers: (data: any) => void;
 }
@@ -38,11 +32,10 @@ interface AddInternalTransferProps {
 dayjs.extend(utc);
 
 const AddInternalTransfer: React.FC<AddInternalTransferProps> = ({
-  transferEdit = null,
+  transfer = null,
   setAccountStates,
   setTransfers,
 }) => {
-  //function AddInternalTransfer() {
   const { jwtToken } = useUser();
   const { language } = useLanguage();
   const [sourceAccounts, setSourceAccounts] = useState<Account[]>([]);
@@ -50,6 +43,7 @@ const AddInternalTransfer: React.FC<AddInternalTransferProps> = ({
   const [transferName, setTransferName] = useState<string>("");
   const [transferDescription, setTransferDescription] = useState<string>("");
   const [transferValue, setTransferValue] = useState<number>(0);
+  const [transferId, setTransferId] = useState<number | null>(null);
   const { openSnackbar } = useSnackbar();
   const [isValid, setIsValid] = useState<{
     isValid: boolean;
@@ -136,6 +130,15 @@ const AddInternalTransfer: React.FC<AddInternalTransferProps> = ({
   };
 
   useEffect(() => {
+    if (transfer) {
+      setTransferId(transfer.id);
+      setTransferName(transfer.name || "");
+      setTransferDescription(transfer.description || "");
+      setTransferValue(Number(transfer.value) || 0);
+      setTransferDate(dayjs.utc(transfer.transferDate).startOf("day"));
+      setSourceAccountId(transfer.sourceAccountId);
+      setDestinationAccountId(transfer.destinationAccountId);
+    }
     const fetchAccounts = async () => {
       try {
         const response = await axios.get(
@@ -224,115 +227,97 @@ const AddInternalTransfer: React.FC<AddInternalTransferProps> = ({
           </ul>
         </Paper>
       )}
-      <Accordion
+      <Paper
+        elevation={3}
         sx={{
-          my: 1,
-          mx: 2,
+          margin: { xs: "5px", sm: "5px" },
+          padding: { xs: "5px", sm: "10px" },
+          overflow: "hidden",
+          width: { xs: "95%", sm: "auto" },
         }}
       >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="account-addTransfer-content"
-          id="accout-addTransfer-header"
-        >
-          <Typography variant="h6" component="h2" sx={{ marginBottom: "10px" }}>
-            {translations[language].lbl_addInternalDepositTransfer}
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Paper
-            elevation={3}
-            sx={{
-              margin: { xs: "5px", sm: "5px" },
-              padding: { xs: "5px", sm: "10px" },
-              overflow: "hidden",
-              width: { xs: "95%", sm: "auto" },
-            }}
+        <FormControl sx={{ m: 1, minWidth: 200 }}>
+          <InputLabel id="accountSourceSelect">
+            {translations[language].lbl_sourceAccount}
+          </InputLabel>
+          <Select
+            labelId="accountSourceSelect"
+            id="accountSourceSelect"
+            value={sourceAccountId ?? ""}
+            label={translations[language].lbl_sourceAccount}
+            name="accountSourceId"
+            onChange={(e) =>
+              handleDropdownAccountSourceChange(Number(e.target.value))
+            }
           >
-            <FormControl sx={{ m: 1, minWidth: 200 }}>
-              <InputLabel id="accountSourceSelect">
-                {translations[language].lbl_sourceAccount}
-              </InputLabel>
-              <Select
-                labelId="accountSourceSelect"
-                id="accountSourceSelect"
-                value={sourceAccountId ?? ""}
-                label={translations[language].lbl_sourceAccount}
-                name="accountSourceId"
-                onChange={(e) =>
-                  handleDropdownAccountSourceChange(Number(e.target.value))
-                }
-              >
-                {sourceAccounts.map((account) => (
-                  <MenuItem key={account.id} value={account.id}>
-                    {account.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl sx={{ m: 1, minWidth: 200 }}>
-              <InputLabel id="accountDestinationSelect">
-                {translations[language].lbl_destinationAccount}
-              </InputLabel>
-              <Select
-                labelId="accountDestinationSelect"
-                id="accountDestinationSelect"
-                value={destinationAccountId ?? ""}
-                label={translations[language].lbl_destinationAccount}
-                name="accountDestinationId"
-                onChange={(e) =>
-                  handleDropdownAccountDestinationChange(Number(e.target.value))
-                }
-              >
-                {destinationAccounts.map((account) => (
-                  <MenuItem key={account.id} value={account.id}>
-                    {account.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <TextField
-              id="transferName"
-              label={translations[language].txt_name}
-              variant="outlined"
-              value={transferName}
-              sx={{ m: 1 }}
-              onChange={(e) => setTransferName(e.target.value)}
-            />
-            <TextField
-              id="transferDescription"
-              label={translations[language].txt_description}
-              variant="outlined"
-              value={transferDescription}
-              sx={{ m: 1 }}
-              onChange={(e) => setTransferDescription(e.target.value)}
-            />
-            <TextField
-              id="transferValue"
-              label={translations[language].txt_value}
-              variant="outlined"
-              value={transferValue}
-              sx={{ m: 1 }}
-              onChange={(e) => handleTransferValueChange(e.target.value)}
-            />
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label={translations[language].lbl_transferDate}
-                value={transferDate ?? dayjs().utc().startOf("day")}
-                sx={{ m: 1 }}
-                onChange={(newDate) => setTransferDate(newDate!)}
-              />
-            </LocalizationProvider>
-            <Button
-              variant="outlined"
-              sx={{ m: 1 }}
-              onClick={handleAddTransferButtonClick}
-            >
-              {translations[language].btn_save}
-            </Button>
-          </Paper>
-        </AccordionDetails>
-      </Accordion>
+            {sourceAccounts.map((account) => (
+              <MenuItem key={account.id} value={account.id}>
+                {account.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl sx={{ m: 1, minWidth: 200 }}>
+          <InputLabel id="accountDestinationSelect">
+            {translations[language].lbl_destinationAccount}
+          </InputLabel>
+          <Select
+            labelId="accountDestinationSelect"
+            id="accountDestinationSelect"
+            value={destinationAccountId ?? ""}
+            label={translations[language].lbl_destinationAccount}
+            name="accountDestinationId"
+            onChange={(e) =>
+              handleDropdownAccountDestinationChange(Number(e.target.value))
+            }
+          >
+            {destinationAccounts.map((account) => (
+              <MenuItem key={account.id} value={account.id}>
+                {account.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <TextField
+          id="transferName"
+          label={translations[language].txt_name}
+          variant="outlined"
+          value={transferName}
+          sx={{ m: 1 }}
+          onChange={(e) => setTransferName(e.target.value)}
+        />
+        <TextField
+          id="transferDescription"
+          label={translations[language].txt_description}
+          variant="outlined"
+          value={transferDescription}
+          sx={{ m: 1 }}
+          onChange={(e) => setTransferDescription(e.target.value)}
+        />
+        <TextField
+          id="transferValue"
+          label={translations[language].txt_value}
+          variant="outlined"
+          value={transferValue}
+          sx={{ m: 1 }}
+          onChange={(e) => handleTransferValueChange(e.target.value)}
+        />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label={translations[language].lbl_transferDate}
+            value={transferDate ?? dayjs().utc().startOf("day")}
+            sx={{ m: 1 }}
+            onChange={(newDate) => setTransferDate(newDate!)}
+          />
+        </LocalizationProvider>
+        <Button
+          variant="outlined"
+          sx={{ m: 1 }}
+          onClick={handleAddTransferButtonClick}
+        >
+          {translations[language].btn_save}
+        </Button>
+      </Paper>
     </>
   );
 };

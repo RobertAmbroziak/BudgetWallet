@@ -395,3 +395,7 @@
 * Align values for budget fixes (not sure if works)
 * init changest for edit transfer internal/deposit
 * init page for confirm account
+
+### Day 96
+* Edit internal/deposit transfer - another steps
+

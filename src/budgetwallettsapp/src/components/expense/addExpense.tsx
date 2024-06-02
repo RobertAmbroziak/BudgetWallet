@@ -207,66 +207,6 @@ const AddExpense: React.FC<AddExpenseProps> = ({
 
     const isValid = validateTransfer(transfer);
 
-    // const validateNumber = (value: string) => {
-    //   const regex = /^\d+(\.\d{1,2})?$/;
-    //   return regex.test(value);
-    // };
-
-    // const validateTransferFields = (transfer: Transfer) => {
-    //   const { transferName, transferValue, splits } = transfer;
-    //   const errors: string[] = [];
-
-    //   if (!validateNotEmpty(transfer.budgetId)) {
-    //     errors.push(translations[language].errValid_invalidBudgeId);
-    //   }
-
-    //   if (!validateNotEmpty(transfer.sourceAccountId)) {
-    //     errors.push(translations[language].errValid_invalidAccountId);
-    //   }
-
-    //   if (!validateNotEmpty(name)) {
-    //     errors.push(translations[language].errValid_transferName);
-    //   }
-
-    //   if (!validateNumber(value)) {
-    //     errors.push(translations[language].errValid_transfeValue);
-    //   }
-
-    //   let splitsValueSum = 0;
-    //   for (let i = 0; i < splits.length; i++) {
-    //     const { categoryId, splitName, splitValue } = splits[i];
-    //     if (!validateGreaterThanZero(splitValue)) {
-    //       errors.push(
-    //         `${translations[language].errValid_invalidCategoryId} ${i + 1}.`
-    //       );
-    //     }
-    //     if (!validateNotEmpty(name)) {
-    //       errors.push(
-    //         `${translations[language].errValid_nameOfSplit} ${i + 1} ${
-    //           translations[language].errValid_cannotBeEmpty
-    //         }`
-    //       );
-    //     }
-    //     if (!validateNumber(value)) {
-    //       errors.push(
-    //         `${translations[language].errValid_valueOfSplit1} ${i + 1} ${
-    //           translations[language].errValid_valueOfSplit2
-    //         }`
-    //       );
-    //     } else {
-    //       splitsValueSum += parseFloat(value);
-    //     }
-    //   }
-
-    //   if (splitsValueSum.toFixed(2) !== parseFloat(value).toFixed(2)) {
-    //     errors.push(translations[language].errValid_sumOfSplit);
-    //   }
-
-    //   return { isValid: errors.length === 0, errors };
-    // };
-    // const validateResult = validateTransferFields(transfer);
-    // setIsValid(validateResult);
-
     if (isValid.isValid && !isEdit) {
       try {
         await axios.post(

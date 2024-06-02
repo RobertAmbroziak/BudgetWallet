@@ -15,6 +15,10 @@ function ConfirmAccount() {
     <div>
       <div>
         <h1>ConfirmAccount</h1>
+        <p>
+          tu będzie button potwierdzający konto i kierujący na główną stronę .
+          tam można się będzie już zalogować
+        </p>
       </div>
     </div>
   );

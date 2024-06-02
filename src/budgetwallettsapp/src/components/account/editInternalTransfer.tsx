@@ -8,15 +8,17 @@ import { InternalDepositTransfer } from "../../types/api/internalDepositTransfer
 interface TransferEditProps {
   openModal: boolean;
   handleCloseModal: () => void;
-  handleSaveTransfer: () => void;
-  currentInternalTransfer: InternalDepositTransfer;
+  setAccountStates: (data: any) => void;
+  setTransfers: (data: any) => void;
+  currentTransfer: InternalDepositTransfer;
 }
 
 const EditInternalTransfer: React.FC<TransferEditProps> = ({
   openModal,
   handleCloseModal,
-  handleSaveTransfer,
-  currentInternalTransfer,
+  setAccountStates,
+  setTransfers,
+  currentTransfer,
 }) => {
   const { language } = useLanguage();
 
@@ -47,12 +49,13 @@ const EditInternalTransfer: React.FC<TransferEditProps> = ({
         </Typography>
         <Typography id="modal-editTransfer-description" sx={{ mt: 2 }}>
           {translations[language].lbl_TransferEditionFor}{" "}
-          {currentInternalTransfer?.name}
+          {currentTransfer?.name}
         </Typography>
-        {/* <AddInternalTransfer
-          transferEdit={currentInternalTransfer}
-          handleSaveTransfer={handleSaveTransfer}
-        /> */}
+        <AddInternalTransfer
+          transfer={currentTransfer}
+          setAccountStates={setAccountStates}
+          setTransfers={setTransfers}
+        />
         <Button onClick={handleCloseModal}>
           {translations[language].btn_Close}
         </Button>
