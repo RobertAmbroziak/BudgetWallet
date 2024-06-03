@@ -1,72 +1,46 @@
 import { useState, useEffect } from "react";
-import config from "../../config";
 import axios from "axios";
-import Paper from "@mui/material/Paper";
-import { useLanguage } from "../../contexts/languageContext";
+import config from "../../config";
 import translations from "../../translations";
+import { useLanguage } from "../../contexts/languageContext";
 import { useUser } from "../../contexts/userContext";
-import { Account } from "../../types/api/account";
 import { Typography, Button } from "@mui/material";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Tooltip from "@mui/material/Tooltip";
+import EditIcon from "@mui/icons-material/Edit";
+import Paper from "@mui/material/Paper";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import "../expenses/splitTable.css";
 import { AccountState } from "../../types/api/accountState";
 import { InternalDepositTransfer } from "../../types/api/internalDepositTransfer";
-import Tooltip from "@mui/material/Tooltip";
-import AddInternalTransfer from "./addInternalTransfer";
-import EditIcon from "@mui/icons-material/Edit";
+import { Account } from "../../types/api/account";
 import EditInternalTransfer from "./editInternalTransfer";
+import AddInternalTransfer from "./addInternalTransfer";
 
 function Accounts() {
   const { jwtToken } = useUser();
   const { language } = useLanguage();
-  const [isTransferSaved, setIsTransferSaved] = useState<boolean>(false);
 
+  const [sourceAccounts, setSourceAccounts] = useState<Account[]>([]);
+  const [destinationAccounts, setDestinationAccounts] = useState<Account[]>([]);
   const [accountStates, setAccountStates] = useState<AccountState[]>([]);
   const [transfers, setTransfers] = useState<InternalDepositTransfer[]>([]);
+
+  const [isTransferSaved, setIsTransferSaved] = useState<boolean>(false);
   const [currentTransfer, setCurrentTransfer] =
     useState<InternalDepositTransfer | null>(null);
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [accountsLoaded, setAccountsLoaded] = useState<boolean>(false);
 
   const handleOpenModal = (transfer: InternalDepositTransfer) => {
     setCurrentTransfer(transfer);
     setOpenModal(true);
   };
   const handleCloseModal = () => setOpenModal(false);
-
-  useEffect(() => {
-    const fetchAccounts = async () => {
-      try {
-        const response = await axios.get(
-          `${config.API_BASE_URL}${config.API_ENDPOINTS.ACCOUNTS}`,
-          {
-            headers: {
-              Authorization: `Bearer ${jwtToken}`,
-            },
-          }
-        );
-
-        const externalSource: Account = {
-          id: 0,
-          name: translations[language].lbl_externalSource,
-          description: "",
-          isActive: false,
-          minValue: 0,
-        };
-        const updatedSourceAccounts = [externalSource, ...response.data];
-
-        //setSourceAccounts(updatedSourceAccounts);
-        //setDestinationAccounts(response.data);
-      } catch (error) {
-        console.error("Error fetching accounts:", error);
-      }
-    };
-    fetchAccounts();
-  }, [jwtToken]);
 
   const fetchAccountStates = async () => {
     try {
@@ -96,15 +70,69 @@ function Accounts() {
         }
       );
 
-      setTransfers(response.data);
+      const enrichedTransfers = response.data.map(
+        (transfer: InternalDepositTransfer) => {
+          const sourceAccount =
+            sourceAccounts.find(
+              (account) => account.id === (transfer.sourceAccountId ?? 0)
+            ) || null;
+          const destinationAccount =
+            destinationAccounts.find(
+              (account) => account.id === (transfer.destinationAccountId ?? 0)
+            ) || null;
+          return {
+            ...transfer,
+            SourceAccount: sourceAccount,
+            DestinationAccount: destinationAccount,
+          };
+        }
+      );
+
+      setTransfers(enrichedTransfers);
     } catch (error) {
       console.error("Error fetching transfers:", error);
     }
   };
 
   useEffect(() => {
+    const fetchAccounts = async () => {
+      try {
+        const response = await axios.get(
+          `${config.API_BASE_URL}${config.API_ENDPOINTS.ACCOUNTS}`,
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
+
+        const externalSource: Account = {
+          id: 0,
+          name: translations[language].lbl_externalSource,
+          description: "",
+          isActive: false,
+          minValue: 0,
+        };
+        const updatedSourceAccounts = [externalSource, ...response.data];
+
+        setSourceAccounts(updatedSourceAccounts);
+        setDestinationAccounts(response.data);
+        setAccountsLoaded(true);
+      } catch (error) {
+        console.error("Error fetching accounts:", error);
+      }
+    };
+    fetchAccounts();
+  }, [jwtToken]);
+
+  useEffect(() => {
+    if (accountsLoaded) {
+      fetchTransfers();
+    }
+  }, [accountsLoaded]);
+
+  useEffect(() => {
     fetchAccountStates();
-    fetchTransfers();
   }, [jwtToken]);
 
   useEffect(() => {
@@ -112,7 +140,6 @@ function Accounts() {
       fetchAccountStates();
       setIsTransferSaved(false);
       fetchTransfers();
-      setIsTransferSaved(false);
     }
   }, [isTransferSaved]);
 
@@ -140,8 +167,12 @@ function Accounts() {
           </AccordionSummary>
           <AccordionDetails>
             <AddInternalTransfer
-              setAccountStates={setAccountStates}
-              setTransfers={setTransfers}
+              sourceAccounts={sourceAccounts}
+              destinationAccounts={destinationAccounts}
+              fetchAccountStates={fetchAccountStates}
+              fetchTransfers={fetchTransfers}
+              handleCloseModal={() => null}
+              isEdit={false}
             />
           </AccordionDetails>
         </Accordion>
@@ -193,7 +224,9 @@ function Accounts() {
                       </Td>
                       <Td>
                         <span>
-                          {accountState.account.isActive ? "Tak" : "Nie"}
+                          {accountState.account.isActive
+                            ? translations[language].lbl_yes
+                            : translations[language].lbl_no}
                         </span>
                       </Td>
                       <Td>
@@ -237,8 +270,8 @@ function Accounts() {
                     <Th className="editColumn">
                       {translations[language].hdr_Edit}
                     </Th>
-                    {/* <Th>{translations[language].lbl_sourceAccount}</Th>
-                    <Th>{translations[language].lbl_destinationAccount}</Th> */}
+                    <Th>{translations[language].lbl_sourceAccount}</Th>
+                    <Th>{translations[language].lbl_destinationAccount}</Th>
                     <Th>{translations[language].lbl_transferType}</Th>
                     <Th>{translations[language].lbl_transferName}</Th>
                     <Th>{translations[language].lbl_transferValue}</Th>
@@ -253,6 +286,12 @@ function Accounts() {
                         <Button onClick={() => handleOpenModal(transfer)}>
                           <EditIcon />
                         </Button>
+                      </Td>
+                      <Td>
+                        <span>{transfer.SourceAccount?.name}</span>
+                      </Td>
+                      <Td>
+                        <span>{transfer.DestinationAccount?.name}</span>
                       </Td>
                       <Td>
                         <span>{transfer.transferType}</span>
@@ -283,9 +322,11 @@ function Accounts() {
         <EditInternalTransfer
           openModal={openModal}
           handleCloseModal={handleCloseModal}
-          setAccountStates={setAccountStates}
-          setTransfers={setTransfers}
+          fetchAccountStates={fetchAccountStates}
+          fetchTransfers={fetchTransfers}
           currentTransfer={currentTransfer}
+          sourceAccounts={sourceAccounts}
+          destinationAccounts={destinationAccounts}
         />
       )}
     </>

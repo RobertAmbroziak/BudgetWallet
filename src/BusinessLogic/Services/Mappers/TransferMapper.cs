@@ -11,6 +11,7 @@ namespace BusinessLogic.Services.Mappers
         {
             return new Transfer
             {
+                Id = source.Id,
                 Name = source.Name,
                 Description = source.Description,
                 BudgetId = source.BudgetId,

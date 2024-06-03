@@ -4,21 +4,26 @@ import translations from "../../translations";
 import { Modal, Box, Typography, Button } from "@mui/material";
 import AddInternalTransfer from "./addInternalTransfer";
 import { InternalDepositTransfer } from "../../types/api/internalDepositTransfer";
+import { Account } from "../../types/api/account";
 
 interface TransferEditProps {
   openModal: boolean;
   handleCloseModal: () => void;
-  setAccountStates: (data: any) => void;
-  setTransfers: (data: any) => void;
+  fetchAccountStates: () => void;
+  fetchTransfers: () => void;
   currentTransfer: InternalDepositTransfer;
+  sourceAccounts: Account[];
+  destinationAccounts: Account[];
 }
 
 const EditInternalTransfer: React.FC<TransferEditProps> = ({
   openModal,
   handleCloseModal,
-  setAccountStates,
-  setTransfers,
+  fetchAccountStates,
+  fetchTransfers,
   currentTransfer,
+  sourceAccounts,
+  destinationAccounts,
 }) => {
   const { language } = useLanguage();
 
@@ -53,8 +58,12 @@ const EditInternalTransfer: React.FC<TransferEditProps> = ({
         </Typography>
         <AddInternalTransfer
           transfer={currentTransfer}
-          setAccountStates={setAccountStates}
-          setTransfers={setTransfers}
+          fetchAccountStates={fetchAccountStates}
+          fetchTransfers={fetchTransfers}
+          sourceAccounts={sourceAccounts}
+          destinationAccounts={destinationAccounts}
+          handleCloseModal={handleCloseModal}
+          isEdit={true}
         />
         <Button onClick={handleCloseModal}>
           {translations[language].btn_Close}

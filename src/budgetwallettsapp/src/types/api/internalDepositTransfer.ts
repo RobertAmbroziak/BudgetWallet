@@ -1,3 +1,5 @@
+import { Account } from "./account"
+
 export interface InternalDepositTransfer {
     id: number,
     name: string,
@@ -8,5 +10,7 @@ export interface InternalDepositTransfer {
     value: number,
     transferDate: Date,
     transferType: string,
-    isActive: boolean
+    isActive: boolean,
+    SourceAccount: Account | null,
+    DestinationAccount: Account | null
 }
