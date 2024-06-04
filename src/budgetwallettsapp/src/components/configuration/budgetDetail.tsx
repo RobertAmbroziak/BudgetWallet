@@ -178,18 +178,61 @@ const BudgetDetails: React.FC<BudgetDetailsProps> = ({
     // wszystkie budgetPeriodCategories
     const allBudgetPeriodCategories: BudgetPeriodCategory[] = [];
     updatedBudget.budgetPeriods.forEach((period) => {
-      if (period.isActive === true) {
-        allBudgetPeriodCategories.push(...period.budgetPeriodCategories);
-      }
+      allBudgetPeriodCategories.push(...period.budgetPeriodCategories);
     });
 
-    // tylko budgetPeriodCategories dla danej categoryId
+    // synchronizacja kategorii w budgetPeriodCategories z budgetCategories
+    updatedBudget.budgetPeriods.forEach((period) => {
+      const currentCategories = period.budgetPeriodCategories.map(
+        (bpc) => bpc.categoryId
+      );
+      const requiredCategories = updatedBudget.budgetCategories.map(
+        (bc) => bc.categoryId
+      );
+
+      // Dodanie brakujących kategorii
+      requiredCategories.forEach((categoryId) => {
+        if (!currentCategories.includes(categoryId)) {
+          const budgetCategory: BudgetCategory =
+            updatedBudget.budgetCategories.find(
+              (bc) => bc.categoryId === categoryId
+            )!;
+          period.budgetPeriodCategories.push({
+            id: 0,
+            budgetPeriodId: period.id,
+            categoryId: budgetCategory.categoryId,
+            maxValue: 0, // Ustawienie tymczasowej wartości maxValue na 0
+            isActive: budgetCategory.isActive,
+            category: {
+              id: budgetCategory.categoryId,
+              name: "",
+              description: "",
+              isActive: budgetCategory.isActive,
+            },
+          });
+        }
+      });
+
+      // Ustawienie nieaktywności dla niepotrzebnych kategorii
+      period.budgetPeriodCategories.forEach((bpc) => {
+        const budgetCategory = updatedBudget.budgetCategories.find(
+          (bc) => bc.categoryId === bpc.categoryId
+        );
+        if (!budgetCategory || !requiredCategories.includes(bpc.categoryId)) {
+          bpc.isActive = false;
+        } else {
+          bpc.isActive = budgetCategory.isActive;
+        }
+      });
+    });
+
+    // synchronizacja wartości maxValue
     updatedBudget.budgetCategories.forEach((budgetCategory) => {
       let sameCategoryBudgetPeriodCategories = allBudgetPeriodCategories.filter(
         (bpc) => bpc.categoryId === budgetCategory.categoryId
       );
 
-      const difSumSameCategoryBPCAndBC: number =
+      const difSumSameCategoryBPCAndBC =
         sameCategoryBudgetPeriodCategories.reduce(
           (acc, curr) => acc + curr.maxValue,
           0
@@ -197,7 +240,7 @@ const BudgetDetails: React.FC<BudgetDetailsProps> = ({
 
       if (difSumSameCategoryBPCAndBC !== 0) {
         const activeBudgetPeriods = updatedBudget.budgetPeriods.filter(
-          (period) => period.isActive === true
+          (period) => period.isActive
         );
 
         // Podział wartości maxValue na składowe
@@ -205,27 +248,13 @@ const BudgetDetails: React.FC<BudgetDetailsProps> = ({
           budgetCategory.maxValue / activeBudgetPeriods.length
         ).toFixed(2);
 
-        // Sprawdzenie, czy każdy aktywny budgetPeriod ma budgetPeriodCategory dla danej kategorii
         activeBudgetPeriods.forEach((period) => {
-          const categoryExists = period.budgetPeriodCategories.some(
+          const budgetPeriodCategory = period.budgetPeriodCategories.find(
             (bpc) => bpc.categoryId === budgetCategory.categoryId
           );
 
-          // Jeśli nie ma, dodaj nową budgetPeriodCategory z maxValue równym składowej
-          if (!categoryExists) {
-            period.budgetPeriodCategories.push({
-              id: 0,
-              budgetPeriodId: period.id,
-              categoryId: budgetCategory.categoryId,
-              maxValue: dividedValue,
-              isActive: true,
-              category: {
-                id: budgetCategory.categoryId,
-                name: "",
-                description: "",
-                isActive: true,
-              },
-            });
+          if (budgetPeriodCategory) {
+            budgetPeriodCategory.maxValue = dividedValue;
           }
         });
 
@@ -236,9 +265,7 @@ const BudgetDetails: React.FC<BudgetDetailsProps> = ({
           .reduce((acc, curr) => acc + curr.maxValue, 0);
 
         const roundedSumMaxValues = parseFloat(sumMaxValues.toFixed(2));
-
-        const difToAdd: number =
-          Number(budgetCategory.maxValue) - roundedSumMaxValues;
+        const difToAdd = Number(budgetCategory.maxValue) - roundedSumMaxValues;
         const roundedDifToAdd = parseFloat(difToAdd.toFixed(2));
 
         if (roundedDifToAdd !== 0) {
@@ -265,7 +292,7 @@ const BudgetDetails: React.FC<BudgetDetailsProps> = ({
           const finalRoundedSumMaxValues = parseFloat(
             finalSumMaxValues.toFixed(2)
           );
-          const finalDifToAdd: number =
+          const finalDifToAdd =
             Number(budgetCategory.maxValue) - finalRoundedSumMaxValues;
           const finalRoundedDifToAdd = parseFloat(finalDifToAdd.toFixed(2));
 
@@ -289,7 +316,7 @@ const BudgetDetails: React.FC<BudgetDetailsProps> = ({
     // Final check and adjustment
     updatedBudget.budgetCategories.forEach((budgetCategory) => {
       const sumMaxValues = updatedBudget.budgetPeriods
-        .filter((period) => period.isActive === true)
+        .filter((period) => period.isActive)
         .flatMap((period) => period.budgetPeriodCategories)
         .filter((bpc) => bpc.categoryId === budgetCategory.categoryId)
         .reduce((acc, curr) => acc + curr.maxValue, 0);
@@ -300,7 +327,7 @@ const BudgetDetails: React.FC<BudgetDetailsProps> = ({
 
       if (roundedDifToAdd !== 0) {
         const firstBudgetPeriodCategory = updatedBudget.budgetPeriods
-          .filter((period) => period.isActive === true)
+          .filter((period) => period.isActive)
           .flatMap((period) => period.budgetPeriodCategories)
           .find((bpc) => bpc.categoryId === budgetCategory.categoryId);
         if (firstBudgetPeriodCategory) {

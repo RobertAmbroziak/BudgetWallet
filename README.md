@@ -63,16 +63,16 @@ Feel free to use your own application account or test account: [User]: Testuser1
     - :heavy_check_mark: more details of data row
 	- :heavy_check_mark: edit transfer
   - :heavy_check_mark: add (new expense)
-  - :white_square_button: configuration
+  - :heavy_check_mark: configuration
     - :heavy_check_mark: get defaults
     - :heavy_check_mark: add/edit categories
     - :heavy_check_mark: add/edit accounts
     - :heavy_check_mark: add/edit budget (with budgetCategories), budget period (with budgetPeriodCategories)
 	- :heavy_check_mark: clone budget to next period
-	- :x: align budget values
+	- :heavy_check_mark: align budget values
   - :white_square_button: account state
     - :heavy_check_mark: add internal transfer or deposit
-	- :x: edit internal transfer or deposit
+	- :heavy_check_mark: edit internal transfer or deposit
 	- :heavy_check_mark: account values
 	- :heavy_check_mark: table of internal transfers and deposits
 

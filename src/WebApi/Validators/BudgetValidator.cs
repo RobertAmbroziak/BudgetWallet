@@ -44,12 +44,20 @@ namespace WebApi.Validators
                 .WithMessage(_localizer["rule_periodMustBeAtLeastOneDay"].Value);
 
             RuleFor(x => x.BudgetPeriods)
-                .Must(x => x.Any(p => p.IsActive) && x.Where(p => p.IsActive).OrderBy(p => p.ValidFrom).First().ValidFrom == x.First().ValidFrom)
+                .Must((budget, budgetPeriods) =>
+                {
+                    var firstActivePeriod = budgetPeriods.Where(p => p.IsActive).OrderBy(p => p.ValidFrom).FirstOrDefault();
+                    return firstActivePeriod != null && firstActivePeriod.ValidFrom == budget.ValidFrom;
+                })
                 .When(x => x.BudgetPeriods.Any(p => p.IsActive))
                 .WithMessage(_localizer["rule_firstPeriodMustMatchBudgetStart"].Value);
 
             RuleFor(x => x.BudgetPeriods)
-                .Must(x => x.Any(p => p.IsActive) && x.Where(p => p.IsActive).OrderBy(p => p.ValidFrom).Last().ValidTo == x.Last().ValidTo)
+                .Must((budget, budgetPeriods) =>
+                {
+                    var lastActivePeriod = budgetPeriods.Where(p => p.IsActive).OrderBy(p => p.ValidFrom).LastOrDefault();
+                    return lastActivePeriod != null && lastActivePeriod.ValidTo == budget.ValidTo;
+                })
                 .When(x => x.BudgetPeriods.Any(p => p.IsActive))
                 .WithMessage(_localizer["rule_lastPeriodMustMatchBudgetEnd"].Value);
 

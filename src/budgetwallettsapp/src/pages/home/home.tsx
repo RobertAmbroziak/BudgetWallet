@@ -324,10 +324,7 @@ function Home() {
               wartości z okresów dla danej kategorii nie będzie równa wartości
               na budżetową kategorię. Jeśli stracisz kontrolę nad modyfikacjami
               kwot, z pomocą przychodzi przycisk WYRÓWNAJ, który powinien
-              doprowadzić do zgodności budżetu na poziomie kwot. Prawdopodobnie
-              nie poradzi sobie obecnie z rozjechanymi datami czy różnicami w
-              listach kategorii budżet vs. okres. To zostanie poprawione w
-              przyszłości.
+              doprowadzić do zgodności budżetu na poziomie kwot, dat i listy kategorii.
             </p>
 
             <p>
@@ -516,12 +513,8 @@ function Home() {
               1. Możliwość potwierdzenia rejestracji, resetu hasła przez mail i
               zmiany hasła
             </p>
-            <p>2. Możliwość edycji transferów wewnętrznych i depozytów</p>
             <p>
-              3. Rozbudowanie funkcjonalności Wyrównaj przy definiowaniu budżetu
-            </p>
-            <p>
-              4. Ułatwienie wprowadzania wydatków poprzez implementację
+              2. Ułatwienie wprowadzania wydatków poprzez implementację
               mechanizmu DefaultExpenses (kliknięcie w ikonkę tworzącą domyślny
               transfer na typowe wydatki)
             </p>

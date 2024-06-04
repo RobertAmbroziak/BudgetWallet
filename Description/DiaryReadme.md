@@ -401,3 +401,5 @@
 
 ### Day 97
 * Edit internal/deposit transfer - before final tests
+* Align BudgetPeriods fixes
+* Checkboxes in tables instead of yes/no

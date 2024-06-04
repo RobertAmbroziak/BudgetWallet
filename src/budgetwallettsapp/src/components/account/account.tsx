@@ -4,7 +4,7 @@ import config from "../../config";
 import translations from "../../translations";
 import { useLanguage } from "../../contexts/languageContext";
 import { useUser } from "../../contexts/userContext";
-import { Typography, Button } from "@mui/material";
+import { Typography, Button, Checkbox } from "@mui/material";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -223,11 +223,11 @@ function Accounts() {
                         <span>{accountState.account.minValue}</span>
                       </Td>
                       <Td>
-                        <span>
-                          {accountState.account.isActive
-                            ? translations[language].lbl_yes
-                            : translations[language].lbl_no}
-                        </span>
+                        <Checkbox
+                          checked={accountState.account.isActive}
+                          disabled
+                          inputProps={{ "aria-label": "Is Active" }}
+                        />
                       </Td>
                       <Td>
                         <span>{accountState.currentState}</span>
@@ -308,7 +308,11 @@ function Accounts() {
                         <span>{transfer.transferDate.toString()}</span>
                       </Td>
                       <Td>
-                        <span>{transfer.isActive ? "Tak" : "Nie"}</span>
+                        <Checkbox
+                          checked={transfer.isActive}
+                          disabled
+                          inputProps={{ "aria-label": "Is Active" }}
+                        />
                       </Td>
                     </Tr>
                   ))}
