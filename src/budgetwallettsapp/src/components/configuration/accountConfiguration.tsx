@@ -49,18 +49,12 @@ function AccountConfiguration() {
     setAccounts(updatedRecords);
   };
 
-  const handleRestoreAccountRecord = (
-    index: number,
-    field: string,
-    value: any
-  ) => {
+  const handleRestoreAccountRecord = (index: number) => {
     const updatedRecords = [...accounts];
-    if (field === "name" || field === "description") {
-      updatedRecords[index][field] = value as string;
-    } else if (field === "minValue") {
-      updatedRecords[index][field] = value as number;
-    } else if (field === "isActive") {
-      updatedRecords[index][field] = value as boolean;
+    if (updatedRecords[index].id > 0) {
+      updatedRecords[index].isActive = true;
+    } else {
+      updatedRecords.splice(index, 1);
     }
     setAccounts(updatedRecords);
   };
@@ -83,6 +77,7 @@ function AccountConfiguration() {
           },
         }
       );
+      fetchAccounts();
       openSnackbar(
         translations[language].toast_updateAccountsSuccess,
         Severity.SUCCESS
@@ -113,22 +108,23 @@ function AccountConfiguration() {
     }
   };
 
+  const fetchAccounts = async () => {
+    try {
+      const response = await axios.get(
+        `${config.API_BASE_URL}${config.API_ENDPOINTS.ACCOUNTS}`,
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+      setAccounts(response.data);
+    } catch (error) {
+      console.error("Error fetching filters:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchAccounts = async () => {
-      try {
-        const response = await axios.get(
-          `${config.API_BASE_URL}${config.API_ENDPOINTS.ACCOUNTS}`,
-          {
-            headers: {
-              Authorization: `Bearer ${jwtToken}`,
-            },
-          }
-        );
-        setAccounts(response.data);
-      } catch (error) {
-        console.error("Error fetching filters:", error);
-      }
-    };
     fetchAccounts();
   }, [jwtToken]);
 
@@ -180,9 +176,7 @@ function AccountConfiguration() {
           ) : (
             <IconButton
               aria-label="restore"
-              onClick={() =>
-                handleRestoreAccountRecord(index, "isActive", true)
-              }
+              onClick={() => handleRestoreAccountRecord(index)}
             >
               <DataSaverOn />
             </IconButton>

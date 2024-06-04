@@ -57,14 +57,10 @@ function CategoryConfiguration() {
     setLocalCategories(updatedRecords);
   };
 
-  const handleRestoreCategoryRecord = (
-    index: number
-    //field: string,
-    //value: any
-  ) => {
+  const handleRestoreCategoryRecord = (index: number) => {
     const updatedRecords = [...localCategories];
     if (updatedRecords[index].id > 0) {
-      updatedRecords[index].isActive = false;
+      updatedRecords[index].isActive = true;
     } else {
       updatedRecords.splice(index, 1);
     }

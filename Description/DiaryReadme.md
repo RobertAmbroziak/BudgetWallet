@@ -403,3 +403,6 @@
 * Edit internal/deposit transfer - before final tests
 * Align BudgetPeriods fixes
 * Checkboxes in tables instead of yes/no
+
+### Day 98
+* Fixes after tests (Account Configuration)
