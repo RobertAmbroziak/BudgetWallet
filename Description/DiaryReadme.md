@@ -406,3 +406,4 @@
 
 ### Day 98
 * Fixes after tests (Account Configuration)
+* readme update

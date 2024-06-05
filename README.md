@@ -28,7 +28,7 @@ Feel free to use your own application account or test account: [User]: Testuser1
 * Web Api - Currently .NET 6, planned .NET 8
 * Entity Framework - CodeFirst, Migrations, MSSQL, planned PostgreSQL
 * Clean architecture (onion) with separation of layers into separate projects
-* Front-end - Currently CRA + js files, planned Vite + tsx files
+* Front-end - React + Vite + TypeScript
 * Ready-made controls from Material UI
 * A bit of react-router, but mainly SPA based on simple hooks useState/useEffect/useContext
 
@@ -36,7 +36,6 @@ Feel free to use your own application account or test account: [User]: Testuser1
 
 - :heavy_check_mark: Application Page Template
   -  :heavy_check_mark: Footer, Header, Body
-  -  :heavy_check_mark: test data for User Panel, Admin Panel, Home
   -  :heavy_check_mark: routing
   -  :heavy_check_mark: authentication and authorization , permissions
 - :white_square_button: Login/Register Modal
@@ -62,7 +61,10 @@ Feel free to use your own application account or test account: [User]: Testuser1
     - :heavy_check_mark: data for chart and chart
     - :heavy_check_mark: more details of data row
 	- :heavy_check_mark: edit transfer
-  - :heavy_check_mark: add (new expense)
+  - :white_square_button: add (new expense)
+    - :heavy_check_mark: add transfer with splits
+	- :heavy_check_mark: default data in the first split fetched from the transfer
+	- :x:  buttons for creating recurring transfers
   - :heavy_check_mark: configuration
     - :heavy_check_mark: get defaults
     - :heavy_check_mark: add/edit categories
@@ -70,7 +72,7 @@ Feel free to use your own application account or test account: [User]: Testuser1
     - :heavy_check_mark: add/edit budget (with budgetCategories), budget period (with budgetPeriodCategories)
 	- :heavy_check_mark: clone budget to next period
 	- :heavy_check_mark: align budget values
-  - :white_square_button: account state
+  - :heavy_check_mark: account state
     - :heavy_check_mark: add internal transfer or deposit
 	- :heavy_check_mark: edit internal transfer or deposit
 	- :heavy_check_mark: account values
@@ -80,8 +82,13 @@ Feel free to use your own application account or test account: [User]: Testuser1
 
 ### Setting Google Client Id
 
-Change the value in file `.\BudgetWallet\src\budgetwalletuiapp\src\config.js` GOOGLE_CLIENT_ID: ADD_YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com to your Google Client Id. If you don't do this, you will still be able to use the application, but without logging in with your Google account.
+Change the value in file `.\BudgetWallet\src\budgetwallettsapp\src\config.ts` GOOGLE_CLIENT_ID: ADD_YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com to your Google Client Id. If you don't do this, you will still be able to use the application, but without logging in with your Google account.
 How to configure Google and obtain this ID will be shown shortly
+
+### Setting Facebook Client Id
+
+Change the value in file `.\BudgetWallet\src\budgetwallettsapp\src\config.ts` FACEBOOK_CLIENT_ID: "ADD_YOUR_FACEBOOK_CLIENT_ID_HERE to your Facebook Client Id. If you don't do this, you will still be able to use the application, but without logging in with your Facebook account.
+How to configure Facebook and obtain this ID will be shown shortly
 
 ### Running by dotnet, npm  independently and and use an existing MS SQL database
 
@@ -111,10 +118,10 @@ And change endpoint in file `.\BudgetWallet\src\budgetwalletuiapp\src\config.js`
 
 Now run applications:
 
-While in the `.\BudgetWallet\src\budgetwalletuiapp\src` folder, you can run npm command:
+While in the `.\BudgetWallet\src\budgetwallettsapp\src` folder, you can run npm command:
 
 ```json
-npm start
+npm run dev
 ```
 
 While in the `.\BudgetWallet\src\WebApi` folder, you can run dotnet command:
@@ -124,7 +131,7 @@ dotnet run
 ```
 
 Api now listening on: `http://localhost:5006` and `https://localhost:7006`
-UI (React) application is running at address `http://localhost:3000`
+UI (React) application is running at address `http://localhost:3000` or `https://localhost:3000`  (but for this you need add certificate to `vite.config.ts` file - this is essential for testing Facebook login locally )
 
 
 ### Running in Docker (example on Windows, but I'm confident the process will work on macOS and Linux)
