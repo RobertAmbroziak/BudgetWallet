@@ -18,6 +18,9 @@ Feel free to use your own application account or test account: [User]: Testuser1
 > [!TIP]
 > [Video about the project (Polish).](https://www.youtube.com/watch?v=drUR2k0tE9I)
 
+> [!TIP]
+> [Sneak Peek.](https://www.youtube.com/watch?v=NeM9sliF_mQ)
+
 ## Challenges
 
 * Entire Front-End. Currently, I mainly work with backend. I have experience with MVC + jQuery, legacy webforms, and recently a bit of Blazor. I'm still learning React.
