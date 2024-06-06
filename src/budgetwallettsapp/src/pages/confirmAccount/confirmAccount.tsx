@@ -1,27 +1,51 @@
-//import { useState, useEffect } from "react";
-//import config from "../../config";
-//import axios from "axios";
-//import { useNavigate } from "react-router-dom";
-//import { useLanguage } from "../../contexts/languageContext";
-//import translations from "../../translations";
-//import { useUser } from "../../contexts/userContext";
+import React, { useEffect } from "react";
+import config from "../../config";
+import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
+import { useLanguage } from "../../contexts/languageContext";
+import translations from "../../translations";
+import { useSnackbar } from "../../contexts/toastContext";
+import { Severity } from "../../types/enums/severity";
 
-function ConfirmAccount() {
-  //const { jwtToken } = useUser();
-  //const navigate = useNavigate();
-  //const { language } = useLanguage();
+const ConfirmAccount: React.FC = () => {
+  const { token } = useParams<{ token: string }>();
+  const navigate = useNavigate();
+  const { openSnackbar } = useSnackbar();
+  const { language } = useLanguage();
 
-  return (
-    <div>
-      <div>
-        <h1>ConfirmAccount</h1>
-        <p>
-          tu będzie button potwierdzający konto i kierujący na główną stronę .
-          tam można się będzie już zalogować
-        </p>
-      </div>
-    </div>
-  );
-}
+  useEffect(() => {
+    const activateAccount = async (code: string) => {
+      try {
+        const response = await axios.get(
+          `${config.API_BASE_URL}${config.API_ENDPOINTS.ACTIVATE}/${code}`
+        );
+        if (response.status === 200) {
+          openSnackbar(
+            translations[language].toast_accountConfirmationSuccess,
+            Severity.SUCCESS
+          );
+        } else {
+          openSnackbar(
+            translations[language].toast_accountConfirmationError,
+            Severity.ERROR
+          );
+        }
+        navigate("/");
+      } catch (error) {
+        console.error("Error activating account:", error);
+        openSnackbar(
+          translations[language].toast_accountConfirmationError,
+          Severity.ERROR
+        );
+      }
+    };
+
+    if (token) {
+      activateAccount(token);
+    }
+  }, [token, navigate]);
+
+  return <div>{translations[language].lbl_accountConfirmationProcessing}</div>;
+};
 
 export default ConfirmAccount;

@@ -79,6 +79,26 @@ namespace WebApi.Controllers
         }
 
         /// <summary>
+        /// Init change password
+        /// </summary>
+        /// <param name="changePasswordRequest">User data witch old and new password</param>
+        /// <returns>Code 200 OK</returns>
+        [AllowAnonymous]
+        [HttpPost("ChangePassword")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest changePasswordRequest)
+        {
+            /*
+                w requeście przekazujemy mail lub userName oraz nowe hasło
+                następuje sprawdzenie czy user/email jest ok
+                następuje walidacja nowego hasła
+                ustawiamy RegisterConfirmationDto ale z nową kolumną na zahashowane nowe hasło
+                dzięki temu nie blokujemy konta tylko dopiero potwierdzenie spowoduje zmianę hasła a nie ustawienie na nim isActive
+                wysyłamy mail zmiany hasła i  link do frontu na adres mailowy z code z RegisterConfirmationDto - klik w niego zastapi hasło    
+             */
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Activate the registered application account
         /// </summary>
         /// <param name="code">Registered configuration code</param>
@@ -87,12 +107,15 @@ namespace WebApi.Controllers
         [HttpGet("Activate/{code}")]
         public async Task<IActionResult> Activate([FromRoute] string code)
         {
+           /*
+                ta metoda służyć będzie zarówno do aktywacji nowych kont jak i zmiany hasła
+            */
             var user = await _identityService.Activate(code);
             if (user != null)
             {
                 return Ok();
             }
-
+            
             return BadRequest(_localizer["err_codeDoesnottExistsOrExpired"].Value);
         }
 

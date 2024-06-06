@@ -410,3 +410,6 @@
 
 ### Day 99
 * readme update - sneak peek
+
+### Day 100
+* initial code for account confirmation and password change

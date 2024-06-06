@@ -8,6 +8,7 @@ namespace Model.Tables
         public string Code { get; set; }
         public bool IsUsed { get; set; }
         public DateTime ValidTo { get; set; }
+        public string NewHashedPassword { get; set; }
 
         public virtual UserDto User { get; set; }
     }

@@ -163,6 +163,7 @@ namespace DataAccessLayer
                 entity.Property(e => e.Code).IsRequired().HasMaxLength(200);
                 entity.Property(e => e.IsUsed).IsRequired();
                 entity.Property(e => e.ValidTo).IsRequired();
+                entity.Property(e => e.NewHashedPassword).HasMaxLength(200);
 
                 entity.HasOne(e => e.User)
                     .WithOne(b => b.RegisterConfirmation)

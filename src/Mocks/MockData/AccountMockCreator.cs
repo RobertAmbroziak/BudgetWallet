@@ -8,7 +8,7 @@ namespace Mocks.MockData
         {
             return new List<AccountDto>
             {
-                new AccountDto { UserId = userId, Name = "Konto prywattne", Description = "Konto z debetem w banku mBank", MinValue = -10000, IsActive = true },
+                new AccountDto { UserId = userId, Name = "Konto prywatne", Description = "Konto z debetem w banku mBank", MinValue = -10000, IsActive = true },
                 new AccountDto { UserId = userId, Name = "Konto firmowe", Description = "Konto firmowe PKOBP", MinValue = 0, IsActive = true },
                 new AccountDto { UserId = userId, Name = "Karta mBank", Description = "Karta kredytowa mBank", MinValue = -6000, IsActive = true },
                 new AccountDto { UserId = userId, Name = "Karta City", Description = "Karta kredytowa CityBank", MinValue = -10000, IsActive = true },

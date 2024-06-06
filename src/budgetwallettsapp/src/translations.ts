@@ -132,6 +132,9 @@ const translations: Translations = {
     st_label_expenses: "Expenses",
     st_label_newExpense: "New expense",
     st_label_toDo: "To do",
+    toast_accountConfirmationSuccess: "Account has been confirmed",
+    toast_accountConfirmationError: "Failed to activate the account",
+    lbl_accountConfirmationProcessing: "Account activation in progress ..."
   },
   pl: {
     btn_logout: "Wyloguj",
@@ -261,6 +264,9 @@ const translations: Translations = {
     st_label_expenses: "Wydatki",
     st_label_newExpense: "Nowy wydatek",
     st_label_toDo: "Do zrobienia",
+    toast_accountConfirmationSuccess: "Konto zostało potwierdzone",
+    toast_accountConfirmationError: "Nie udało się aktywować konta",
+    lbl_accountConfirmationProcessing: "Trwa aktywacja konta ...",
   },
 };
 
