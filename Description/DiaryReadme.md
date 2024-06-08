@@ -413,3 +413,6 @@
 
 ### Day 100
 * initial code for account confirmation and password change
+
+### Day 101
+* success tests for account confirmation

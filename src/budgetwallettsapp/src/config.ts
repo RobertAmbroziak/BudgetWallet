@@ -1,10 +1,13 @@
 const config = {
   API_BASE_URL:
-    /*"https://localhost:7006" /*"https://budgetwallet.azurewebsites.net",*/"http://localhost:2777",
+    /*"https://localhost:7006",*/
+    "http://localhost:2777",
+    /*"https://budgetwalletapi.azurewebsites.net",*/
   API_ENDPOINTS: {
     ADMIN: "/api/administration",
     APPLICATION: "/api/application",
     HOME: "/api/home",
+    ACTIVATE: "/api/identity/activate",
     LOGIN: "/api/identity/login",
     REGISTER: "/api/identity/register",
     GOOGLE_LOGIN: "/api/identity/googleLogin",

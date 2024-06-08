@@ -43,7 +43,7 @@ const App: FC = () => {
                   <Route path="/admin" element={<Admin />} />
                   <Route path="/user" element={<User />} />
                   <Route
-                    path="/confirmAccount/:token"
+                    path="/confirmAccount/:code"
                     element={<ConfirmAccount />}
                   />
                 </Routes>

@@ -8,7 +8,7 @@ import { useSnackbar } from "../../contexts/toastContext";
 import { Severity } from "../../types/enums/severity";
 
 const ConfirmAccount: React.FC = () => {
-  const { token } = useParams<{ token: string }>();
+  const { code } = useParams<{ code: string }>();
   const navigate = useNavigate();
   const { openSnackbar } = useSnackbar();
   const { language } = useLanguage();
@@ -40,10 +40,10 @@ const ConfirmAccount: React.FC = () => {
       }
     };
 
-    if (token) {
-      activateAccount(token);
+    if (code) {
+      activateAccount(code);
     }
-  }, [token, navigate]);
+  }, [code, navigate]);
 
   return <div>{translations[language].lbl_accountConfirmationProcessing}</div>;
 };

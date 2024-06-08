@@ -85,7 +85,7 @@ namespace BusinessLogic.Services
                     From = "BudgetWallet",
                     To = userRegister.Email,
                     Subject = "Budget Wallet Registration",
-                    Body = $" Click to confirm account: https://localhost:3000/confirmAccount/{registerConfirmation.Code}"  // TODO: buduj endpoint i to chyba do Frontu, bo przecież Api blokują CORS
+                    Body = $" Click to confirm account: https://localhost:3000/confirmAccount/{registerConfirmation.Code}"  // TODO: buduj endpoint do Frontu
                 };
 
                 //var emailResponse = await _emailService.SendAsync(emailRequest);
