@@ -11,7 +11,7 @@ The project developed as part of the [#100 commitów - DevMentors](https://100co
 In my efforts to control expenses and manage the household budget, I have tried several of the many available applications, both mobile and web-based. I have also experimented with my own and public solutions based on Excel. However, all of them had some drawbacks: either they did not provide the expected functionality or were too bloated and complicated. Excel-based solutions, which can be easily and quickly customized to suit individual needs, are more suitable for larger devices. I want to try creating a simple but functional application tailored to my own vision of the subject. It will be a web application but heavily focused on mobile devices. It should be simple and user-friendly above all.
 
 > [!NOTE]
-> [BudgetWallet Beta Version](https://budgetwallet.azurewebsites.net/)
+> [BudgetWallet Beta Version](https://budgetwalletapp.azurewebsites.net/)
 
 Feel free to use your own application account or test account: [User]: Testuser1 [Password]: Testuser1!
 
